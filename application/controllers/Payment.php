@@ -131,7 +131,7 @@ class Payment extends CI_Controller {
 				$data['sub_title'] = 'Update payment details';
 				$data['btn_text'] = 'Update';
 				
-				$data['payment'] = $this->payment_model->get_tenant($payment_id);
+				$data['payment'] = $this->payment_model->get_payment($payment_id);
 				$data['accounts'] = $this->account_model->get_account();
 				$tenancies = $this->tenancy_model->get_by_tenant_id($data['payment']['tenant_id']);
 				$data['tenant'] = $tenancies[0];

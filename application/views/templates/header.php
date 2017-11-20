@@ -42,7 +42,7 @@
 				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 				<![endif]-->
-				<script type="text/javascript" src="<?php echo base_url("assets/js/JQuery-2.1.1.min.js"); ?>"></script>
+				<script type="text/javascript" src="<?php echo base_url("assets/js/JQuery-3.2.1.min.js"); ?>"></script>
         </head>
 		
     <body class="hold-transition skin-red-light sidebar-mini">
@@ -185,7 +185,6 @@
                 <li><a href="<?php echo site_url("user"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
               </ul>
             </li>
-			<?php } ?>
 			
 			<li class="treeview">
               <a href="#">
@@ -221,6 +220,7 @@
 				</li>
               </ul>
             </li>
+			<?php } ?>
           </ul><!-- /.sidebar-menu -->
         </section>
         <!-- /.sidebar -->

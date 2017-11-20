@@ -111,11 +111,11 @@ class Tenant extends CI_Controller {
 		public function update($tenant_id = NULL)
 		{
 			//if user not admin or boss, redirect them to the index
-			if(isset($_SESSION['role']) && $_SESSION['role']<3)
+			/* if(isset($_SESSION['role']) && $_SESSION['role']<3)
 			{
 				$this->index();
 				return;
-			}
+			} */
 			if ($tenant_id != NULL)
 			{
 				$this->load->helper('form');

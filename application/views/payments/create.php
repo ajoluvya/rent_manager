@@ -23,7 +23,7 @@
 						  <select id="account_id" name="account_id" class="form-control">
 							<option>Select...</option>
 							<?php foreach($accounts as $account):?>
-							<option value="<?php echo $account['acc_id']; ?>" <?php echo (set_select('account_id', $account['acc_id'])!=NULL)?"selected":((isset($payment['acc_id'])&&$payment['account_id']==$account['acc_id'])?"selected":""); ?>><?php echo $account['acc_no']; ?>, <?php echo $account['bank_name']; ?></option>
+							<option value="<?php echo $account['acc_id']; ?>" <?php echo (set_select('account_id', $account['acc_id'])!=NULL)?"selected":((isset($payment['acc_id'])&&$payment['acc_id']==$account['acc_id'])?"selected":""); ?>><?php echo $account['acc_no']; ?>, <?php echo $account['bank_name']; ?></option>
 							<?php endforeach; ?>
 						  </select>
 					  </div>

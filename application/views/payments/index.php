@@ -6,7 +6,7 @@
         </div>
 		<!-- Search form -->
 		<form action="<?php echo current_url();?>" method="post">
-			<div class="col-md-4"><input type="text" name="search" id="search" class="form-control" placeholder="Search by names"/></div>
+			<div class="col-md-3">&nbsp;</div>
 			<div class="col-md-2"><input type="text" name="start" id="start" class="datepicker form-control" placeholder="Start date"/></div>
 			<div class="col-md-2"><input type="text" name="end" id="end" class="datepicker form-control" placeholder="End date"/></div>
 			<div class="col-md-3"><select name="period" id="period" class="form-control">
@@ -15,9 +15,9 @@
 					<option value="61">2 months</option>
 					<option value="183">6 months</option>
 				</select></div>
-			<div class="col-md-1"><input type="submit" value="Search" class="btn"/></div>
+			<div class="col-md-2"><input type="submit" value="Search" class="btn"/></div>
 		</form>
-        <table class="table table-striped table-condensed table-hover dataTables">
+        <table class="table table-striped table-condensed table-hover dynamicTables">
             <thead>
                 <tr>
                     <th>Receipt No</th>
@@ -26,21 +26,23 @@
                     <th>Particulars</th>
                     <th>Amount</th>
                     <th>Bank account</th>
+					<th>&nbsp;</th>
 					<!-- If the estates owner/admin is logged in -->
-                    <th 
-					<?php if($_SESSION['role']==4||$_SESSION['role']==3){ echo "colspan='3'"; } ?>>Action</th>
+					<?php if($_SESSION['role']==4||$_SESSION['role']==3):?>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+					<?php endif;?>
                 </tr>
             </thead>
             <tbody>
-			<?php if(empty($payments)): ?>
-			<tr><td colspan="7">No recent payment data, try searching</td></tr>
-			<?php else:?>
-			<?php
+			<?php 
 			$total_cash = 0;
+			if(!empty($payments)): ?>
+			<?php
 			foreach($payments as $payment): ?>
                 <tr>
 					<td><?php echo $payment['payment_id']; ?></td>
-					<td><?php echo mdate("%d-%m-%Y", $payment['payment_date']); ?></td>
+					<td><?php echo mdate("%d, %M %Y", $payment['payment_date']); ?></td>
 					<td><?php echo $payment['names']; ?></td>
 					<td><?php echo $payment['particulars']; ?></td>
 					<td><?php echo number_format($payment['amount']); $total_cash +=$payment['amount']; ?></td>
@@ -60,9 +62,13 @@
 					<?php } ?>
 				</tr>
 			<?php endforeach; ?>
-			<tr><th colspan="4">TOTAL</th><th colspan="3">UGX <?php echo number_format($total_cash); ?></th></tr>
 			<?php endif;?>
 			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="4">TOTAL</th><th colspan="3">UGX <?php echo number_format($total_cash); ?></th>
+				</tr>
+			</tfoot>
 		</table>
 			<?php echo $pag_links; ?>
               </div><!-- /.box -->

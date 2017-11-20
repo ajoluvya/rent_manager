@@ -5,12 +5,7 @@
             <h3 class="box-title"><?php echo $sub_title; ?></h3>
         </div>
 		<div class="box-body">
-			<!-- Search form -->
-			<form action="<?php echo current_url();?>" method="post">
-				<div class="col-md-4"><input type="text" name="search" id="search" class="form-control" title="Search by estate name" placeholder="Search by estate name"/></div>
-				<div class="col-md-1"><input type="submit" value="Search" class="btn"/></div>
-			</form>
-		<table class="table table-striped table-condensed table-hover dataTables">
+		<table class="table table-striped table-condensed dynamicTables">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -18,14 +13,17 @@
                     <th>Telephone No</th>
                     <th>Telephone No2</th>
                     <th>Address</th>
+					<th>&nbsp;</th>
 					<!-- If the estates owner/admin is logged in -->
-                    <th 
-					<?php if($_SESSION['role']==4||$_SESSION['role']==3){echo "colspan=3";} ?>>Action</th>
+					<?php if($_SESSION['role']==4||$_SESSION['role']==3):?>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+					<?php endif;?>
                 </tr>
             </thead>
             <tbody>
 			<?php if(empty($estates)): ?>
-			<tr><td colspan="7">No estate data in database</td></tr>
+			<tr><td colspan="8">No estates data in database</td></tr>
 			<?php else:?>
 			<?php foreach($estates as $estate): ?>
                 <tr>
@@ -43,7 +41,7 @@
 					<a href="<?php echo site_url("estate/update/{$estate['estate_id']}"); ?>" title='Update estate'><span class="fa fa-edit"></span></a>
 					</td>
 					<td>
-					<a href="<?php echo site_url("estate/del_estate/{$estate['estate_id']}"); ?>" onclick="return confirm_delete('<?php echo "the estate ".$estate['estate_name'] ; ?>');" title="Delete"><span class="fa fa-trash"></span></a>
+					<a href="<?php echo site_url("estate/del_estate/{$estate['estate_id']}"); ?>" onclick="return confirm_delete('<?php echo "the estate ".$estate['estate_name'] ; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
 					</td>
 					<?php } ?>
 				</tr>
