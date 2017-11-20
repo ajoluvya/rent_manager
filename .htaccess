@@ -1,0 +1,3 @@
+RewriteEngine on
+RewriteCond $1 !^(index\.php|images|robots\.txt|.*\.js|.*\.gif|.*\.jpg|.*\.css|.*\.tff.*|.*\.png.*|.*\.woff.*)
+RewriteRule ^(.*)$ /rent_manager/index.php?/$1 [L]

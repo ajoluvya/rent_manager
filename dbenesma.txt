@@ -1,0 +1,3 @@
+DB: esmaexpr_estates_manager
+USER: esmaexpr_emamngr
+PASS: Ed=nvvt[u.!N?Fit
