@@ -8,10 +8,10 @@ class Tenancy_model extends CI_Model {
 		
 		public function get_tenancy($filter = FALSE)
 		{
-			$this->db->select('tenancy_id, tenancy.tenant_id, tenancy.house_id, tenancy.start_date, tenancy.rent_rate, house.house_no, house.estate_id, tenant.names, phone1, phone2');
+			$this->db->select('`tenancy_id`, `tenancy`.`tenant_id`, `tenancy`.`house_id`, `tenancy`.`start_date`, `tenancy`.`rent_rate`,`house_no`,`floor`,`estate_id`, `estate_name`, `tenant.names`, `phone1`, `phone2`');
 			$this->db->from('tenancy');
 			$this->db->join('tenant', 'tenant.tenant_id = tenancy.tenant_id');
-			$this->db->join('house', 'house.house_id = tenancy.house_id');
+			$this->db->join('(SELECT `house_id`,`house_no`,`floor`,`estate_name`, `house`.`estate_id` FROM `house` JOIN `estate` ON `house`.`estate_id`=`estate`.`estate_id`) `estate_house`', '`estate_house`.`house_id` = `tenancy`.`house_id`');
 			$this->db->order_by('tenancy.start_date DESC');
 			
 			if ($filter === FALSE)
@@ -21,7 +21,7 @@ class Tenancy_model extends CI_Model {
 			}
 			else{
 				if(is_numeric($filter)){
-					$this->db->where('tenancy_id', $filter);
+					$this->db->where('`tenancy_id`', $filter);
 					$query = $this->db->get();
 					return $query->row_array();
 				}

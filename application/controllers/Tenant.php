@@ -57,11 +57,11 @@ class Tenant extends CI_Controller {
 				else{
 					
 					$this->load->model('payment_model');
-					$this->load->model('bill_model');
+					$this->load->model('tenancy_model');
 				
 					$data['sub_title'] = $data['tenant']['names'];
-					$data['bills'] = $this->bill_model->get_by_tenant_id($tenant_id);
-					$data['total_bills'] = $this->bill_model->get_sum($tenant_id);
+					$data['houses'] = $this->tenancy_model->get_tenancy("`tenancy`.`tenant_id`=".$tenant_id);
+					//$data['total_bills'] = $this->tenancy_modal->get_sum($tenant_id);
 					$data['payments'] = $this->payment_model->get_by_tenant_id($tenant_id);
 					$data['total_payments'] = $this->payment_model->get_sum($tenant_id);
 					

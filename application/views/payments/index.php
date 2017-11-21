@@ -57,7 +57,7 @@
 					<a href="<?php echo site_url("payment/update/{$payment['payment_id']}"); ?>" title="Update payment details" ><span class="fa fa-edit"></span></a>
 					</td>
 					<td>
-					<a href="<?php echo site_url("payment/del_payment/{$payment['payment_id']}"); ?>" onclick="return confirm_delete('<?php echo "the payment ".$payment['names'] ; ?>');" title="Delete"><span class="fa fa-trash"></span></a>
+					<a href="<?php echo site_url("payment/del_payment/{$payment['payment_id']}"); ?>" onclick="return confirm_delete('<?php echo "the payment ".$payment['names'] ; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
 					</td>
 					<?php } ?>
 				</tr>

@@ -11,8 +11,10 @@
                     <th>ID</th>
                     <th>Name(s)</th>
                     <th>Phone1</th>
-                    <th>Phone2</th>
-					<th>&nbsp;</th>
+                    <th>Estate</th>
+					<th>House No.</th>
+					<th>Start Date</th>
+					<th>Rate (UGX)</th>
 					<th>&nbsp;</th>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3):?>
@@ -28,17 +30,17 @@
 					<td>
 					<a href="<?php echo site_url("tenant/view/{$tenant['tenant_id']}"); ?>" title="<?php echo $tenant['names']; ?> details"><?php echo $tenant['names']; ?></a></td>
 					<td><?php echo $tenant['phone1']; ?></td>
-					<td><?php echo isset($tenant['phone2'])?$tenant['phone2']:""; ?></td>
-					<td>
-					<a href="<?php echo site_url("payment/view/".$tenant['tenant_id']); ?>" title="<?php echo $tenant['names']; ?>'s payments"><span class="fa fa-credit-card"></span></a>
-					</td>
+					<td><?php echo isset($tenant['estate_name'])?$tenant['estate_name']:""; ?></td>
+					<td><?php echo isset($tenant['house_no'])?$tenant['house_no']:""; ?></td>
+					<td><?php echo isset($tenant['start_date'])?(mdate('%d, %M %Y',$tenant['start_date'])):""; ?></td>
+					<td><?php echo isset($tenant['rent_rate'])?(number_format($tenant['rent_rate'])):""; ?></td>
 					<td>
 					<a href="<?php echo site_url("tenant/update/{$tenant['tenant_id']}"); ?>" title="Update <?php echo $tenant['names']; ?>'s details" ><span class="fa fa-edit"></span></a>
 					</td>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
 					<td>
-					<a href="<?php echo site_url("tenant/del_tenant/{$tenant['tenant_id']}"); ?>" onclick="return confirm_delete('<?php echo "the tenant ".$tenant['names'] ; ?>');" title="Delete"><span class="fa fa-trash"></span></a>
+					<a href="<?php echo site_url("tenant/del_tenant/{$tenant['tenant_id']}"); ?>" onclick="return confirm_delete('<?php echo "the tenant ".$tenant['names'] ; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
 					</td>
 					<?php } ?>
 				</tr>

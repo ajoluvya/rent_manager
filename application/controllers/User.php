@@ -103,7 +103,7 @@ class User extends CI_Controller {
 					// Add user data in session
 					$this->session->set_userdata($user_data);
 					
-					redirect('/tenancy');
+					redirect('/tenant');
 				}
 			}
         }

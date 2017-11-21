@@ -3,6 +3,9 @@
         <div class="box box-solid">
         <div class="box-header with-border">
             <h3 class="box-title"><?php echo $sub_title; ?></h3>
+			<div class="pull-right">
+					<a href="<?php echo site_url("estate/create"); ?>" class="btn btn-default" title="Create new house"><i class="fa fa-plus-square"></i> New</a>
+			</div>
         </div>
 		<div class="box-body">
 		<table class="table table-striped table-condensed dynamicTables">
@@ -13,7 +16,6 @@
                     <th>Telephone No</th>
                     <th>Telephone No2</th>
                     <th>Address</th>
-					<th>&nbsp;</th>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3):?>
 					<th>&nbsp;</th>
@@ -28,13 +30,10 @@
 			<?php foreach($estates as $estate): ?>
                 <tr>
 					<td><?php echo $estate['estate_id']; ?></td>
-					<td><?php echo $estate['estate_name']; ?></td>
+					<td><a href="<?php echo site_url("estate/view/{$estate['estate_id']}"); ?>" title='Estate details'><?php echo $estate['estate_name']; ?></a></td>
 					<td><?php echo $estate['phone']; ?></td>
 					<td><?php echo isset($estate['phone2'])?$estate['phone2']:""; ?></td>
 					<td><?php echo $estate['address']; ?></td>
-					<td>
-					<a href="<?php echo site_url("estate/view/{$estate['estate_id']}"); ?>" title='Estate details'><span class="fa fa-table"></span></a>
-					</td>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
 					<td>

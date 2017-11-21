@@ -14,7 +14,7 @@
                       <div class="col-md-6"><label for="acc_no">Tenant:</label></div>
                       <div class="col-md-6">
 						<input type="hidden" id="tenant_id" name="tenant_id" value="<?php echo (isset($tenant_id))?$tenant_id:set_value('tenant_id'); ?>">
-						<label><?php echo (isset($tenant['names'])?$tenant['names']:""); ?></label>
+						<label><?php echo (isset($tenant['names'])?("<a href=\"".site_url("tenant/view/{$tenant['tenant_id']}")."\" title=\"".$tenant['names']." details\">".$tenant['names']."</a>"):""); ?></label>
 					  </div>
                     </div>
                     <div class="form-group">

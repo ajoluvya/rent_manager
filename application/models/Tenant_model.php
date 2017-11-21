@@ -8,8 +8,9 @@ class Tenant_model extends CI_Model {
 		
 		public function get_tenant($filter = FALSE)
 		{
-			$this->db->select('tenant_id, names, phone1, phone2, home_address, district, tenant.district_id');
+			$this->db->select('`tenant`.`tenant_id`, `names`, `phone1`, `phone2`, `home_address`, `district`, `tenant`.`district_id`, `tenancy_id`, `house_id`, `start_date`,`end_date`,`rent_rate`, `house_no`,`floor`,`estate_name`, `estate_id`');
 			$this->db->from('tenant');
+			$this->db->join('(SELECT `tenancy_id`, `tenant_id`, `tenancy`.`house_id`, `start_date`,`end_date`,`rent_rate`, `house_no`, `estate_id`,`floor`,`estate_name` FROM `tenancy` JOIN (SELECT `house_id`,`house_no`,`floor`,`estate_name`, `house`.`estate_id` FROM `house` JOIN `estate` ON `house`.`estate_id`=`estate`.`estate_id`) `estate_house` ON `tenancy`.`house_id` = `estate_house`.`house_id`) `tenant_house`', '`tenant_house`.`tenant_id` = `tenant`.`tenant_id`', 'left');
 			$this->db->join('district', 'district.district_id = tenant.district_id');
 			
 			if ($filter === FALSE)
@@ -19,7 +20,7 @@ class Tenant_model extends CI_Model {
 			}
 			else{
 				if(is_numeric($filter)){
-					$this->db->where('tenant_id', $filter);
+					$this->db->where('`tenant`.`tenant_id`', $filter);
 					$query = $this->db->get();
 					return $query->row_array();
 				}

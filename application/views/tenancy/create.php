@@ -22,28 +22,19 @@
                     </div>
                     <div class="form-group">
                       <div class="col-md-4"><label for="estate_id">Estate</label></div>
-                      <div class="col-md-8">
-						<select id="estate_id" name="estate_id" class="form-control">
-							<option>Select estate...</option>
-							<?php foreach($estates as $estate):?>
-							<option value="<?php echo $estate['estate_id']; ?>" <?php echo (set_select('estate_id', $estate['estate_id'])!=NULL)?"selected":((isset($tenancy['estate_id'])&&$tenancy['estate_id']==$estate['estate_id'])?"selected":""); ?>><?php echo $estate['estate_name']; ?></option>
-							<?php endforeach; ?>
-						</select>
+						<div class="col-md-8">
+							<select name="estate_id" data-bind="options: estates, optionsText: 'estate_name', optionsCaption: 'Select estate...', value: estate, optionsAfterRender: setOptionValue('estate_id')" class="form-control"></select>
 						</div>
 					</div>
                     <div class="form-group">
                       <div class="col-md-4"><label for="house_id">Apartment/House/Room</label></div>
-                      <div class="col-md-8">
-						<select id="house_id" name="house_id" class="form-control">
-							<option>Select house...</option>
-							<?php foreach($houses as $house):?>
-							<option estate_id="<?php echo $house['estate_id']; ?>" value="<?php echo $house['house_id']; ?>" rent_rate="<?php echo $house['fixed_amount']; ?>" <?php echo  (set_select('house_id', $house['house_id'])!=NULL)?"selected":((isset($tenancy['house_id'])&&$tenancy['house_id']==$house['house_id'])?"selected":""); ?>><?php echo $house['house_no']; ?></option>
-							<?php endforeach; ?>
-						</select></div>
+						<div class="col-md-8">
+							<select name="house_id" data-bind="options: filteredHouses(), optionsText: 'house_no', optionsCaption: 'Select house...', value: house, optionsAfterRender: setOptionValue('house_id')" class="form-control"></select>
+						</div>
 					</div>
-                    <div class="form-group">
+                    <div class="form-group" data-bind="with: house">
                       <div class="col-md-4"><label for="rent_rate">Amount</label></div>
-                      <div class="col-md-8"><div class="input-group"><span class="input-group-addon">UGX</span><input type="text" class="form-control" id="rent_rate" name="rent_rate" value="<?php echo (set_value('rent_rate')!=NULL)?set_value('rent_rate'):(isset($tenancy['rent_rate'])?$tenancy['rent_rate']:""); ?>" placeholder="Enter rent amount for this apartment" data-validation="number" data-validation-error-msg="Not a number/missing amount"></div>
+                      <div class="col-md-8"><div class="input-group"><span class="input-group-addon">UGX</span><input type="text" class="form-control" data-bind="value: fixed_amount" id="rent_rate" name="rent_rate" value="<?php echo (set_value('rent_rate')!=NULL)?set_value('rent_rate'):(isset($tenancy['rent_rate'])?$tenancy['rent_rate']:""); ?>" placeholder="Enter rent amount for this apartment" data-validation="number" data-validation-error-msg="Not a number/missing amount"></div>
 					  </div>
                     </div>
                     <div class="form-group">
@@ -64,3 +55,34 @@
 
             </div><!--/.col (left) -->
           </div>   <!-- /.row -->
+<script type="text/javascript">
+var ViewModel = function(){
+	var self = this;
+	self.estate = ko.observable();
+	self.house = ko.observable();
+	self.estates = ko.observable(<?php echo json_encode($estates);?>);
+	self.houses = ko.observableArray(<?php echo json_encode($houses);?>);
+	
+	self.filteredHouses =  ko.computed(function(){
+		if(self.estate()){
+			return ko.utils.arrayFilter(self.houses(), function(house) {
+				return (parseInt(self.estate().estate_id)==parseInt(house.estate_id));
+			});
+		}
+	});
+	//the amount is determined based on the previous selection
+	self.amount = ko.observable();
+	//set options value afterwards
+	self.setOptionValue = function(propId) {
+		return function (option, item) {
+			if (item === undefined) {
+				option.value = "";
+			} else {
+				option.value = item[propId];
+			}
+		}
+	};
+};
+var viewModel = new ViewModel();
+ko.applyBindings(viewModel);
+</script>

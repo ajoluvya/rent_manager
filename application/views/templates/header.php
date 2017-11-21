@@ -155,15 +155,15 @@
                 <i class="fa fa-list"></i> <span>Dashboard</span>
               </a>
             </li>
-			<li class="treeview">
-              <a href="#">
-                <i class="fa fa-users"></i> <span>Tenants</span> <i class="fa fa-angle-left pull-right"></i>
+			<li>
+              <a href="<?php echo site_url("tenant"); ?>">
+                <i class="fa fa-hotel"></i> <span>Tenants</span>
               </a>
-              <ul class="treeview-menu">
+              <!--ul class="treeview-menu"> <i class="fa fa-angle-left pull-right"></i>
                 <li><a href="<?php echo site_url("tenant/create"); ?>"><i class="fa fa-edit"></i> New</a></li>
                 <li><a href="<?php echo site_url("tenancy"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
                 <li><a href="<?php echo site_url("tenant"); ?>"><i class="fa fa-hotel"></i> Other  tenants</a></li>
-              </ul>
+              </ul-->
             </li>
 			<li class="treeview">
               <a href="<?php echo site_url("payment"); ?>">
@@ -200,23 +200,15 @@
 					<li><a href="<?php echo site_url("account"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
 				  </ul>
 				</li>
-				<li class="treeview">
-				  <a href="#">
-					<i class="fa fa-institution"></i> <span>Estates</span> <i class="fa fa-angle-left pull-right"></i>
+				<li>
+				  <a href="<?php echo site_url("estate"); ?>">
+					<i class="fa fa-institution"></i> <span>Estates</span>
 				  </a>
-				  <ul class="treeview-menu">
-					<li><a href="<?php echo site_url("estate/create"); ?>"><i class="fa fa-edit"></i> New</a></li>
-					<li><a href="<?php echo site_url("estate"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
-				  </ul>
 				</li>
-				<li class="treeview">
-				  <a href="#">
-					<i class="fa fa-home"></i> <span>Houses</span> <i class="fa fa-angle-left pull-right"></i>
+				<li>
+				  <a href="<?php echo site_url("house"); ?>">
+					<i class="fa fa-home"></i> <span>Houses</span>
 				  </a>
-				  <ul class="treeview-menu">
-					<li><a href="<?php echo site_url("house/create"); ?>"><i class="fa fa-edit"></i> New</a></li>
-					<li><a href="<?php echo site_url("house"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
-				  </ul>
 				</li>
               </ul>
             </li>

@@ -44,7 +44,7 @@
                   </tr>
                   <tr>
                     <th>Amount paid:</th>
-                    <td>UGX <?php echo $payment['amount']; ?></td>
+                    <td>UGX <?php echo number_format($payment['amount']); ?></td>
                   </tr>
                   <tr>
                     <th>Date:</th>

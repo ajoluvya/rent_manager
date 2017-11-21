@@ -19,6 +19,8 @@
 		
 		<!-- Metis Menu Plugin JavaScript -->
 		<script type="text/javascript" src="<?php echo base_url("assets/js/metisMenu.min.js"); ?>"></script>
+		<!-- Knockout JavaScript -->
+		<script type="text/javascript" src="<?php echo base_url("assets/js/knockout-3.4.2.js"); ?>"></script>
 		<!-- AdminLTE App -->
 		<script type="text/javascript" src="<?php echo base_url("assets/js/app.min.js"); ?>"></script>
 		<script type="text/javascript" src="<?php echo base_url("assets/js/helpers.js"); ?>"></script>
