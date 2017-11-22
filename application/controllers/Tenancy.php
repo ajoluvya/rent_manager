@@ -136,7 +136,7 @@ class Tenancy extends CI_Controller {
 			}
 			$data['title'] = "Tenancy";
 			$data['sub_title'] = "Assign apartment/house/room";
-			$data['houses'] = $this->house_model->get_house();
+			$data['houses'] = $this->house_model->get_house("`house_id` NOT IN (SELECT `house_id` FROM `tenancy` WHERE `end_date` > UNIX_TIMESTAMP())");
 			$data['estates'] = $this->estate_model->get_estate();
 			$data['step_text'] = TRUE;
 
@@ -179,7 +179,7 @@ class Tenancy extends CI_Controller {
 				$data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
 				$data['tenant_names'] = $data['tenancy']['names'];
 				$data['tenant_id'] = $data['tenancy']['tenant_id'];
-				$data['houses'] = $this->house_model->get_house();
+				$data['houses'] = $this->house_model->get_house("`house_id` NOT IN (SELECT `house_id` FROM `tenancy` WHERE `end_date` > UNIX_TIMESTAMP())");
 				$data['estates'] = $this->estate_model->get_estate();
 
 				$this->form_validation->set_rules('tenant_id', 'Tenant', 'required', array('required' => '%s is missing.'));

@@ -23,10 +23,10 @@
                     <th>Receipt No</th>
                     <th>Date</th>
                     <th>Tenant</th>
+                    <th>House</th>
                     <th>Particulars</th>
                     <th>Amount</th>
                     <th>Bank account</th>
-					<th>&nbsp;</th>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3):?>
 					<th>&nbsp;</th>
@@ -41,15 +41,15 @@
 			<?php
 			foreach($payments as $payment): ?>
                 <tr>
-					<td><?php echo $payment['payment_id']; ?></td>
+					<td>
+					<a href="<?php echo site_url("payment/view/{$payment['payment_id']}"); ?>" title="Details"><?php echo $payment['payment_id']; ?></a>
+					</td>
 					<td><?php echo mdate("%d, %M %Y", $payment['payment_date']); ?></td>
-					<td><?php echo $payment['names']; ?></td>
+					<td><a href="<?php echo site_url("tenant/view/{$payment['tenant_id']}"); ?>" title="Tenant details"><?php echo $payment['names']; ?></a></td>
+					<td><a href="<?php echo site_url("house/view/{$payment['house_id']}"); ?>" title="House details"><?php echo $payment['house_no']; ?></a></td>
 					<td><?php echo $payment['particulars']; ?></td>
 					<td><?php echo number_format($payment['amount']); $total_cash +=$payment['amount']; ?></td>
 					<td><?php echo $payment['acc_no']; ?>, <?php echo $payment['bank_name']; ?></td>
-					<td>
-					<a href="<?php echo site_url("payment/view/{$payment['payment_id']}"); ?>" title="Details"><span class="fa fa-table"></span></a>
-					</td>
 					
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
@@ -66,7 +66,7 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<th colspan="4">TOTAL</th><th colspan="3">UGX <?php echo number_format($total_cash); ?></th>
+					<th colspan="7">TOTAL</th><th colspan="2">UGX <?php echo number_format($total_cash); ?></th>
 				</tr>
 			</tfoot>
 		</table>

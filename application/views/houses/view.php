@@ -8,11 +8,6 @@
 						<a href="<?php echo site_url("house/create"); ?>" class="btn btn-default" title="New house"><i class="fa fa-plus-square"></i> New</a>
 				</div>
 				<div class="btn-group">
-					<a class="btn btn-default" href="<?php echo site_url("bill/view/".$house['house_id']); ?>" title="View bills for this house">
-						<i class="fa fa-dollar"></i> Bills
-					</a>
-				</div>
-				<div class="btn-group">
 					<a class="btn btn-default" href="<?php echo site_url("payment/view/".$house['house_id']); ?>" title="View payment records">
 						<i class="fa fa-credit-card"></i> Payments
 					</a>

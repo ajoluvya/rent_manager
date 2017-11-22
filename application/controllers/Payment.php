@@ -36,7 +36,7 @@ class Payment extends CI_Controller {
 				$data['payments'] = $this->payment_model->get_payment($where);
 				
 							
-				$config['base_url'] = 'http://rent-manager/account/';
+				$config['base_url'] = 'http://rent_manager/account/';
 				$config['total_rows'] = count($data['payments']);
 			
 				$data['pag_links'] = $this->pagination->create_links();
@@ -66,7 +66,7 @@ class Payment extends CI_Controller {
 					$this->load->model('user_model');
 					$data['tenant'] = $this->tenancy_model->get_by_tenant_id($data['payment']['tenant_id']);
 					$data['house'] = $this->house_model->get_house($data['tenant'][0]['house_id']);
-					$data['staff_detail'] = $this->user_model->get_user($data['payment']['entered_by']);
+					$data['staff_detail'] = $this->user_model->get_user($data['payment']['created_by']);
 				
 					$data['sub_title'] = "Payment receipt for " . $data['payment']['names'];
 					
@@ -77,9 +77,9 @@ class Payment extends CI_Controller {
 				
         }
 
-		public function create($tenant_id = NULL)
+		public function create($tenancy_id)
 		{
-			if ($tenant_id !== NULL)
+			if ($tenancy_id !== NULL)
 			{
 				$this->load->helper('form');
 				$this->load->library('form_validation');
@@ -87,10 +87,8 @@ class Payment extends CI_Controller {
 				$data['title'] = "Payment";
 				$data['sub_title'] = "Capture payment details";
 				$data['accounts'] = $this->account_model->get_account();
-				$tenancies = $this->tenancy_model->get_by_tenant_id($tenant_id);
-				$data['tenant'] = $tenancies[0];
+				$data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
 				
-				$data['tenant_id'] = $tenant_id;
 				$data['step_text'] = TRUE;
 
 				$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s is missing.'));
@@ -111,7 +109,12 @@ class Payment extends CI_Controller {
 			}
 			else
 			{
-				$this->index();
+					$data['sub_title'] = 'No data';
+					$data['message'] = 'The payment record was not found';
+					
+					$this->load->view('templates/header', $data);
+					$this->load->view('templates/404', $data);
+					$this->load->view('templates/footer');
 			}
 		}
 		
@@ -133,10 +136,8 @@ class Payment extends CI_Controller {
 				
 				$data['payment'] = $this->payment_model->get_payment($payment_id);
 				$data['accounts'] = $this->account_model->get_account();
-				$tenancies = $this->tenancy_model->get_by_tenant_id($data['payment']['tenant_id']);
-				$data['tenant'] = $tenancies[0];
+				$data['tenancy'] = $this->tenancy_model->get_tenancy($data['payment']['tenancy_id']);
 				
-				$data['tenant_id'] = $data['payment']['tenant_id'];
 
 				$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s is missing.'));
 				$this->form_validation->set_rules('amount', 'Amount paid', 'required', array('required' => '%s is missing.'));

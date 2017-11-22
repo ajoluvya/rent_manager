@@ -11,10 +11,17 @@
 				<?php echo form_open(uri_string(),array('name' => 'add_payment', 'role' => 'form')); ?>
                   <div class="box-body">
                     <div class="form-group">
+                      <div class="col-md-6"><label for="acc_no">House:</label></div>
+                      <div class="col-md-6">
+						<input type="hidden" id="house_id" name="house_id" value="<?php echo (isset($house_id))?$house_id:set_value('house_id'); ?>">
+						<label><?php echo (isset($tenancy['house_no'])?("<a href=\"".site_url("house/view/{$tenancy['house_id']}")."\" title=\"".$tenancy['house_no']." details\">".$tenancy['house_no']."</a>"):""); ?></label>
+					  </div>
+                    </div>
+                    <div class="form-group">
                       <div class="col-md-6"><label for="acc_no">Tenant:</label></div>
                       <div class="col-md-6">
-						<input type="hidden" id="tenant_id" name="tenant_id" value="<?php echo (isset($tenant_id))?$tenant_id:set_value('tenant_id'); ?>">
-						<label><?php echo (isset($tenant['names'])?("<a href=\"".site_url("tenant/view/{$tenant['tenant_id']}")."\" title=\"".$tenant['names']." details\">".$tenant['names']."</a>"):""); ?></label>
+						<input type="hidden" id="tenant_id" name="tenant_id" value="<?php echo (isset($tenancy['tenant_id']))?$tenancy['tenant_id']:set_value('tenant_id'); ?>">
+						<label><?php echo (isset($tenancy['names'])?("<a href=\"".site_url("tenant/view/{$tenancy['tenant_id']}")."\" title=\"".$tenancy['names']." details\">".$tenancy['names']."</a>"):""); ?></label>
 					  </div>
                     </div>
                     <div class="form-group">
@@ -34,12 +41,20 @@
                     </div>
                     <div class="form-group">
                       <div class="col-md-4"><label for="amount">Amount</label></div>
-                      <div class="col-md-8"><div class="input-group"><span class="input-group-addon">UGX</span><input type="text" class="form-control" id="amount" name="amount" value="<?php echo (set_value('amount')!=NULL)?set_value('amount'):(isset($payment['amount']))?$payment['amount']:""; ?>" placeholder="Enter amount paid" data-validation="number" data-validation-error-msg="Not a number/missing amount"></div>
+                      <div class="col-md-8"><div class="input-group"><span class="input-group-addon">UGX</span><input type="text" class="form-control" disabled id="amount" name="amount" value="<?php echo (set_value('amount')!=NULL)?set_value('amount'):(isset($payment['amount']))?$payment['amount']:($tenancy['rent_rate']?$tenancy['rent_rate']:""); ?>" placeholder="Enter amount paid" data-validation="number" data-validation-error-msg="Not a number/missing amount"></div>
 					  </div>
                     </div>
                     <div class="form-group">
-                      <div class="col-md-4"><label for="payment_date">Date paid</label></div>
-                      <div class="col-md-8"><div class="input-group"><input type="text" class="form-control datepicker" id="payment_date" name="payment_date" value="<?php echo (set_value('payment_date')!=NULL)?set_value('payment_date'):(isset($tenancy['payment_date'])?mdate("%d-%m-%Y",$tenancy['payment_date']):""); ?>" placeholder="Enter payment date" data-validation="date" data-validation-error-msg="Not a date/missing payment date" data-validation-format="dd-mm-yyyy" data-provide="datepicker" ><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></div>
+                      <div class="col-md-4"><label for="no_of_months">No of months</label></div>
+                      <div class="col-md-8">
+						<input type="number" class="form-control" id="no_of_months" name="no_of_months" value="<?php echo (set_value('no_of_months')!=NULL)?set_value('no_of_months'):(isset($payment['no_of_months'])?mdate("%d-%m-%Y",$payment['no_of_months']):""); ?>" placeholder="Enter number of months" data-validation="number" data-validation-error-msg="Not a number" />
+					  </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-md-4"><label for="no_of_months">Total Amount</label></div>
+                      <div class="col-md-8">
+						<input type="text" class="form-control" disabled id="total_amount" name="total_amount" value="<?php echo (set_value('total_amount')!=NULL)?set_value('total_amount'):(isset($payment['total_amount'])?$payment['total_amount']:""); ?>" />
+					  </div>
                     </div>
                   </div><!-- /.box-body -->
 

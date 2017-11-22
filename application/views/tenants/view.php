@@ -27,23 +27,23 @@
 	</div><!-- /.col-lg-6 -->
 	<div class="col-lg-6">
 		<div class="box box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-home"></i> Houses Occupied</h3>
-			<div class="pull-right">
-				<a class="btn btn-default" href="<?php echo site_url("tenancy/create/".$tenant['tenant_id']); ?>" title="Assign <?php echo $tenant['names']; ?> a house">
-					<i class="fa fa-plus-square"></i> Tenancy
-				</a>
+			<div class="box-header with-border">
+				<h3 class="box-title"><i class="fa fa-home"></i> Houses Occupied</h3>
+				<div class="pull-right">
+					<a class="btn btn-default" href="<?php echo site_url("tenancy/create/".$tenant['tenant_id']); ?>" title="Assign <?php echo $tenant['names']; ?> a house">
+						<i class="fa fa-plus-square"></i> Add
+					</a>
+				</div>
 			</div>
-        </div>
-        	
-        <table class="table table-condensed table-hover">
+			<?php if(!empty($houses)): //we should view payments section only if this tenant had a house ?>
+			<table class="table table-condensed table-hover">
                 <tr>
 					<th>Estate</th>
 					<th>House/Room No</th>
 					<th>Start Date</th>
 					<th>Rate</th>
 					<!-- If the estates owner/admin is logged in -->
-					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?><th colspan="2">Action</th><?php } ?>
+					<th colspan="<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>3<?php }?>">Action</th>
 				</tr>
 				<?php foreach($houses as $house):?>
                 <tr>
@@ -51,6 +51,9 @@
 					<td><?php echo $house['house_no']; ?></td>
 					<td><?php echo mdate('%d, %M %Y', $house['start_date']); ?></td>
 					<td><?php echo number_format($house['rent_rate']); ?></td>
+					<td>
+					<a href="<?php echo site_url("payment/create/".$house['tenancy_id']); ?>" title="Enter payment for room <?php echo $house['house_no'] . " (" . $house['estate_name']; ?>)"> <span class="fa fa-money"></span></a>
+					</td>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
 					<td>
@@ -62,8 +65,8 @@
 					<?php } ?>
 				</tr>
 				<?php endforeach;?>
-		</table>
-              </div><!-- /.box -->
+			</table>
+        </div><!-- /.box -->
 	</div><!-- /.col-lg-6 -->
 </div><!-- /.row -->
 
@@ -73,45 +76,57 @@
 		<div class="box box-solid">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="fa fa-credit-card"></i> Payments</h3>
-			<div class="pull-right">
+			<!--div class="pull-right">
 				<a class="btn btn-default" href="<?php echo site_url("payment/create/".$tenant['tenant_id']); ?>" title="Enter payment for <?php echo $tenant['names']; ?>">
-					<i class="fa fa-plus-square"></i> Payment
+					<i class="fa fa-plus-square"></i> Add
 				</a>
-			</div>
+			</div-->
         </div>
-        	
-        <table class="table table-condensed table-hover dynamicTables">
-			<thead>
-                <tr>
-					<th>Receipt No</th><th>Payment date</th><th>Amount paid</th><th>Details</th>
-					<!-- If the estates owner/admin is logged in -->
-					<?php if($_SESSION['role']==4||$_SESSION['role']==3):?>
-					<th>&nbsp;</th>
-					<th>&nbsp;</th>
-					<?php endif;?>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach($payments as $payment):?>
-                <tr><td><a href="<?php echo site_url("payment/view/".$payment['payment_id']); ?>" title="View receipt"><?php echo $payment['payment_id']; ?></a></td><td><?php echo mdate('%d, %M %Y', $payment['payment_date']); ?></td><td><?php echo number_format($payment['amount']); ?></td><td><?php echo $payment['particulars']; ?></td>
-					<!-- If the estates owner/admin is logged in -->
-					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
-					<td>
-					<a href="<?php echo site_url("payment/update/{$payment['payment_id']}"); ?>" title="Make changes to this payment" ><span class="fa fa-edit"></span></a>
-					</td>
-					<td>
-					<a href="<?php echo site_url("payment/del_payment/{$payment['payment_id']}"); ?>" onclick="return confirm_delete('<?php echo "the payment for  ".$tenant['names'] ; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
-					</td>
-					<?php } ?>
-				</tr>
-			</tbody>
-			<tfoot>
-				<?php endforeach;?>
-				<tr><th>Total</th><th colspan="3">&nbsp;</th><th><u><?php echo number_format($total_payments['amt_paid']); ?></u></th>
-				</tr>
-			</tfoot>
-		</table>
-              </div><!-- /.box -->
+        <?php if(!empty($payments)):?>
+			<table class="table table-condensed table-hover dynamicTables">
+				<thead>
+					<tr>
+						<th>Receipt No</th>
+						<th>House No</th>
+						<th>Payment date</th>
+						<th>Amount paid</th>
+						<th>Details</th>
+						<!-- If the estates owner/admin is logged in -->
+						<?php if($_SESSION['role']==4||$_SESSION['role']==3):?>
+						<th>&nbsp;</th>
+						<th>&nbsp;</th>
+						<?php endif;?>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach($payments as $payment):?>
+					<tr>
+						<td><a href="<?php echo site_url("payment/view/".$payment['payment_id']); ?>" title="View receipt"><?php echo $payment['payment_id']; ?></a></td>
+						<td><a href="<?php echo site_url("payment/view/".$payment['payment_id']); ?>" title="View receipt"><?php echo $payment['house_no']; ?></a></td>
+						<td><?php echo mdate('%d, %M %Y', $payment['payment_date']); ?></td>
+						<td><?php echo number_format($payment['amount']); ?></td>
+						<td><?php echo $payment['particulars']; ?></td>
+						<!-- If the estates owner/admin is logged in -->
+						<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
+						<td>
+						<a href="<?php echo site_url("payment/update/{$payment['payment_id']}"); ?>" title="Make changes to this payment" ><span class="fa fa-edit"></span></a>
+						</td>
+						<td>
+						<a href="<?php echo site_url("payment/del_payment/{$payment['payment_id']}"); ?>" onclick="return confirm_delete('<?php echo "the payment for  ".$tenant['names'] ; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
+						</td>
+						<?php } ?>
+					</tr>
+					<?php endforeach;?>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th>Total</th><th colspan="4">&nbsp;</th><th><u><?php echo number_format($total_payments['amt_paid']); ?></u></th>
+					</tr>
+				</tfoot>
+			</table>
+		<?php endif;?>
+		<?php endif; //we should view payments section only if this tenant had a house ?>
+        </div><!-- /.box -->
 	</div><!-- /.col-lg-6 -->
 </div><!-- /.row -->
 

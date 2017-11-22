@@ -8,10 +8,10 @@ class Payment_model extends CI_Model {
 		
 		public function get_payment($filter = FALSE)
 		{
-			$this->db->select('payment_id, payment.tenant_id, payment_date, account.acc_id, bank_name, acc_no, particulars, amount, entered_by, tenant.names');
+			$this->db->select('`payment_id`, `payment`.`tenancy_id`, `tenant_id`, `payment_date`, `account`.`acc_id`, `bank_name`, `acc_no`, particulars, `amount`, `created_by`, `names`, `house_id`, `house_no`,`floor`');
 			$this->db->from('payment');
 			$this->db->join('account', 'account.acc_id = payment.account_id', 'left');
-			$this->db->join('tenant', 'tenant.tenant_id = payment.tenant_id');
+			$this->db->join("(SELECT `tenant`.`tenant_id`, `names`,`tenant_house`.`tenancy_id`, `house_id`, `house_no`,`floor` FROM `tenant` JOIN (SELECT `tenancy_id`, `tenant_id`, `tenancy`.`house_id`, `house_no`,`floor` FROM `tenancy` JOIN `house` ON `house`.`house_id`=`tenancy`.`house_id`) `tenant_house` ON `tenant`.`tenant_id` = `tenant_house`.`tenant_id`) `tenancy_house`", '`tenancy_house`.`tenancy_id` = `payment`.`tenancy_id`');
 			
 			if ($filter === FALSE)
 			{
@@ -44,25 +44,18 @@ class Payment_model extends CI_Model {
 					return $query->row_array();
 			}
 
-			$this->db->where('tenant_id', $tenant_id);
+			$this->db->where("`tenancy_id` IN (SELECT `tenancy`.`tenancy_id` FROM `tenancy` WHERE `tenant_id` = $tenant_id)");
 			$query = $this->db->get();
 			return $query->row_array();
 		}
 		
-		public function get_by_tenant_id($tenant_id = FALSE)
+		public function get_by_tenant_id($tenant_id)
 		{
-			$this->db->select('payment_id, payment.tenant_id, payment_date, account.acc_id, bank_name, acc_no, particulars, amount, entered_by, tenant.names');
+			$this->db->select('`payment_id`, `payment`.`tenancy_id`, `payment_date`, `account`.`acc_id`, `bank_name`, `acc_no`, particulars, `amount`, `created_by`, `names`, `house_no`,`floor`');
 			$this->db->from('payment');
 			$this->db->join('account', 'account.acc_id = payment.account_id', 'left');
-			$this->db->join('tenant', 'tenant.tenant_id = payment.tenant_id');
+			$this->db->join("(SELECT `tenant`.`tenant_id`, `names`,`tenant_house`.`tenancy_id`, `house_no`,`floor` FROM `tenant` JOIN (SELECT `tenancy_id`, `tenant_id`, `house_no`,`floor` FROM `tenancy` JOIN `house` ON `house`.`house_id`=`tenancy`.`house_id`) `tenant_house` WHERE `tenant`.`tenant_id` = $tenant_id) `tenancy_house`", '`tenancy_house`.`tenancy_id` = `payment`.`tenancy_id`');
 			
-			if ($tenant_id === FALSE)
-			{
-					$query = $this->db->get();
-					return $query->result_array();
-			}
-
-			$this->db->where('payment.tenant_id', $tenant_id);
 			$query = $this->db->get();
 			return $query->result_array();
 		}

@@ -29,7 +29,7 @@ class Tenant extends CI_Controller {
 				$data['sub_title'] = 'List of tenants';
 				$data['tenants'] = $this->tenant_model->get_tenant($where);				
 							
-				$config['base_url'] = 'http://rent-manager/tenant/';
+				$config['base_url'] = 'http://rent_manager/tenant/';
 				$config['total_rows'] = count($data['tenants']);
 			
 				$data['pag_links'] = $this->pagination->create_links();
@@ -61,7 +61,6 @@ class Tenant extends CI_Controller {
 				
 					$data['sub_title'] = $data['tenant']['names'];
 					$data['houses'] = $this->tenancy_model->get_tenancy("`tenancy`.`tenant_id`=".$tenant_id);
-					//$data['total_bills'] = $this->tenancy_modal->get_sum($tenant_id);
 					$data['payments'] = $this->payment_model->get_by_tenant_id($tenant_id);
 					$data['total_payments'] = $this->payment_model->get_sum($tenant_id);
 					

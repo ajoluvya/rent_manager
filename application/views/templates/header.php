@@ -43,6 +43,11 @@
 				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 				<![endif]-->
 				<script type="text/javascript" src="<?php echo base_url("assets/js/JQuery-3.2.1.min.js"); ?>"></script>
+				<style>
+					textarea {
+					  resize: vertical; /* user can resize vertically, but width is fixed */
+					}
+				</style>
         </head>
 		
     <body class="hold-transition skin-red-light sidebar-mini">

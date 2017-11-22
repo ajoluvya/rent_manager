@@ -11,7 +11,7 @@
           <div class="row invoice-info">
             <div class="col-sm-4 invoice-col">
               <address>
-                <strong> <?php echo $house['estate_name']; ?></strong><br>
+                <strong> <?php echo $house['estate_name']; ?></strong><br/>
                 <?php echo $house['address']; ?><br>
                 Phone: <?php echo $house['phone']; ?><br>
                 Phone: <?php echo isset($tenant['phone2'])?$house['phone2']:""; ?><br>
