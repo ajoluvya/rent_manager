@@ -31,7 +31,7 @@
 					<tr>
 						<td><?php echo $house['house_id']; ?></td>
 						<td><a href="<?php echo site_url("house/view/{$house['house_id']}"); ?>" title='Estate details'><?php echo $house['house_no']; ?></a></td>
-						<td><?php echo $house['estate_name']; ?></td>
+						<td><?php if(isset($house['estate_name'])){?><a href="<?php echo site_url("estate/view/{$house['estate_id']}"); ?>" title="<?php echo $house['estate_name']; ?> details"><?php echo $house['estate_name'];?></a><?php } ?></td>
 						<td><?php echo number_format($house['fixed_amount']); ?></td>
 						<td>
 						<a href="<?php echo site_url("bill/view/{$house['house_id']}"); ?>" title='View bills for this house'><span class="fa fa-dollar"></span></a>

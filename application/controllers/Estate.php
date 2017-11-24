@@ -21,7 +21,7 @@ class Estate extends CI_Controller {
 				$data['estates'] = $this->estate_model->get_estate();
 				
 				
-				$config['base_url'] = 'http://rent-manager/estate/';
+				$config['base_url'] = 'http://rent_manager/estate/';
 				$config['total_rows'] = count($data['estates']);
 			
 				$data['pag_links'] = $this->pagination->create_links();
@@ -46,7 +46,13 @@ class Estate extends CI_Controller {
 					$this->load->view('templates/footer');
 				}
 				else{
+					$this->load->model('tenant_model');
+					$this->load->model('house_model');
+					$this->load->model('payment_model');
 					$data['sub_title'] = $data['estate']['estate_name'];
+					$data['estate_tenants'] = $this->tenant_model->get_tenant("`estate_id`=".$estate_id);
+					$data['estate_houses'] = $this->house_model->get_house("`estate`.`estate_id`=".$estate_id);
+					$data['payments'] = $this->payment_model->get_payment("`house_id` IN (SELECT `house_id` FROM `house` WHERE `estate_id` = $estate_id)");
 					
 					$this->load->view('templates/header', $data);
 					$this->load->view('estates/view', $data);

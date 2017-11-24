@@ -12,7 +12,7 @@
                 <?php echo validation_errors("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>","</div>"); ?>
 				
 				<?php $form_url = isset($btn_text)?uri_string():"tenancy/create";?>
-				<?php echo form_open($form_url,array('name' => 'create/update_tenancy', 'role' => 'form')); ?>
+				<?php echo form_open($form_url,array('name' => 'create/update_tenancy', 'role' => 'form', 'id' => 'tenancy_form')); ?>
                   <div class="box-body">
                     <div class="form-group">
                       <div class="col-md-12">
@@ -87,6 +87,9 @@ $(document).ready(function () {
 	};
 	var viewModel = new ViewModel();
 	ko.applyBindings(viewModel);
+	$('#tenancy_form').on('submit',function(){
+		enableDisableButton(this, true);
+	});
 	
 	<?php if(isset($tenancy['estate_id'])||isset($_POST['estate_id'])):?>
 		var estate_id = <?=(isset($tenancy['estate_id'])?$tenancy['estate_id']:$_POST['estate_id'])?>

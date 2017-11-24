@@ -8,7 +8,7 @@ class Tenant_model extends CI_Model {
 		
 		public function get_tenant($filter = FALSE)
 		{
-			$this->db->select('`tenant`.`tenant_id`, `names`, `phone1`, `phone2`, `home_address`, `district`, `tenant`.`district_id`, `tenancy_id`, `house_id`, `start_date`,`end_date`,`rent_rate`, `house_no`,`floor`,`estate_name`, `estate_id`');
+			$this->db->select('`tenant`.`tenant_id`, `names`, `phone1`, `phone2`, `home_address`, `district`, `tenant`.`district_id`, `tenant`.`date_created`, `photo_url`, `tenancy_id`, `house_id`, `start_date`,`end_date`,`rent_rate`, `house_no`,`floor`,`estate_name`, `estate_id`');
 			$this->db->from('tenant');
 			$this->db->join('(SELECT `tenancy_id`, `tenant_id`, `tenancy`.`house_id`, `start_date`,`end_date`,`rent_rate`, `house_no`, `estate_id`,`floor`,`estate_name` FROM `tenancy` JOIN (SELECT `house_id`,`house_no`,`floor`,`estate_name`, `house`.`estate_id` FROM `house` JOIN `estate` ON `house`.`estate_id`=`estate`.`estate_id`) `estate_house` ON `tenancy`.`house_id` = `estate_house`.`house_id`) `tenant_house`', '`tenant_house`.`tenant_id` = `tenant`.`tenant_id`', 'left');
 			$this->db->join('district', 'district.district_id = tenant.district_id');
@@ -40,7 +40,10 @@ class Tenant_model extends CI_Model {
 				'phone1' => $this->input->post('phone1'),
 				'phone2' => $this->input->post('phone2'),
 				'home_address' => $this->input->post('home_address'),
-				'district_id' => $this->input->post('district_id')
+				'district_id' => $this->input->post('district_id'),
+				'created_by' => $_SESSION['user_id'],
+				'date_created' => time(),
+				'modified_by' => $_SESSION['user_id']
 			);
 			$this->db->insert('tenant', $data);
 			return $this->db->insert_id();
@@ -54,7 +57,18 @@ class Tenant_model extends CI_Model {
 				'phone1' => $this->input->post('phone1'),
 				'phone2' => $this->input->post('phone2'),
 				'home_address' => $this->input->post('home_address'),
-				'district_id' => $this->input->post('district_id')
+				'district_id' => $this->input->post('district_id'),
+				'modified_by' => $_SESSION['user_id']
+			);
+			$this->db->where('tenant_id', $tenant_id);
+			return $this->db->update('tenant', $data);
+		}
+		
+		public function deactivate_tenant($tenant_id)
+		{
+			$data = array(
+				'status' => 0,
+				'modified_by' => $_SESSION['user_id']
 			);
 			$this->db->where('tenant_id', $tenant_id);
 			return $this->db->update('tenant', $data);

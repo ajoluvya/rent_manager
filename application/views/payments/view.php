@@ -47,7 +47,7 @@
                     <td>UGX <?php echo number_format($payment['amount']); ?></td>
                   </tr>
                   <tr>
-                    <th>Date:</th>
+                    <th>Payment Date:</th>
                     <td><?php echo mdate("%d/%M/%Y", $payment['payment_date']); ?></td>
                   </tr>
                   <tr>
@@ -62,7 +62,7 @@
           <div class="row no-print">
             <div class="col-xs-12">
               <a href="javascript:window.print()" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
-              <button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button>
+              <a href="<?php echo site_url("payment/pdf/{$payment['payment_id']}"); ?>" class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</a>
             </div>
           </div>
         </section><!-- /.content -->

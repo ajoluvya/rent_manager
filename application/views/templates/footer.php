@@ -1,5 +1,4 @@
 		
-        </section><!-- /.content -->
 	</div><!-- /.content-wrapper -->
 
       <!-- Main Footer -->
@@ -25,6 +24,8 @@
 		<script type="text/javascript" src="<?php echo base_url("assets/js/app.min.js"); ?>"></script>
 		<script type="text/javascript" src="<?php echo base_url("assets/js/helpers.js"); ?>"></script>
 		<script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-datepicker.js"); ?>"></script>
+    <!-- Moment -->
+		<script type="text/javascript" src="<?php echo base_url("assets/js/moment.js"); ?>"></script>
     <!-- DataTables -->
 		<script type="text/javascript" src="<?php echo base_url("assets/js/jquery.dataTables.min.js"); ?>"></script>
 		<script type="text/javascript" src="<?php echo base_url("assets/js/dataTables.bootstrap.min.js"); ?>"></script>
@@ -42,7 +43,13 @@
 					  "searching": true,
 					  "ordering": true,
 					  "info": true,
-					  "autoWidth": false
+					  "autoWidth": false,
+						order: [[1,'desc']]/* ,
+						columnDefs: [ {
+						  "targets": [5],
+						  "orderable": false,
+						  "searchable": false
+					  }] */
 				});
 			 });
 		</script>

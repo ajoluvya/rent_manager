@@ -57,5 +57,6 @@ $route['estate'] = 'estate';
 $route['house'] = 'house';
 $route['payment'] = 'payment';
 $route['tenancy'] = 'tenancy';
+$route['mypdf'] = "welcome/mypdf";
 $route['(:any)'] = 'pages/view/$1';
 $route['default_controller'] = 'user/login';

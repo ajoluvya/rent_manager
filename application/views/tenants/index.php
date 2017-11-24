@@ -30,12 +30,12 @@
 					<td>
 					<a href="<?php echo site_url("tenant/view/{$tenant['tenant_id']}"); ?>" title="<?php echo $tenant['names']; ?> details"><?php echo $tenant['names']; ?></a></td>
 					<td><?php echo $tenant['phone1']; ?></td>
-					<td><?php echo isset($tenant['estate_name'])?$tenant['estate_name']:""; ?></td>
-					<td><?php echo isset($tenant['house_no'])?$tenant['house_no']:""; ?></td>
+					<td><?php if(isset($tenant['estate_name'])){?><a href="<?php echo site_url("house/view/{$tenant['estate_id']}"); ?>" title="<?php echo $tenant['estate_name']; ?> details"><?php echo $tenant['estate_name'];?></a><?php } ?></td>
+					<td><?php if(isset($tenant['house_no'])){?><a href="<?php echo site_url("house/view/{$tenant['house_id']}"); ?>" title="<?php echo $tenant['house_no']; ?> details"><?php echo $tenant['house_no'];?></a><?php } ?></td>
 					<td><?php echo isset($tenant['start_date'])?(mdate('%d, %M %Y',$tenant['start_date'])):""; ?></td>
 					<td><?php echo isset($tenant['rent_rate'])?(number_format($tenant['rent_rate'])):""; ?></td>
 					<td>
-					<a href="<?php echo site_url("tenant/update/{$tenant['tenant_id']}"); ?>" title="Update <?php echo $tenant['names']; ?>'s details" ><span class="fa fa-edit"></span></a>
+					<a href="<?php echo site_url("tenancy/update/{$tenant['tenancy_id']}"); ?>" title="Update <?php echo $tenant['names']; ?>'s details" ><span class="fa fa-edit"></span></a>
 					</td>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>

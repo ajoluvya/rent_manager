@@ -24,7 +24,7 @@ class House extends CI_Controller {
 				$data['houses'] = $this->house_model->get_house();
 				
 							
-				$config['base_url'] = 'http://rent-manager/house/';
+				$config['base_url'] = 'http://rent_manager/house/';
 				$config['total_rows'] = count($data['houses']);
 			
 				$data['pag_links'] = $this->pagination->create_links();
@@ -41,6 +41,7 @@ class House extends CI_Controller {
 				
 				if (empty($data['house']))
 				{
+					
 					$data['sub_title'] = 'No data';
 					$data['message'] = 'The house record was not found';
 					
@@ -51,6 +52,7 @@ class House extends CI_Controller {
 				else{
 					$data['title'] = $data['sub_title'] = $data['house']['house_no'];
 					$data['floor'] = $this->floors[$data['house']['floor']];
+					$data['house_tenants'] = $this->house_model->get_house_tenants($house_id);
 					
 					$this->load->view('templates/header', $data);
 					$this->load->view('houses/view', $data);

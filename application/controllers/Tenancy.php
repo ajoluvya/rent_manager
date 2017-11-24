@@ -50,7 +50,7 @@ class Tenancy extends CI_Controller {
 							
 				$data['title'] = 'Tenancies';
 				$data['sub_title'] = 'List of tenants';
-				$config['base_url'] = 'http://rent-manager/tenancy/';
+				$config['base_url'] = 'http://rent_manager/tenancy/';
 				$config['total_rows'] = count($data['tenancies']);
 			
 				$data['pag_links'] = $this->pagination->create_links();
@@ -63,63 +63,60 @@ class Tenancy extends CI_Controller {
 
         public function view($tenancy_id = NULL)
         {
-				$data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
-				$data['title'] = 'Tenancy';
-				
-				if (empty($data['tenant']))
-				{
-					$data['sub_title'] = 'No data';
-					$data['message'] = 'The tenant record was not found';
-					//show_404();
-					$this->load->view('templates/header', $data);
-					$this->load->view('templates/404', $data);
-					$this->load->view('templates/footer');
-				}
-				else
-				{
-					$data['sub_title'] = $data['tenant']['names'];
-					$data['tenancies'] = $this->tenancy_model->get_tenancy($data['tenancy']['tenant_id']);
-					$data['bills'] = $this->bill_model->get_by_tenant_id($data['tenancy']['tenant_id']);
-					$data['payments'] = $this->payment_model->get_by_tenant_id($data['tenancy']['tenant_id']);
-						
-					$this->load->view('templates/header', $data);
-					$this->load->view('tenants/view', $data);
-					$this->load->view('templates/footer');
-				}
+			$data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
+			$data['title'] = 'Tenancy';
+			
+			if (empty($data['tenancy']))
+			{
+				$data['sub_title'] = 'No data';
+				$data['message'] = 'The tenancy record was not found';
+				//show_404();
+				$this->load->view('templates/header', $data);
+				$this->load->view('templates/404', $data);
+				$this->load->view('templates/footer');
+			}
+			else
+			{
+				$data['sub_title'] = $data['tenancy']['names'];
+				$data['payments'] = $this->payment_model->get_by_tenancy_id($tenancy_id);
+					
+				$this->load->view('templates/header', $data);
+				$this->load->view('tenancy/view', $data);
+				$this->load->view('templates/footer');
+			}
 				
         }
 
         public function view_by_tenant_id($tenant_id)
         {
-				$data['tenancy'] = $this->tenancy_model->get_by_tenant_id($tenant_id);
-				$data['title'] = 'Tenancy';
+			$data['tenancy'] = $this->tenancy_model->get_by_tenant_id($tenant_id);
+			$data['title'] = 'Tenancy';
+			
+			if (empty($data['tenancy']))
+			{
+				$data['sub_title'] = 'No data';
+				$data['message'] = 'The tenant record was not found';
+				//show_404();
+				$this->load->view('templates/header', $data);
+				$this->load->view('templates/404', $data);
+				$this->load->view('templates/footer');
+			}
+			else
+			{
+				$this->load->library('pagination');
 				
-				if (empty($data['tenant']))
-				{
-					$data['sub_title'] = 'No data';
-					$data['message'] = 'The tenant record was not found';
-					//show_404();
-					$this->load->view('templates/header', $data);
-					$this->load->view('templates/404', $data);
-					$this->load->view('templates/footer');
-				}
-				else
-				{
-					$this->load->library('pagination');
-					
-								
-					$config['base_url'] = 'http://rent-manager/tenancy/';
-					$config['total_rows'] = count($data['tenancy']);
+							
+				$config['base_url'] = 'http://rent_manager/tenancy/';
+				$config['total_rows'] = count($data['tenancy']);
+			
+				$data['pag_links'] = $this->pagination->create_links();
 				
-					$data['pag_links'] = $this->pagination->create_links();
-					
-					$data['sub_title'] = $data['tenant']['names'];
-					
-					$this->load->view('templates/header', $data);
-					$this->load->view('tenants/view', $data);
-					$this->load->view('templates/footer');
-				}
+				$data['sub_title'] = $data['tenant']['names'];
 				
+				$this->load->view('templates/header', $data);
+				$this->load->view('tenants/view', $data);
+				$this->load->view('templates/footer');
+			}
         }
 
 		public function create($tenant_id = NULL)
@@ -154,8 +151,8 @@ class Tenancy extends CI_Controller {
 			}
 			else
 			{
-				$this->tenancy_model->set_tenancy();
-				redirect('/payment/create/' . $tenant_id);
+				$tenancy_id = $this->tenancy_model->set_tenancy();
+				redirect("/payment/create/" . $tenancy_id);
 			}
 		}
 		
@@ -200,10 +197,10 @@ class Tenancy extends CI_Controller {
 					$this->tenancy_model->update_tenancy($tenancy_id);
 					
 					$data['message'] = 'Tenancy details successfully updated';
-					
-					$this->load->view('templates/header', $data);
+					redirect("tenant/view/".$data['tenancy']['tenant_id']);
+					/* $this->load->view('templates/header', $data);
 					$this->load->view('tenancy/success', $data);
-					$this->load->view('templates/footer');
+					$this->load->view('templates/footer'); */
 				}
 			}
 			else

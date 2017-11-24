@@ -17,12 +17,15 @@ class Payment extends CI_Controller {
         {
 				$this->load->library('pagination');
 				
-				$where = "1 ";
+				$where = "";
 				if($this->input->post('start') !=""||($this->input->post('period') !="" && is_numeric($this->input->post('period')))){
+					$date_array = explode('-',$this->input->post('start'));
 					
-					$start	= ($this->input->post('start') !="")?mysql_to_unix(substr($this->input->post('start'),-4,4) . substr($this->input->post('start'),3,2) . substr($this->input->post('start'),0,2) . "235959"):(($this->input->post('period') !="")?(time()-(86400*$this->input->post('period'))):(time()-2592000));
+					$start	= ($this->input->post('start') !="")?mysql_to_unix($date_array [2] . $date_array [1] . $date_array[0] . "235959"):(($this->input->post('period') !="")?(time()-(86400*$this->input->post('period'))):(time()-2592000));
 						
-					$end = ($this->input->post('end') !="")?mysql_to_unix(substr($this->input->post('end'),-4,4) . substr($this->input->post('end'),3,2) . substr($this->input->post('end'),0,2) . "235959"):time();
+					$date_array = explode('-',$this->input->post('end'));
+					
+					$end = (($this->input->post('end') !="")?mysql_to_unix( $date_array [2] . $date_array [1] . $date_array[0] . "235959"):time());
 						
 					$where = "(payment_date BETWEEN $start AND $end)";
 				}
@@ -77,6 +80,47 @@ class Payment extends CI_Controller {
 				
         }
 
+        public function pdf($payment_id = NULL)
+        {
+				$data['payment'] = $this->payment_model->get_payment($payment_id);
+				$data['title'] = 'Payment';
+				
+				if (empty($data['payment']))
+				{
+					$data['sub_title'] = 'No data';
+					$data['message'] = 'The payment record was not found';
+					
+					$this->load->view('templates/header', $data);
+					$this->load->view('templates/404', $data);
+					$this->load->view('templates/footer');
+				}
+				else
+				{
+					$this->load->library('pdf');
+					
+					$this->load->model('house_model');
+					$this->load->model('user_model');
+					$data['tenant'] = $this->tenancy_model->get_by_tenant_id($data['payment']['tenant_id']);
+					$data['house'] = $this->house_model->get_house($data['tenant'][0]['house_id']);
+					$data['staff_detail'] = $this->user_model->get_user($data['payment']['created_by']);
+				
+					$data['sub_title'] = "Payment receipt for " . $data['payment']['names'];
+					
+					//$this->pdf->load_view('templates/header', $data);
+					$this->pdf->load_view('payments/view', $data);
+					//$this->pdf->load_view('templates/footer');
+					
+					//$this->pdf->set_option('defaultFont', 'Courier');
+					$this->pdf->setPaper('A5', 'landscape');
+					$this->pdf->set_option('isHtml5ParserEnabled', true);
+
+					$this->pdf->render();
+
+					$this->pdf->stream("Receipt.pdf");
+				}
+				
+        }
+
 		public function create($tenancy_id)
 		{
 			if ($tenancy_id !== NULL)
@@ -91,9 +135,13 @@ class Payment extends CI_Controller {
 				
 				$data['step_text'] = TRUE;
 
-				$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s is missing.'));
+				$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s missing.'));
+				$this->form_validation->set_rules('rent_rate', 'Rent rate', 'required', array('required' => '%s is missing.'));
 				$this->form_validation->set_rules('amount', 'Amount paid', 'required', array('required' => '%s is missing.'));
 				$this->form_validation->set_rules('payment_date', 'Date of payment', 'required|datetime', array('required' => '%s is missing.','datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
+				$this->form_validation->set_rules('no_of_months', 'No of months', 'required|numeric', array('required' => '%s is missing.','numeric' => '%s is invalid, enter a number.'));
+				$this->form_validation->set_rules('start_date', 'Start date', 'required', array('required' => '%s is missing.'));
+				$this->form_validation->set_rules('end_date', 'End date', 'required', array('required' => '%s is missing.'));
 				if ($this->form_validation->run() === FALSE)
 				{
 					$this->load->view('templates/header', $data);
@@ -104,6 +152,7 @@ class Payment extends CI_Controller {
 				else
 				{
 					$payment_id = $this->payment_model->set_payment();
+					$this->tenancy_model->update_tenancy_end_date($tenancy_id);
 					$this->view($payment_id);
 				}
 			}
@@ -139,9 +188,13 @@ class Payment extends CI_Controller {
 				$data['tenancy'] = $this->tenancy_model->get_tenancy($data['payment']['tenancy_id']);
 				
 
-				$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s is missing.'));
+				$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s missing.'));
+				$this->form_validation->set_rules('rent_rate', 'Rent rate', 'required', array('required' => '%s is missing.'));
 				$this->form_validation->set_rules('amount', 'Amount paid', 'required', array('required' => '%s is missing.'));
 				$this->form_validation->set_rules('payment_date', 'Date of payment', 'required|datetime', array('required' => '%s is missing.','datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
+				$this->form_validation->set_rules('no_of_months', 'No of months', 'required|numeric', array('required' => '%s is missing.','numeric' => '%s is invalid, enter a number.'));
+				$this->form_validation->set_rules('start_date', 'Start date', 'required', array('required' => '%s is missing.'));
+				$this->form_validation->set_rules('end_date', 'End date', 'required', array('required' => '%s is missing.'));
 				
 				if ($this->form_validation->run() === FALSE)
 				{
@@ -153,6 +206,17 @@ class Payment extends CI_Controller {
 				else
 				{
 					$this->payment_model->update_payment($payment_id);
+					//retrieve the list of payments for this tenancy, so as to find out the last payment made
+					//This is so that we update the tenancy enddate only when dealing with the last payment
+					$tenancy_payments = $this->payment_model->get_by_tenancy_id($data['payment']['tenancy_id']);
+					if(!empty($tenancy_payments)){
+						$total = count($tenancy_payments);
+						if($tenancy_payments[$total-1]['payment_id'] == $payment_id){
+							//this is the last payment, so it is safe to update the tenancy
+							$this->tenancy_model->update_tenancy_end_date($data['payment']['tenancy_id']);
+						}
+					}
+					
 					
 					$data['message'] = 'Payment details successfully updated';
 					
@@ -163,7 +227,7 @@ class Payment extends CI_Controller {
 			}
 			else
 			{
-				$this->index();
+				$this->view($payment_id);
 			}
 		}
 		

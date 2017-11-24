@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 16, 2017 at 11:49 AM
+-- Generation Time: Nov 24, 2017 at 11:51 AM
 -- Server version: 5.7.9
 -- PHP Version: 5.6.16
 
@@ -235,27 +235,28 @@ CREATE TABLE IF NOT EXISTS `house` (
   `floor` tinyint(2) NOT NULL,
   `estate_id` tinyint(3) UNSIGNED NOT NULL,
   `description` varchar(100) DEFAULT NULL,
-  `fixed_amount` int(11) UNSIGNED NOT NULL,
+  `fixed_amount` decimal(10,0) UNSIGNED NOT NULL,
   PRIMARY KEY (`house_id`),
   KEY `estate_id` (`estate_id`),
   KEY `house_no` (`house_no`),
   KEY `floor` (`floor`),
   KEY `estate_id_2` (`estate_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `house`
 --
 
 INSERT INTO `house` (`house_id`, `house_no`, `floor`, `estate_id`, `description`, `fixed_amount`) VALUES
-(1, 'WP1', 0, 1, 'room next to the wash rooms', 2000000),
-(2, 'WP2', 0, 1, 'Found on ground floor', 1500000),
-(3, 'WP3', 0, 1, '', 1500000),
-(4, 'WP4', 0, 1, '', 800000),
-(5, 'WP5', 0, 1, '', 500000),
-(6, 'WP6', 0, 1, '', 300000),
-(7, 'WP7', 0, 1, '', 500000),
-(8, 'WP8', 0, 1, '', 400000);
+(1, 'WP1', 0, 1, 'room next to the wash rooms', '2000000'),
+(2, 'WP2', 0, 1, 'Found on ground floor', '1500000'),
+(3, 'WP3', 0, 1, '', '1500000'),
+(4, 'WP4', 0, 1, '', '800000'),
+(5, 'WP5', 0, 1, '', '500000'),
+(6, 'WP6', 0, 1, '', '300000'),
+(7, 'WP7', 0, 1, '', '500000'),
+(8, 'WP8', 0, 1, '', '400000'),
+(9, 'M4i3', 1, 2, 'Room next to the wash rooms', '250000');
 
 --
 -- Triggers `house`
@@ -277,26 +278,34 @@ DELIMITER ;
 DROP TABLE IF EXISTS `payment`;
 CREATE TABLE IF NOT EXISTS `payment` (
   `payment_id` int(11) NOT NULL AUTO_INCREMENT,
-  `tenant_id` int(11) NOT NULL,
+  `tenancy_id` int(11) NOT NULL COMMENT 'Reference to the tenancy of the client',
   `payment_date` int(10) UNSIGNED NOT NULL COMMENT 'Unix timestamp when payment was received',
-  `account_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Bank account through which payment was made',
-  `particulars` varchar(100) NOT NULL COMMENT 'Details of payment',
-  `amount` int(10) UNSIGNED NOT NULL,
-  `entered_by` int(10) UNSIGNED NOT NULL COMMENT 'Staff entering payment',
+  `account_id` int(11) UNSIGNED DEFAULT NULL COMMENT 'ID of the  Bank account through which payment was made',
+  `particulars` varchar(200) NOT NULL COMMENT 'Details of payment',
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `rent_rate` decimal(12,2) NOT NULL,
+  `amount` decimal(12,2) UNSIGNED NOT NULL,
+  `created_by` int(10) UNSIGNED NOT NULL COMMENT 'Staff entering payment',
+  `date_created` int(11) NOT NULL COMMENT 'Date this entry was entered into the database',
+  `modified_by` int(11) NOT NULL,
+  `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`payment_id`),
-  KEY `tenant_id` (`tenant_id`),
-  KEY `account_id` (`account_id`,`entered_by`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  KEY `fk_modified_by` (`modified_by`),
+  KEY `tenancy_id` (`tenancy_id`) USING BTREE,
+  KEY `fk_created_by` (`created_by`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `payment`
 --
 
-INSERT INTO `payment` (`payment_id`, `tenant_id`, `payment_date`, `account_id`, `particulars`, `amount`, `entered_by`) VALUES
-(2, 4, 1457999999, NULL, 'Accommodation for April - June', 1500000, 1),
-(3, 5, 1458863999, NULL, 'Rent payment for March to June 2016', 650000, 1),
-(4, 1, 1458863999, 2, 'Rent for March to April 2015', 1200000, 1),
-(5, 5, 1459123199, 1, 'Rent for June to July 2015', 1000000, 1);
+INSERT INTO `payment` (`payment_id`, `tenancy_id`, `payment_date`, `account_id`, `particulars`, `start_date`, `end_date`, `rent_rate`, `amount`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(2, 4, 1457999999, NULL, 'Accommodation for April - June', '2016-03-02', '2016-04-02', '650000.00', '650000.00', 1, 0, 2, '2017-11-23 22:59:36'),
+(3, 5, 1458863999, NULL, 'Rent payment for March to June 2016', '0000-00-00', '0000-00-00', '0.00', '650000.00', 1, 0, 0, '2017-11-22 06:01:30'),
+(4, 1, 1458863999, 2, 'Rent for March to April 2015', '0000-00-00', '0000-00-00', '0.00', '1200000.00', 1, 0, 0, '2017-11-22 06:01:30'),
+(6, 3, 1513814399, 2, 'Rent payment for June 2018 to January 2018', '0000-00-00', '0000-00-00', '0.00', '300000.00', 1, 0, 0, '2017-11-22 06:01:30'),
+(7, 4, 1511481599, NULL, 'The client has paid up all the accumulated balances as well as the forward balances', '2016-03-02', '2017-11-02', '650000.00', '13000000.00', 2, 1511472379, 2, '2017-11-23 21:26:19');
 
 -- --------------------------------------------------------
 
@@ -334,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   `house_id` int(5) NOT NULL,
   `start_date` int(12) UNSIGNED NOT NULL,
   `end_date` int(12) UNSIGNED DEFAULT NULL,
-  `rent_rate` int(10) UNSIGNED NOT NULL,
+  `rent_rate` decimal(12,2) UNSIGNED NOT NULL,
   `assigned_by` tinyint(2) DEFAULT NULL,
   PRIMARY KEY (`tenancy_id`),
   KEY `tenant_id` (`tenant_id`,`house_id`),
@@ -342,18 +351,20 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   KEY `tenant_id_2` (`tenant_id`),
   KEY `end_date` (`end_date`),
   KEY `start_date` (`start_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenancy`
 --
 
 INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `start_date`, `end_date`, `rent_rate`, `assigned_by`) VALUES
-(1, 3, 4, 1457799999, 0, 800000, 1),
-(2, 1, 3, 1457599999, 0, 1500000, 1),
-(3, 4, 1, 1457740799, 0, 1500000, 2),
-(4, 5, 4, 1456876799, 1467417599, 650000, 1),
-(5, 6, 4, 1472947199, 1480550399, 800000, 1);
+(1, 3, 4, 1457799999, 0, '800000.00', 1),
+(2, 1, 3, 1457599999, 0, '1500000.00', 1),
+(3, 4, 1, 1457740799, 0, '1500000.00', 2),
+(4, 5, 4, 1456876799, 1467417599, '650000.00', 1),
+(5, 6, 4, 1472947199, 1480550399, '800000.00', 1),
+(6, 3, 8, 1510790399, 1517011199, '400000.00', 1),
+(7, 7, 9, 1510790399, 0, '350000.00', 1);
 
 -- --------------------------------------------------------
 
@@ -365,26 +376,34 @@ DROP TABLE IF EXISTS `tenant`;
 CREATE TABLE IF NOT EXISTS `tenant` (
   `tenant_id` int(11) NOT NULL AUTO_INCREMENT,
   `names` varchar(50) NOT NULL,
+  `photo_url` varchar(100) DEFAULT NULL COMMENT 'location of tenant photo',
   `phone1` varchar(10) NOT NULL,
   `phone2` varchar(10) NOT NULL,
   `home_address` varchar(100) NOT NULL,
   `status` tinyint(1) DEFAULT '1' COMMENT 'Status of the tenant, active=1 or inactive = 0',
   `district_id` int(11) NOT NULL COMMENT 'Home district id',
+  `created_by` int(11) NOT NULL COMMENT 'Reference to staff who entered this record',
+  `date_created` int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL COMMENT 'Staff who modified this record',
+  `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tenant_id`),
-  KEY `district_id` (`district_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+  KEY `district_id` (`district_id`),
+  KEY `fk_staff_id` (`created_by`),
+  KEY `fk_modified_by` (`modified_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenant`
 --
 
-INSERT INTO `tenant` (`tenant_id`, `names`, `phone1`, `phone2`, `home_address`, `status`, `district_id`) VALUES
-(1, 'Mukiibi Arthur', '0793287383', '0776812341', 'Brooks corner,\r\nRakai town', 1, 102),
-(2, 'James Batte', '0782299893', '', 'Kiswa, Bugolobi', 1, 18),
-(3, 'Gitau Anthony', '0713459802', '0773716980', 'Bungoma, Kenya', 1, 1),
-(4, 'NWSC', '0414562318', '', 'Jinja Road', 1, 44),
-(5, 'Bank of Baroda', '0414879302', '', 'Jinja Road, Kampala', 1, 44),
-(6, 'joshua odongo', '0777879301', '', 'kawempe', 1, 5);
+INSERT INTO `tenant` (`tenant_id`, `names`, `photo_url`, `phone1`, `phone2`, `home_address`, `status`, `district_id`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(1, 'Mukiibi Arthur', NULL, '0793287383', '0776812341', 'Brooks corner,\r\nRakai town', 1, 102, 0, 0, 0, '2017-11-23 22:04:56'),
+(2, 'James Batte', NULL, '0782299893', '', 'Kiswa, Bugolobi', 1, 18, 0, 0, 0, '2017-11-23 22:04:56'),
+(3, 'Gitau Anthony', NULL, '0713459802', '0773716980', 'Bungoma, Kenya', 1, 1, 0, 0, 0, '2017-11-23 22:04:56'),
+(4, 'NWSC', NULL, '0414562318', '', 'Jinja Road', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
+(5, 'Bank of Baroda', NULL, '0414879302', '', 'Jinja Road, Kampala', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
+(6, 'Joshua Odongo', NULL, '0777879301', '', 'Kawempe', 1, 5, 0, 0, 2, '2017-11-24 11:14:47'),
+(7, 'Odeke Allan', NULL, '0778393803', '', 'Mukono Municipality', 1, 81, 0, 0, 0, '2017-11-23 22:04:56');
 
 -- --------------------------------------------------------
 
@@ -412,26 +431,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`userId`, `fname`, `lname`, `email`, `phone`, `username`, `password`, `role_code`, `reg_date`) VALUES
 (1, 'Allan', 'Odeke', NULL, '', 'ajoluvya', '4d22cd83d39ff90b5417572cc4fd417d', 2, 1456429250),
-(2, 'Admin', 'Atiku', NULL, '', 'admin', 'ee6822f3b321dca117caa11eb68b2495', 4, 1457155910);
-
-DELIMITER $$
---
--- Events
---
-DROP EVENT `bill_generator`$$
-CREATE DEFINER=`root`@`localhost` EVENT `bill_generator` ON SCHEDULE EVERY 1 DAY STARTS '2016-05-01 00:00:00' ON COMPLETION PRESERVE ENABLE COMMENT 'Copy tenant details into bill table' DO INSERT INTO `bill`(`tenancy_id`, `tenant_id`, `house_no`, `bill_date`, `amount`)
-SELECT `tenancy_id`, `tenant_id`, `house_no`, CURDATE(), `rent_rate`
-FROM `tenancy`
-JOIN `house` ON `tenancy`.`house_id` = `house`.`house_id`
-WHERE `end_date` <> NULL
-AND (FROM_UNIXTIME(`start_date`, '%e') = DAY(CURDATE())
-     OR (FROM_UNIXTIME(`start_date`, '%e') = 29
-         AND FROM_UNIXTIME(`start_date`, '%m') = 2
-         AND DAY(CURDATE())=28
-        )
-    )$$
-
-DELIMITER ;
+(2, 'Admin', 'Atiku', NULL, '', 'admin', '4d22cd83d39ff90b5417572cc4fd417d', 4, 1457155910);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

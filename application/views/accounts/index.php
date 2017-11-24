@@ -6,11 +6,6 @@
         <div class="box-header with-border">
             <h3 class="box-title"><?php echo $sub_title; ?></h3>
         </div>
-			<!-- Search form -->
-			<form action="<?php echo current_url();?>" method="post">
-				<div class="col-md-4"><input type="text" name="search" id="search" class="form-control" title="Search by bank or account name" placeholder="Search by house or estate"/></div>
-				<div class="col-md-1"><input type="submit" value="Search" class="btn"/></div>
-			</form>
 		<table class="table table-striped table-condensed table-hover dataTables">
             <thead>
                 <tr>
@@ -19,7 +14,7 @@
                     <th>Bank</th>
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
-                    <th colspan="2">Action</th>
+                    <th>Action</th>
 					<?php } ?>
                 </tr>
             </thead>
@@ -35,7 +30,7 @@
 					<!-- If the estates owner/admin is logged in -->
 					<?php if($_SESSION['role']==4||$_SESSION['role']==3){?>
 					<td>
-					<a href="<?php echo site_url("account/del_acc/{$account['acc_id']}"); ?>" onclick="return confirm_delete('<?php echo "the account ".$account['acc_name'] . ", " . $account['acc_no']; ?>');" title="Delete"><span class="fa fa-trash"></span></a>
+					<a href="<?php echo site_url("account/del_acc/{$account['acc_id']}"); ?>" onclick="return confirm_delete('<?php echo "the account ".$account['acc_name'] . ", " . $account['acc_no']; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
 					</td>
 					<td>
 					<a href="<?php echo site_url("account/update/{$account['acc_id']}"); ?>" title='Update'><span class="fa fa-edit"></span></a>

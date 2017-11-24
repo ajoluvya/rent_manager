@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
         <head>
 				<meta charset="utf-8">
@@ -47,6 +48,9 @@
 					textarea {
 					  resize: vertical; /* user can resize vertically, but width is fixed */
 					}
+					body {
+						background-color: #f6f6f6;
+					}
 				</style>
         </head>
 		
@@ -64,7 +68,7 @@
         </a>
 
         <!-- Header Navbar -->
-        <nav class="navbar navbar-static-top" role="navigation">
+        <nav class="navbar navbar-static-top">
           <!-- Sidebar toggle button-->
           <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
@@ -157,7 +161,7 @@
 			<!-- ?php if($_SESSION['role']==2){?-->
 			<li>
               <a href="#">
-                <i class="fa fa-list"></i> <span>Dashboard</span>
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
               </a>
             </li>
 			<li>
