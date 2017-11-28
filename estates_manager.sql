@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2017 at 11:51 AM
+-- Generation Time: Nov 28, 2017 at 06:15 AM
 -- Server version: 5.7.9
 -- PHP Version: 5.6.16
 
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `payment` (
   KEY `fk_modified_by` (`modified_by`),
   KEY `tenancy_id` (`tenancy_id`) USING BTREE,
   KEY `fk_created_by` (`created_by`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `payment`
@@ -305,7 +305,8 @@ INSERT INTO `payment` (`payment_id`, `tenancy_id`, `payment_date`, `account_id`,
 (3, 5, 1458863999, NULL, 'Rent payment for March to June 2016', '0000-00-00', '0000-00-00', '0.00', '650000.00', 1, 0, 0, '2017-11-22 06:01:30'),
 (4, 1, 1458863999, 2, 'Rent for March to April 2015', '0000-00-00', '0000-00-00', '0.00', '1200000.00', 1, 0, 0, '2017-11-22 06:01:30'),
 (6, 3, 1513814399, 2, 'Rent payment for June 2018 to January 2018', '0000-00-00', '0000-00-00', '0.00', '300000.00', 1, 0, 0, '2017-11-22 06:01:30'),
-(7, 4, 1511481599, NULL, 'The client has paid up all the accumulated balances as well as the forward balances', '2016-03-02', '2017-11-02', '650000.00', '13000000.00', 2, 1511472379, 2, '2017-11-23 21:26:19');
+(7, 4, 1511481599, NULL, 'The client has paid up all the accumulated balances as well as the forward balances', '2016-03-02', '2017-11-02', '650000.00', '13000000.00', 2, 1511472379, 2, '2017-11-23 21:26:19'),
+(8, 7, 1511567999, NULL, 'Thanks, well received', '2017-11-16', '2018-02-16', '350000.00', '1050000.00', 2, 1511524817, 2, '2017-11-24 12:00:17');
 
 -- --------------------------------------------------------
 
@@ -351,7 +352,7 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   KEY `tenant_id_2` (`tenant_id`),
   KEY `end_date` (`end_date`),
   KEY `start_date` (`start_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenancy`
@@ -364,7 +365,9 @@ INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `start_date`, `end
 (4, 5, 4, 1456876799, 1467417599, '650000.00', 1),
 (5, 6, 4, 1472947199, 1480550399, '800000.00', 1),
 (6, 3, 8, 1510790399, 1517011199, '400000.00', 1),
-(7, 7, 9, 1510790399, 0, '350000.00', 1);
+(7, 7, 9, 1510790399, 1510790399, '250000.00', 2),
+(8, 2, 1, 1511740799, 1511740799, '2000000.00', 2),
+(9, 5, 2, 1512086399, 1512086399, '1500000.00', 2);
 
 -- --------------------------------------------------------
 

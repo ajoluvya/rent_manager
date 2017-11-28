@@ -14,6 +14,9 @@
 					
 				<!-- Datepicker CSS -->
 				<link rel="stylesheet" href="<?php echo base_url("assets/css/datepicker.css"); ?>" />
+					
+				<!-- Daterangepicker CSS -->
+				<link rel="stylesheet" href="<?php echo base_url("assets/css/daterangepicker.css"); ?>" />
 								
 				<!-- Data table CSS -->
 				<link rel="stylesheet" href="<?php echo base_url("assets/css/dataTables.bootstrap.css"); ?>" />
@@ -43,7 +46,7 @@
 				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 				<![endif]-->
-				<script type="text/javascript" src="<?php echo base_url("assets/js/JQuery-3.2.1.min.js"); ?>"></script>
+				<script type="text/javascript" src="<?php echo base_url("assets/js/jquery-3.2.1.min.js"); ?>"></script>
 				<style>
 					textarea {
 					  resize: vertical; /* user can resize vertically, but width is fixed */
