@@ -49,7 +49,7 @@ class Tenancy extends CI_Controller {
 
         $data['title'] = 'Tenancies';
         $data['sub_title'] = 'List of tenants';
-        $config['base_url'] = 'http://rent_manager/tenancy/';
+        $config['base_url'] = 'tenancy/';
         $config['total_rows'] = count($data['tenancies']);
 
         $data['pag_links'] = $this->pagination->create_links();
@@ -96,7 +96,7 @@ class Tenancy extends CI_Controller {
             $this->load->library('pagination');
 
 
-            $config['base_url'] = 'http://rent_manager/tenancy/';
+            $config['base_url'] = 'tenancy/';
             $config['total_rows'] = count($data['tenancy']);
 
             $data['pag_links'] = $this->pagination->create_links();
@@ -197,7 +197,7 @@ class Tenancy extends CI_Controller {
 
             $data['message'] = 'Tenancy details deleted';
             $this->load->view('templates/header', $data);
-            $this->load->view('accounts/success', $data);
+            $this->load->view('tenancy/success', $data);
             $this->load->view('templates/footer');
         } else {
             $this->index();

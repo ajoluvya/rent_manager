@@ -32,7 +32,7 @@ class Payment extends CI_Controller {
         $data['payments'] = $this->payment_model->get_payment($where);
 
 
-        $config['base_url'] = 'http://rent_manager/account/';
+        $config['base_url'] = 'account/';
         $config['total_rows'] = count($data['payments']);
 
         $data['pag_links'] = $this->pagination->create_links();
@@ -201,11 +201,15 @@ class Payment extends CI_Controller {
         if (isset($_SESSION['role']) && $_SESSION['role'] < 3) {
             $this->index();
         }
+            $data['title'] = 'Payments';
+            $data['sub_title'] = 'Payment record deleted';
         if ($payment_id != NULL) {
             $this->payment_model->del_payment($payment_id);
 
             $data['message'] = 'Payment record deleted';
+            $this->load->view('templates/header', $data);
             $this->load->view('payments/success', $data);
+            $this->load->view('templates/footer');
         } else {
             $data['title'] = 'Payment';
             $data['sub_title'] = 'Payment deleted';
@@ -215,5 +219,4 @@ class Payment extends CI_Controller {
             $this->load->view('templates/footer');
         }
     }
-
 }

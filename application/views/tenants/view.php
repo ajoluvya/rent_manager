@@ -27,7 +27,7 @@
                         </div><!--box-header -->
                         <div class="box-body">
                             <div class="col-md-6">
-                                <table class="table table-condensed table-hover">
+                                <table class="table table-condensed">
                                     <tr><th>ID</th><td><?php echo $tenant['id_card_no']; ?></td></tr>
                                     <tr><th>Names</th><td><?php echo $tenant['names']; ?></td></tr>
                                     <tr><th>Phone1</th><td><?php echo $tenant['phone1']; ?></td></tr>
@@ -68,8 +68,10 @@
                                         <tr>
                                             <th>Estate</th>
                                             <th>House/Room No</th>
-                                            <th>Start Date</th>
                                             <th>Rate</th>
+                                            <th>Start Date</th>
+                                            <th>Last payment</th>
+                                            <th>Status</th>
                                             <!-- If the estates owner/admin is logged in -->
                                             <th colspan="<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>3<?php } ?>">Action</th>
                                         </tr>
@@ -77,18 +79,52 @@
                                             <tr>
                                                 <td><a href="<?php echo site_url("estate/view/" . $house['estate_id']); ?>" title="View estate details"><?php echo $house['estate_name']; ?></a></td>
                                                 <td><a href="<?php echo site_url("house/view/" . $house['house_id']); ?>" title="View house details"><?php echo $house['house_no']; ?></a></td>
-                                                <td><?php echo mdate('%d, %M %Y', $house['start_date']); ?></td>
                                                 <td><?php echo number_format($house['rent_rate']); ?></td>
+                                                <td><?php echo mdate('%d, %M %Y', $house['start_date']); ?></td>
+                                                <td>
+                                                    <?php
+                                                    echo isset($tenant['end_date']) ? (mdate('%j %M, %Y', $tenant['end_date'])) : "";
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    if (isset($tenant['tenancy_id'])) {
+                                                        $button_class = "warning";
+                                                        $title_text = "No arrears";
+                                                        $date_diff = (int) $tenant['date_diff'];
+                                                        $label_text = $date_diff . " " . ($date_diff == 1 ? (substr($tenant['period_desc'], 0, -1)) : $tenant['period_desc']);
+
+                                                        if ($date_diff > 0) {
+                                                            $button_class = "info";
+                                                        }
+                                                        if ($date_diff < 0) {
+                                                            $button_class = "danger";
+                                                            $title_text = abs($date_diff) . " " . $tenant['period_desc'] . " arrears totalling Ugx: " . number_format(abs($date_diff * $tenant['rent_rate']));
+                                                        }
+                                                        //if the tenant is no longer renting, then show that as well
+                                                        if ($tenant['status'] == 0) {
+                                                            $label_text = "Ended";
+                                                            $button_class = "success";
+                                                        }
+                                                        ?>
+                                                        <span class="btn btn-sm btn-<?php echo $button_class; ?>" title="<?php echo $title_text; ?>"><?php echo $label_text; ?></span>
+                                                    <?php }
+                                                    ?>
+                                                </td>
                                                 <td>
                                                     <a href="<?php echo site_url("payment/create/" . $house['tenancy_id']); ?>" title="Enter payment for room <?php echo $house['house_no'] . " (" . $house['estate_name']; ?>)"> <span class="fa fa-money"></span></a>
                                                 </td>
                                                 <!-- If the estates owner/admin is logged in -->
                                                 <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
                                                     <td>
+                                                        <?php if($tenant['start_date'] === $tenant['end_date']):?>
                                                         <a href="<?php echo site_url("tenancy/update/{$house['tenancy_id']}"); ?>" title="Make changes to this tenancy arrangement" ><span class="fa fa-edit"></span></a>
-                                                    </td>
+                                                         <?php endif; ?>
+                                                   </td>
                                                     <td>
-                                                        <a href="<?php echo site_url("tenancy/del_tenancy/{$house['tenancy_id']}"); ?>" onclick="return confirm_delete('<?php echo "the house for  " . $tenant['names']; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
+                                                        <?php if($tenant['start_date'] === $tenant['end_date']):?>
+                                                        <a href="<?php echo site_url("tenancy/del_tenancy/{$house['tenancy_id']}"); ?>" onclick="return confirm_delete('<?php echo "the house ".$house['house_no']." for  " . $tenant['names']; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
+                                                        <?php endif; ?>
                                                     </td>
                                                 <?php } ?>
                                             </tr>

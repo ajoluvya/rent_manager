@@ -185,7 +185,7 @@ class User extends CI_Controller {
             $data['user'] = $this->user_model->get_user($user_id);
             $data['btn_text'] = 'Change';
 
-            $this->form_validation->set_rules('cur_pwd', 'Current Password', array('required', 'min_length[5]', 'max_length[30]', 'valid_pass[' . $_SESSION['user_id'] . ']'));
+            $this->form_validation->set_rules('cur_pwd', 'Current Password', array('required', 'min_length[5]', 'max_length[30]', 'valid_user[' . $_SESSION['user_id'] . ']'));
             $this->form_validation->set_rules('pwd', 'Password', array('required', 'min_length[5]', 'max_length[30]'));
             $this->form_validation->set_rules('retype_pwd', 'Confirm password', array('required', 'matches[pwd]'));
 
