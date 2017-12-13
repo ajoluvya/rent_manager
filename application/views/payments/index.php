@@ -40,11 +40,11 @@
                                 <td>
                                     <a href="<?php echo site_url("payment/view/{$payment['payment_id']}"); ?>" title="Details"><?php echo $payment['payment_id']; ?></a>
                                 </td>
-                                <td><?php echo mdate("%d, %M %Y", $payment['payment_date']); ?></td>
+                                <td><?php echo mdate("%j%S %M, %Y", $payment['payment_date']); ?></td>
                                 <td><a href="<?php echo site_url("tenant/view/{$payment['tenant_id']}"); ?>" title="Tenant details"><?php echo $payment['names']; ?></a></td>
                                 <td><a href="<?php echo site_url("house/view/{$payment['house_id']}"); ?>" title="House details"><?php echo $payment['house_no']; ?></a></td>
-                                <td><?php echo mdate('%j %M, %Y', strtotime($payment['start_date'])); ?></td>
-                                <td><?php echo mdate('%j %M, %Y', strtotime($payment['end_date'])); ?></td>
+                                <td><?php echo mdate('%j%S %M, %Y', strtotime($payment['start_date'])); ?></td>
+                                <td><?php echo mdate('%j%S %M, %Y', strtotime($payment['end_date'])); ?></td>
                                 <td><?php
                                     echo number_format($payment['amount']);
                                     $total_cash += $payment['amount'];

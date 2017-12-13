@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2017 at 06:15 AM
+-- Generation Time: Dec 13, 2017 at 09:04 AM
 -- Server version: 5.7.9
 -- PHP Version: 5.6.16
 
@@ -19,6 +19,25 @@ SET time_zone = "+00:00";
 --
 -- Database: `estates_manager`
 --
+
+DELIMITER $$
+--
+-- Functions
+--
+DROP FUNCTION IF EXISTS `getDateDiff`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `getDateDiff` (`timeInterval` INT, `startDate` DATETIME, `endDate` DATETIME) RETURNS INT(11) NO SQL
+BEGIN
+	DECLARE date_diff INT(11);
+	CASE timeInterval
+			WHEN 1 THEN SET date_diff=TIMESTAMPDIFF(HOUR, startDate, endDate);
+			WHEN 2 THEN SET date_diff=TIMESTAMPDIFF(DAY, startDate, endDate);
+			WHEN 3 THEN SET date_diff = TIMESTAMPDIFF(WEEK, startDate, endDate);
+			WHEN 4 THEN SET date_diff = TIMESTAMPDIFF(MONTH, startDate, endDate);
+	END CASE;
+   RETURN date_diff;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -211,16 +230,27 @@ CREATE TABLE IF NOT EXISTS `estate` (
   `phone` varchar(10) NOT NULL,
   `phone2` varchar(10) DEFAULT NULL,
   `district_id` int(11) NOT NULL,
-  PRIMARY KEY (`estate_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `time_interval_id` tinyint(2) NOT NULL,
+  `billing_freq` tinyint(2) NOT NULL COMMENT 'How often the billing occurs (dependant on the time period)',
+  `period_starts` tinyint(1) DEFAULT NULL COMMENT 'Whether the billing time should be at the start of the period or on admission date',
+  `full_payment` tinyint(1) DEFAULT NULL,
+  `created_by` int(11) NOT NULL,
+  `date_created` int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`estate_id`),
+  KEY `modified_by` (`modified_by`),
+  KEY `created_by` (`created_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `estate`
 --
 
-INSERT INTO `estate` (`estate_id`, `estate_name`, `description`, `address`, `phone`, `phone2`, `district_id`) VALUES
-(1, 'Wabyona plaza', 'Bweyogerere Estate', 'Plot 1601 Block 234,\r\nP O Box, 71187, Bweyogerere', '0782369372', '', 44),
-(2, 'Kigandanzi Plaza', 'Bweyogerere, Wakiso', 'Bweyogerere, Wakiso', '0782369372', '0752369372', 111);
+INSERT INTO `estate` (`estate_id`, `estate_name`, `description`, `address`, `phone`, `phone2`, `district_id`, `time_interval_id`, `billing_freq`, `period_starts`, `full_payment`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(1, 'Wabyona plaza', 'Bweyogerere Estate', 'Plot 1601 Block 234,\r\nP O Box, 71187, Bweyogerere', '0782369372', '', 44, 0, 0, NULL, NULL, 0, 0, 0, '2017-11-29 17:48:43'),
+(2, 'Kigandanzi Plaza', 'Bweyogerere, Wakiso', 'Bweyogerere, Wakiso', '0782369372', '0752369372', 111, 0, 0, NULL, NULL, 0, 0, 0, '2017-11-29 17:48:43'),
+(3, 'Musa Kasule Estates', 'Self Contained apartments and luxurious suites', 'Biina, Mutungo Kampala', '0772566734', '', 44, 4, 2, 1, 1, 2, 1513074947, 2, '2017-12-12 10:39:39');
 
 -- --------------------------------------------------------
 
@@ -236,27 +266,38 @@ CREATE TABLE IF NOT EXISTS `house` (
   `estate_id` tinyint(3) UNSIGNED NOT NULL,
   `description` varchar(100) DEFAULT NULL,
   `fixed_amount` decimal(10,0) UNSIGNED NOT NULL,
+  `time_interval_id` int(2) NOT NULL,
+  `time_interval_freq` tinyint(2) NOT NULL COMMENT 'How often the above should be billed',
+  `month_start_date` tinyint(2) NOT NULL COMMENT 'Which day the month should start for this house',
+  `full_payment` tinyint(1) DEFAULT NULL COMMENT 'Whether full amount should be paid each and everytime',
+  `created_by` int(11) NOT NULL,
+  `date_created` int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  `date_modified` int(11) NOT NULL,
   PRIMARY KEY (`house_id`),
   KEY `estate_id` (`estate_id`),
   KEY `house_no` (`house_no`),
   KEY `floor` (`floor`),
-  KEY `estate_id_2` (`estate_id`)
+  KEY `estate_id_2` (`estate_id`),
+  KEY `created_by` (`created_by`),
+  KEY `modified_by` (`modified_by`),
+  KEY `time_interval_id` (`time_interval_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `house`
 --
 
-INSERT INTO `house` (`house_id`, `house_no`, `floor`, `estate_id`, `description`, `fixed_amount`) VALUES
-(1, 'WP1', 0, 1, 'room next to the wash rooms', '2000000'),
-(2, 'WP2', 0, 1, 'Found on ground floor', '1500000'),
-(3, 'WP3', 0, 1, '', '1500000'),
-(4, 'WP4', 0, 1, '', '800000'),
-(5, 'WP5', 0, 1, '', '500000'),
-(6, 'WP6', 0, 1, '', '300000'),
-(7, 'WP7', 0, 1, '', '500000'),
-(8, 'WP8', 0, 1, '', '400000'),
-(9, 'M4i3', 1, 2, 'Room next to the wash rooms', '250000');
+INSERT INTO `house` (`house_id`, `house_no`, `floor`, `estate_id`, `description`, `fixed_amount`, `time_interval_id`, `time_interval_freq`, `month_start_date`, `full_payment`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(1, 'WP1', 0, 1, 'room next to the wash rooms', '2000000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(2, 'WP2', 0, 1, 'Found on ground floor', '1500000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(3, 'WP3', 0, 1, '', '1500000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(4, 'WP4', 0, 1, '', '800000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(5, 'WP5', 0, 1, '', '500000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(6, 'WP6', 0, 1, '', '300000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(7, 'WP7', 0, 1, '', '500000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(8, 'WP8', 0, 1, '', '400000', 0, 0, 0, NULL, 0, 0, 0, 0),
+(9, 'M4i3', 1, 2, 'Room next to the wash rooms', '250000', 0, 0, 0, NULL, 0, 0, 0, 0);
 
 --
 -- Triggers `house`
@@ -294,7 +335,7 @@ CREATE TABLE IF NOT EXISTS `payment` (
   KEY `fk_modified_by` (`modified_by`),
   KEY `tenancy_id` (`tenancy_id`) USING BTREE,
   KEY `fk_created_by` (`created_by`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `payment`
@@ -302,11 +343,13 @@ CREATE TABLE IF NOT EXISTS `payment` (
 
 INSERT INTO `payment` (`payment_id`, `tenancy_id`, `payment_date`, `account_id`, `particulars`, `start_date`, `end_date`, `rent_rate`, `amount`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
 (2, 4, 1457999999, NULL, 'Accommodation for April - June', '2016-03-02', '2016-04-02', '650000.00', '650000.00', 1, 0, 2, '2017-11-23 22:59:36'),
-(3, 5, 1458863999, NULL, 'Rent payment for March to June 2016', '0000-00-00', '0000-00-00', '0.00', '650000.00', 1, 0, 0, '2017-11-22 06:01:30'),
 (4, 1, 1458863999, 2, 'Rent for March to April 2015', '0000-00-00', '0000-00-00', '0.00', '1200000.00', 1, 0, 0, '2017-11-22 06:01:30'),
 (6, 3, 1513814399, 2, 'Rent payment for June 2018 to January 2018', '0000-00-00', '0000-00-00', '0.00', '300000.00', 1, 0, 0, '2017-11-22 06:01:30'),
 (7, 4, 1511481599, NULL, 'The client has paid up all the accumulated balances as well as the forward balances', '2016-03-02', '2017-11-02', '650000.00', '13000000.00', 2, 1511472379, 2, '2017-11-23 21:26:19'),
-(8, 7, 1511567999, NULL, 'Thanks, well received', '2017-11-16', '2018-02-16', '350000.00', '1050000.00', 2, 1511524817, 2, '2017-11-24 12:00:17');
+(8, 7, 1511567999, NULL, 'Thanks, well received', '2017-11-16', '2018-02-16', '350000.00', '1050000.00', 2, 1511524817, 2, '2017-11-24 12:00:17'),
+(9, 9, 1512777599, NULL, 'He has paid for this month', '2017-12-01', '2018-01-01', '1500000.00', '1500000.00', 2, 1512718422, 2, '2017-12-08 07:33:42'),
+(10, 4, 1512777599, NULL, 'htrtdfg', '2016-07-02', '2016-11-02', '650000.00', '2600000.00', 6, 1512746825, 6, '2017-12-08 15:27:05'),
+(11, 4, 1512777599, NULL, 'Fully cleared all the balances', '2016-11-02', '2017-12-02', '650000.00', '8450000.00', 6, 1512747250, 6, '2017-12-08 15:34:10');
 
 -- --------------------------------------------------------
 
@@ -334,6 +377,30 @@ INSERT INTO `role` (`role_code`, `role_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_time_interval`
+--
+
+DROP TABLE IF EXISTS `tbl_time_interval`;
+CREATE TABLE IF NOT EXISTS `tbl_time_interval` (
+  `id` tinyint(2) NOT NULL AUTO_INCREMENT,
+  `label` varchar(1) NOT NULL,
+  `description` varchar(6) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COMMENT='The values in this table must rhyme with what is expected in the PHP date format';
+
+--
+-- Dumping data for table `tbl_time_interval`
+--
+
+INSERT INTO `tbl_time_interval` (`id`, `label`, `description`) VALUES
+(1, 'h', 'Hours'),
+(2, 'd', 'Days'),
+(3, 'W', 'Weeks'),
+(4, 'm', 'Months');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tenancy`
 --
 
@@ -342,32 +409,39 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   `tenancy_id` int(11) NOT NULL AUTO_INCREMENT,
   `tenant_id` int(11) NOT NULL,
   `house_id` int(5) NOT NULL,
+  `rent_rate` decimal(12,2) UNSIGNED NOT NULL,
+  `time_interval_id` tinyint(2) NOT NULL DEFAULT '4' COMMENT 'The time interval for this tenancy',
+  `time_interval_freq` tinyint(2) NOT NULL DEFAULT '1',
+  `full_payment` tinyint(1) DEFAULT NULL,
+  `month_start_date` tinyint(1) DEFAULT NULL,
   `start_date` int(12) UNSIGNED NOT NULL,
   `end_date` int(12) UNSIGNED DEFAULT NULL,
-  `rent_rate` decimal(12,2) UNSIGNED NOT NULL,
-  `assigned_by` tinyint(2) DEFAULT NULL,
+  `date_created` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` int(11) NOT NULL,
   PRIMARY KEY (`tenancy_id`),
   KEY `tenant_id` (`tenant_id`,`house_id`),
   KEY `house_id` (`house_id`),
   KEY `tenant_id_2` (`tenant_id`),
   KEY `end_date` (`end_date`),
-  KEY `start_date` (`start_date`)
+  KEY `start_date` (`start_date`),
+  KEY `time_interval_id` (`time_interval_id`),
+  KEY `modified_by` (`modified_by`),
+  KEY `created_by` (`created_by`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenancy`
 --
 
-INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `start_date`, `end_date`, `rent_rate`, `assigned_by`) VALUES
-(1, 3, 4, 1457799999, 0, '800000.00', 1),
-(2, 1, 3, 1457599999, 0, '1500000.00', 1),
-(3, 4, 1, 1457740799, 0, '1500000.00', 2),
-(4, 5, 4, 1456876799, 1467417599, '650000.00', 1),
-(5, 6, 4, 1472947199, 1480550399, '800000.00', 1),
-(6, 3, 8, 1510790399, 1517011199, '400000.00', 1),
-(7, 7, 9, 1510790399, 1510790399, '250000.00', 2),
-(8, 2, 1, 1511740799, 1511740799, '2000000.00', 2),
-(9, 5, 2, 1512086399, 1512086399, '1500000.00', 2);
+INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `rent_rate`, `time_interval_id`, `time_interval_freq`, `full_payment`, `month_start_date`, `start_date`, `end_date`, `date_created`, `created_by`, `date_modified`, `modified_by`) VALUES
+(4, 5, 4, '650000.00', 4, 1, NULL, NULL, 1456876799, 1512259199, 0, 0, '2017-12-08 15:34:10', 0),
+(5, 6, 4, '800000.00', 4, 1, NULL, NULL, 1472947199, 1480550399, 0, 0, '2017-11-29 18:05:43', 0),
+(6, 3, 8, '400000.00', 4, 1, NULL, NULL, 1510790399, 1517011199, 0, 0, '2017-11-29 18:05:43', 0),
+(7, 7, 9, '250000.00', 4, 1, NULL, NULL, 1510790399, 1518728400, 0, 0, '2017-12-08 09:01:06', 0),
+(8, 2, 1, '2000000.00', 4, 1, NULL, NULL, 1511740799, 1511740799, 0, 0, '2017-11-29 18:05:43', 0),
+(9, 5, 2, '1500000.00', 4, 1, NULL, NULL, 1512086399, 1514840399, 0, 0, '2017-12-08 08:22:56', 0);
 
 -- --------------------------------------------------------
 
@@ -379,7 +453,9 @@ DROP TABLE IF EXISTS `tenant`;
 CREATE TABLE IF NOT EXISTS `tenant` (
   `tenant_id` int(11) NOT NULL AUTO_INCREMENT,
   `names` varchar(50) NOT NULL,
-  `photo_url` varchar(100) DEFAULT NULL COMMENT 'location of tenant photo',
+  `passport_photo` varchar(100) DEFAULT NULL COMMENT 'location of tenant photo',
+  `id_card_no` varchar(20) DEFAULT NULL,
+  `id_card_url` varchar(50) DEFAULT NULL,
   `phone1` varchar(10) NOT NULL,
   `phone2` varchar(10) NOT NULL,
   `home_address` varchar(100) NOT NULL,
@@ -393,20 +469,21 @@ CREATE TABLE IF NOT EXISTS `tenant` (
   KEY `district_id` (`district_id`),
   KEY `fk_staff_id` (`created_by`),
   KEY `fk_modified_by` (`modified_by`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenant`
 --
 
-INSERT INTO `tenant` (`tenant_id`, `names`, `photo_url`, `phone1`, `phone2`, `home_address`, `status`, `district_id`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
-(1, 'Mukiibi Arthur', NULL, '0793287383', '0776812341', 'Brooks corner,\r\nRakai town', 1, 102, 0, 0, 0, '2017-11-23 22:04:56'),
-(2, 'James Batte', NULL, '0782299893', '', 'Kiswa, Bugolobi', 1, 18, 0, 0, 0, '2017-11-23 22:04:56'),
-(3, 'Gitau Anthony', NULL, '0713459802', '0773716980', 'Bungoma, Kenya', 1, 1, 0, 0, 0, '2017-11-23 22:04:56'),
-(4, 'NWSC', NULL, '0414562318', '', 'Jinja Road', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
-(5, 'Bank of Baroda', NULL, '0414879302', '', 'Jinja Road, Kampala', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
-(6, 'Joshua Odongo', NULL, '0777879301', '', 'Kawempe', 1, 5, 0, 0, 2, '2017-11-24 11:14:47'),
-(7, 'Odeke Allan', NULL, '0778393803', '', 'Mukono Municipality', 1, 81, 0, 0, 0, '2017-11-23 22:04:56');
+INSERT INTO `tenant` (`tenant_id`, `names`, `passport_photo`, `id_card_no`, `id_card_url`, `phone1`, `phone2`, `home_address`, `status`, `district_id`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(1, 'Mukiibi Arthur', NULL, NULL, NULL, '0793287383', '0776812341', 'Brooks corner,\r\nRakai town', 1, 102, 0, 0, 0, '2017-11-23 22:04:56'),
+(2, 'James Batte', NULL, NULL, NULL, '0782299893', '', 'Kiswa, Bugolobi', 1, 18, 0, 0, 0, '2017-11-23 22:04:56'),
+(3, 'Gitau Anthony', NULL, NULL, NULL, '0713459802', '0773716980', 'Bungoma, Kenya', 1, 1, 0, 0, 0, '2017-11-23 22:04:56'),
+(4, 'NWSC', NULL, NULL, NULL, '0414562318', '', 'Jinja Road', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
+(5, 'Bank of Baroda', NULL, NULL, NULL, '0414879302', '', 'Jinja Road, Kampala', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
+(6, 'Joshua Odongo', NULL, NULL, NULL, '0777879301', '', 'Kawempe', 1, 5, 0, 0, 2, '2017-11-24 11:14:47'),
+(7, 'Odeke Allan', NULL, NULL, NULL, '0778393803', '0756084422', 'Mukono Municipality', 1, 81, 0, 0, 2, '2017-11-28 08:27:15'),
+(8, 'Andrew Ojok', '39afcd134e2ebe4c4c95c05a95fe470f.jpg', 'CNUE3903KD8', 'e8a294bd3a355a1f3b983969acf5528a.jpg', '0774837928', '', 'Plot 35, Bombo Road, Kawempe', 1, 44, 2, 1511868211, 2, '2017-11-28 12:39:37');
 
 -- --------------------------------------------------------
 

@@ -8,7 +8,9 @@ class House_model extends CI_Model {
 
     public function get_house($filter = FALSE) {
         //$query = $this->db->get_where('house', array('house_id' => $house_id));
-        $this->db->select('house_id, house_no, house.description, fixed_amount, floor, estate.estate_name, estate.address, estate.phone, estate.phone2, house.estate_id');
+        $this->db->select('house_id, house_no, house.description, fixed_amount, floor, house.time_interval_id,'
+                . 'house.time_interval_freq, house.month_start_date, estate.estate_name, estate.address,'
+                . 'estate.phone, estate.phone2, house.estate_id');
         $this->db->from('house');
         $this->db->join('estate', 'estate.estate_id = house.estate_id');
 

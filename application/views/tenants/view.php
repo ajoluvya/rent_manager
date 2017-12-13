@@ -34,7 +34,7 @@
                                     <?php if ($tenant['phone2'] != FALSE): ?>
                                         <tr><th>Phone2</th><td><?php echo $tenant['phone2']; ?></td></tr>
                                     <?php endif; ?>
-                                    <tr><th>Date added</th><td><?php echo mdate('%d, %M %Y', $tenant['date_created']); ?></td></tr>
+                                    <tr><th>Date added</th><td><?php echo mdate('%j%S %M, %Y', $tenant['date_created']); ?></td></tr>
                                     <tr><th>Home address</th><td><?php echo $tenant['home_address']; ?></td></tr>
                                     <tr><th>District</th><td><?php echo $tenant['district']; ?></td></tr>
                                 </table>
@@ -80,26 +80,26 @@
                                                 <td><a href="<?php echo site_url("estate/view/" . $house['estate_id']); ?>" title="View estate details"><?php echo $house['estate_name']; ?></a></td>
                                                 <td><a href="<?php echo site_url("house/view/" . $house['house_id']); ?>" title="View house details"><?php echo $house['house_no']; ?></a></td>
                                                 <td><?php echo number_format($house['rent_rate']); ?></td>
-                                                <td><?php echo mdate('%d, %M %Y', $house['start_date']); ?></td>
+                                                <td><?php echo mdate('%j%S %M, %Y', $house['start_date']); ?></td>
                                                 <td>
                                                     <?php
-                                                    echo isset($tenant['end_date']) ? (mdate('%j %M, %Y', $tenant['end_date'])) : "";
+                                                    echo isset($house['end_date']) ? (mdate('%j%S %M, %Y', $house['end_date'])) : "";
                                                     ?>
                                                 </td>
                                                 <td>
                                                     <?php
-                                                    if (isset($tenant['tenancy_id'])) {
+                                                    if (isset($house['tenancy_id'])) {
                                                         $button_class = "warning";
                                                         $title_text = "No arrears";
-                                                        $date_diff = (int) $tenant['date_diff'];
-                                                        $label_text = $date_diff . " " . ($date_diff == 1 ? (substr($tenant['period_desc'], 0, -1)) : $tenant['period_desc']);
+                                                        $date_diff = (int) $house['date_diff'];
+                                                        $label_text = $date_diff . " " . ($date_diff == 1 ? (substr($house['period_desc'], 0, -1)) : $house['period_desc']);
 
                                                         if ($date_diff > 0) {
                                                             $button_class = "info";
                                                         }
                                                         if ($date_diff < 0) {
                                                             $button_class = "danger";
-                                                            $title_text = abs($date_diff) . " " . $tenant['period_desc'] . " arrears totalling Ugx: " . number_format(abs($date_diff * $tenant['rent_rate']));
+                                                            $title_text = abs($date_diff) . " " . $house['period_desc'] . " arrears totalling Ugx: " . number_format(abs($date_diff * $house['rent_rate']));
                                                         }
                                                         //if the tenant is no longer renting, then show that as well
                                                         if ($tenant['status'] == 0) {
@@ -117,13 +117,13 @@
                                                 <!-- If the estates owner/admin is logged in -->
                                                 <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
                                                     <td>
-                                                        <?php if($tenant['start_date'] === $tenant['end_date']):?>
-                                                        <a href="<?php echo site_url("tenancy/update/{$house['tenancy_id']}"); ?>" title="Make changes to this tenancy arrangement" ><span class="fa fa-edit"></span></a>
-                                                         <?php endif; ?>
-                                                   </td>
+                                                        <?php if ($tenant['start_date'] === $tenant['end_date']): ?>
+                                                            <a href="<?php echo site_url("tenancy/update/{$house['tenancy_id']}"); ?>" title="Make changes to this tenancy arrangement" ><span class="fa fa-edit"></span></a>
+                                                        <?php endif; ?>
+                                                    </td>
                                                     <td>
-                                                        <?php if($tenant['start_date'] === $tenant['end_date']):?>
-                                                        <a href="<?php echo site_url("tenancy/del_tenancy/{$house['tenancy_id']}"); ?>" onclick="return confirm_delete('<?php echo "the house ".$house['house_no']." for  " . $tenant['names']; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
+                                                        <?php if ($tenant['start_date'] === $tenant['end_date']): ?>
+                                                            <a href="<?php echo site_url("tenancy/del_tenancy/{$house['tenancy_id']}"); ?>" onclick="return confirm_delete('<?php echo "the house " . $house['house_no'] . " for  " . $tenant['names']; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
                                                         <?php endif; ?>
                                                     </td>
                                                 <?php } ?>
@@ -171,10 +171,10 @@
                                                     <tr>
                                                         <td><a href="<?php echo site_url("payment/view/" . $payment['payment_id']); ?>" title="View receipt"><?php echo $payment['payment_id']; ?></a></td>
                                                         <td><a href="<?php echo site_url("house/view/" . $payment['house_id']); ?>" title="View house details"><?php echo $payment['house_no']; ?></a></td>
-                                                        <td><?php echo mdate('%d, %M %Y', $payment['payment_date']); ?></td>
+                                                        <td><?php echo mdate('%j%S %M, %Y', $payment['payment_date']); ?></td>
                                                         <td><?php echo number_format($payment['amount']); ?></td>
-                                                        <td><?php echo mdate('%d, %M %Y', strtotime($payment['start_date'])); ?></td>
-                                                        <td><?php echo mdate('%d, %M %Y', strtotime($payment['end_date'])); ?></td>
+                                                        <td><?php echo mdate('%j%S %M, %Y', strtotime($payment['start_date'])); ?></td>
+                                                        <td><?php echo mdate('%j%S %M, %Y', strtotime($payment['end_date'])); ?></td>
                                                         <!--td><?php echo $payment['particulars']; ?></td-->
                                                         <!-- If the estates owner/admin is logged in -->
                                                         <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>

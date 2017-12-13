@@ -1,3 +1,14 @@
+var period_start_array = ['1st minute', 'Midnight', 'Monday', '1st of'];
+var period_start_array2 = ['minute', 'hour', 'day', 'day'];//set options value afterwards
+var setOptionValue = function (propId) {
+    return function (option, item) {
+        if (item === undefined) {
+            option.value = "";
+        } else {
+            option.value = item[propId];
+        }
+    };
+};
 function confirm_delete(delValue)
 {
 	var really=confirm("Do you really want to delete " + delValue + "?");

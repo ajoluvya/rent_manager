@@ -7,7 +7,8 @@ class Estate_model extends CI_Model {
     }
 
     public function get_estate($estate_id = FALSE) {
-        $this->db->select('estate_id, estate_name, description, phone, phone2, address, district.district, estate.district_id');
+        $this->db->select('estate_id, estate_name, description, phone, phone2, address,'
+                . 'district.district, estate.district_id, time_interval_id, billing_freq, period_starts, full_payment');
         $this->db->from('estate');
         $this->db->join('district', 'district.district_id = estate.district_id');
 
@@ -31,9 +32,9 @@ class Estate_model extends CI_Model {
             'phone2' => $this->input->post('phone2'),
             'district_id' => $this->input->post('district'),
             'time_interval_id' => $this->input->post('time_interval_id'),
-            'time_interval_freq' => $this->input->post('time_interval_freq'),
-            'full_payment' => $this->input->post('full_payment'),
-            'month_start_date' => $this->input->post('month_start_date'),
+            'billing_freq' => $this->input->post('billing_freq'),
+            'period_starts' => $this->input->post('period_starts'),
+            'full_payment' => 1,
             'created_by' => $_SESSION['user_id'],
             'date_created' => time(),
             'modified_by' => $_SESSION['user_id']
@@ -51,9 +52,9 @@ class Estate_model extends CI_Model {
             'phone2' => $this->input->post('phone2'),
             'district_id' => $this->input->post('district'),
             'time_interval_id' => $this->input->post('time_interval_id'),
-            'time_interval_freq' => $this->input->post('time_interval_freq'),
-            'full_payment' => $this->input->post('full_payment'),
-            'month_start_date' => $this->input->post('month_start_date'),
+            'billing_freq' => $this->input->post('billing_freq'),
+            'period_starts' => $this->input->post('period_starts'),
+            //'full_payment' => $this->input->post('full_payment'),
             'modified_by' => $_SESSION['user_id']
         );
         $this->db->where('estate_id', $estate_id);

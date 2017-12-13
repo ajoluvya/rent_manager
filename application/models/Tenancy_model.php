@@ -8,7 +8,8 @@ class Tenancy_model extends CI_Model {
 
     public function get_tenancy($filter = FALSE) {
         $this->db->select('`tenancy_id`, `tenancy`.`tenant_id`, `tenancy`.`house_id`, `tenancy`.`start_date`,'
-                . '`tenancy`.`end_date`, `tenancy`.`rent_rate`,`house_no`,`floor`,`estate_id`, `estate_name`, '
+                . '`tenancy`.`end_date`, `tenancy`.`rent_rate`, `tenancy`.`time_interval_id`,'
+                . '`tenancy`.`time_interval_freq`, `tenancy`.`month_start_date`,`house_no`,`floor`,`estate_id`, `estate_name`, '
                 . '`tenant`.`names`, `phone1`, `phone2`,`passport_photo`,`tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc`,'
                 . '(getDateDiff( `time_interval_id`, CURDATE(), FROM_UNIXTIME(`tenancy`.`end_date`) )*`time_interval_freq`) `date_diff`');
         $this->db->from('tenancy');
@@ -82,6 +83,7 @@ class Tenancy_model extends CI_Model {
             'tenant_id' => $this->input->post('tenant_id'),
             'house_id' => $this->input->post('house_id'),
             'start_date' => $start_date,
+            'end_date' => $start_date,
             //'end_date' => $start_date,
             'rent_rate' => $this->input->post('rent_rate'),
             'modified_by' => $_SESSION['user_id']
@@ -94,7 +96,7 @@ class Tenancy_model extends CI_Model {
         $date_array = explode('-', $this->input->post('end_date'));
 
         $data = array(
-            'end_date' => mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . "235959")
+            'end_date' => mysql_to_unix($date_array[0] . $date_array[1] . $date_array[2] . "235959")
         );
         $this->db->where('tenancy_id', $tenancy_id);
         return $this->db->update('tenancy', $data);
