@@ -45,14 +45,14 @@ class Estate extends CI_Controller {
             $this->load->view('templates/footer');
         } else {
             $this->load->model('tenant_model');
-            $this->load->model('house_model');
+            //$this->load->model('house_model');
             $this->load->model('payment_model');
             $this->load->model('timeInterval_model');
 
             $data['sub_title'] = $data['estate']['estate_name'];
 
             $data['estate_tenants'] = $this->tenant_model->get_tenant("`estate_id`=" . $estate_id);
-            $data['estate_houses'] = $this->house_model->get_house("`estate`.`estate_id`=" . $estate_id);
+            //$data['estate_houses'] = $this->house_model->get_house("`estate`.`estate_id`=" . $estate_id);
             $data['payments'] = $this->payment_model->get_payment("`house_id` IN (SELECT `house_id` FROM `house` WHERE `estate_id` = $estate_id)");
             $data['floors'] = $this->floors;
             $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
@@ -72,6 +72,7 @@ class Estate extends CI_Controller {
         $data['title'] = "Estate";
         $data['sub_title'] = "Capture estate data";
         $data['districts'] = $this->district_model->get_district();
+        $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
 
         $this->form_validation->set_rules('estate_name', 'Estate name', 'required|max_length[50]', array('required' => '%s is missing.', 'max_length' => '% must be less than 50 charaters'));
         $this->form_validation->set_rules('description', 'Description', 'required|max_length[100]', array('required' => '%s is missing.', 'max_length' => '% must be less than 100 letters'));
@@ -128,9 +129,7 @@ class Estate extends CI_Controller {
 
                 $data['message'] = 'Estate details successfully updated';
 
-                $this->load->view('templates/header', $data);
-                $this->load->view('estates/success', $data);
-                $this->load->view('templates/footer');
+                redirect('estate/view/'.$estate_id);
             }
         } else {
             $this->index();
@@ -145,7 +144,7 @@ class Estate extends CI_Controller {
         }
         if ($estate_id != NULL) {
             $this->estate_model->del_estate($estate_id);
-            $data['title'] = 'Estate deleted';
+            $data['title'] = 'Estate';
             $data['sub_title'] = 'Estate deleted';
 
             $data['message'] = 'Estate successfully deleted';

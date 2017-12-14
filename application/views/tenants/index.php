@@ -32,7 +32,7 @@
                                 <td>
                                     <a href="<?php echo site_url("tenant/view/{$tenant['tenant_id']}"); ?>" title="<?php echo $tenant['names']; ?> details"><?php echo $tenant['names']; ?></a></td>
                                 <td><?php echo $tenant['phone1']; ?></td>
-                                <td><?php if (isset($tenant['estate_name'])) { ?><a href="<?php echo site_url("house/view/{$tenant['estate_id']}"); ?>" title="<?php echo $tenant['estate_name']; ?> details"><?php echo $tenant['estate_name']; ?></a><?php } ?></td>
+                                <td><?php if (isset($tenant['estate_name'])) { ?><a href="<?php echo site_url("estate/view/{$tenant['estate_id']}"); ?>" title="<?php echo $tenant['estate_name']; ?> details"><?php echo $tenant['estate_name']; ?></a><?php } ?></td>
                                 <td><?php if (isset($tenant['house_no'])) { ?><a href="<?php echo site_url("house/view/{$tenant['house_id']}"); ?>" title="<?php echo $tenant['house_no']; ?> details"><?php echo $tenant['house_no']; ?></a><?php } ?></td>
                                 <td><?php echo isset($tenant['rent_rate']) ? (number_format($tenant['rent_rate'])) : ""; ?></td>
                                 <td><?php echo isset($tenant['start_date']) ? (mdate('%j %M, %Y', $tenant['start_date'])) : ""; ?></td>

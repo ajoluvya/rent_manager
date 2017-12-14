@@ -9,7 +9,7 @@ class House_model extends CI_Model {
     public function get_house($filter = FALSE) {
         //$query = $this->db->get_where('house', array('house_id' => $house_id));
         $this->db->select('house_id, house_no, house.description, fixed_amount, floor, house.time_interval_id,'
-                . 'house.time_interval_freq, house.month_start_date, estate.estate_name, estate.address,'
+                . 'house.billing_freq, house.period_starts, max_tenants, estate.estate_name, estate.address,'
                 . 'estate.phone, estate.phone2, house.estate_id');
         $this->db->from('house');
         $this->db->join('estate', 'estate.estate_id = house.estate_id');
@@ -49,14 +49,16 @@ class House_model extends CI_Model {
             'estate_id' => $this->input->post('estate_id'),
             'fixed_amount' => $this->input->post('fixed_amount'),
             'time_interval_id' => $this->input->post('time_interval_id'),
-            'time_interval_freq' => $this->input->post('time_interval_freq'),
+            'billing_freq' => $this->input->post('billing_freq'),
+            'max_tenants' => $this->input->post('max_tenants'),
             'full_payment' => $this->input->post('full_payment'),
-            'month_start_date' => $this->input->post('month_start_date'),
+            'period_starts' => $this->input->post('period_starts'),
             'created_by' => $_SESSION['user_id'],
             'date_created' => time(),
             'modified_by' => $_SESSION['user_id']
         );
-        return $this->db->insert('house', $data);
+        $this->db->insert('house', $data);
+        return $this->db->insert_id();
     }
 
     public function update_house($house_id) {
@@ -68,9 +70,10 @@ class House_model extends CI_Model {
             'estate_id' => $this->input->post('estate_id'),
             'fixed_amount' => $this->input->post('fixed_amount'),
             'time_interval_id' => $this->input->post('time_interval_id'),
-            'time_interval_freq' => $this->input->post('time_interval_freq'),
+            'billing_freq' => $this->input->post('billing_freq'),
+            'max_tenants' => $this->input->post('max_tenants'),
             'full_payment' => $this->input->post('full_payment'),
-            'month_start_date' => $this->input->post('month_start_date'),
+            'period_starts' => $this->input->post('period_starts'),
             'modified_by' => $_SESSION['user_id']
         );
         $this->db->where('house_id', $house_id);

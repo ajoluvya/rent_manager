@@ -5,13 +5,14 @@
     <!-- /.box-header -->
     <!-- form start -->
     <?php if(!isset($estate)){echo validation_errors("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>", "</div>");} ?>
-    <?php echo form_open(uri_string(), array('name' => 'houseCreation', 'id' => 'houseCreationForm', 'data-toggle' => 'validator', 'role' => 'form')); ?>
+    <?php echo form_open(uri_string(), array('name' => 'saveHouseForm', 'id' => 'saveHouseForm', 'data-toggle' => 'validator', 'role' => 'form')); ?>
     <div class="box-body">
         <fieldset>
             <legend>House/Room Particulars</legend>
             <div class="col-lg-6">
+                <input type="hidden" id="house_id" name="house_id" />
                 <?php if(isset($estate)):?>
-                <input type="hidden"id="estate_id" name="estate_id" value="<?php echo $estate['estate_id']; ?>" />
+                <input type="hidden" id="estate_id" name="estate_id" value="<?php echo $estate['estate_id']; ?>" />
                 <?php else:?>
                 <div class="form-group">
                     <label class="control-label" for="estate_id">Estate *</label>
@@ -35,7 +36,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="floor">Max number of occupants</label>
-                    <input type="number" class="form-control" id="max_occupants" name="max_occupants" value="<?php echo (set_value('max_occupants') != NULL) ? set_value('max_occupants') : (isset($house['max_occupants']) ? $house['max_occupants'] : 1); ?>" placeholder="Maximum number of occupants at a given time" required />
+                    <input type="number" class="form-control" id="max_tenants" name="max_tenants" value="<?php echo (set_value('max_tenants') != NULL) ? set_value('max_tenants') : (isset($house['max_tenants']) ? $house['max_tenants'] : 1); ?>" placeholder="Maximum number of tenants at a given time" required />
                     <div class="help-block with-errors"></div>
                 </div>
             </div><!--./col-lg-6 -->
@@ -73,8 +74,8 @@
                 <div class="form-group" data-bind="with: time_interval">
                     <label class="control-label" for="estate_name">Billing Starts *</label>
                     <div>
-                        <label class="radio-inline"><input type="radio" id="period_starts1" name="period_starts" value="1" <?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 1) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 1 ? "checked" : ""); ?> required/><span data-bind="text: period_start_array[id-1]">Start</span> that <span data-bind="text:description.toString().slice(0,-1).toLocaleLowerCase()">Period</span></label>                               
-                        <label class="radio-inline"><input type="radio" id="period_starts2" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
+                        <label class="radio-inline"><input type="radio" name="period_starts" value="1" <?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 1) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 1 ? "checked" : ""); ?> required/><span data-bind="text: period_start_array[id-1]">Start</span> that <span data-bind="text:description.toString().slice(0,-1).toLocaleLowerCase()">Period</span></label>                               
+                        <label class="radio-inline"><input type="radio" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
                         <!--div class="help-block with-errors"><i>When the billing should commence</i></div-->
                     </div>
                 </div>

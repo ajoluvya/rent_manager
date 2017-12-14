@@ -30,6 +30,16 @@ class House extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
+    public function housesJsonList($estate_id = FALSE) {
+        $this->load->model('house_model');
+        $where = "";
+        if ($estate_id) {
+            $where = "`estate`.`estate_id`=" . $estate_id;
+        }
+        $houses['data'] = $this->house_model->get_house($where);
+        echo json_encode($houses);
+    }
+
     public function view($house_id = NULL) {
         $data['house'] = $this->house_model->get_house($house_id);
         $data['title'] = 'House';
@@ -83,6 +93,24 @@ class House extends CI_Controller {
         }
     }
 
+    public function save_house() {
+        $this->load->helper('form');
+        $data['message'] = "Access denied. The operation did not complete successfully, contact the admin for further assistance.";
+        $data['success'] = FALSE;
+        if (is_numeric($this->input->post('house_id'))) {
+            $data['message'] = $this->house_model->update_house($this->input->post('house_id'));
+            if ($data['message'] === true) {
+                $data['success'] = TRUE;
+            }
+        } else {
+            $data['message'] = $this->house_model->set_house();
+            if (is_numeric($data['message'])) {
+                $data['success'] = TRUE;
+            }
+        }
+        echo json_encode($data);
+    }
+
     public function update($house_id = NULL) {
         //if user not admin or boss, redirect them to the index
         if (isset($_SESSION['role']) && $_SESSION['role'] < 3) {
@@ -109,6 +137,7 @@ class House extends CI_Controller {
             $this->form_validation->set_rules('estate_id', 'Estate', 'required', array('required' => '%s was not selected.'));
 
             if ($this->form_validation->run() === FALSE) {
+                $data['create_modal'] = $this->load->view('houses/create_modal', $data, TRUE);
                 $this->load->view('templates/header', $data);
                 $this->load->view('houses/create', $data);
                 $this->load->view('templates/footer');

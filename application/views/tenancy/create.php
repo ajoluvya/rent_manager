@@ -12,7 +12,7 @@
                 <?php echo validation_errors("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>", "</div>"); ?>
 
                 <?php $form_url = isset($btn_text) ? uri_string() : "tenancy/create"; ?>
-                <?php echo form_open($form_url, array('name' => 'create/update_tenancy', 'role' => 'form', 'id' => 'tenancy_form')); ?>
+                <?php echo form_open($form_url, array('name' => 'create/update_tenancy', 'role' => 'form', 'data-toggle' => 'validator', 'id' => 'tenancyForm')); ?>
                 <div class="box-body">
                     <div class="form-group">
                         <div class="col-md-12">
@@ -24,23 +24,29 @@
                     <div class="form-group">
                         <div class="col-md-4"><label for="estate_id">Estate</label></div>
                         <div class="col-md-8">
-                            <select name="estate_id" data-bind="options: estates, optionsText: 'estate_name', optionsCaption: 'Select estate...', value: estate, optionsAfterRender: setOptionValue('estate_id')" class="form-control"></select>
+                            <select name="estate_id" data-bind="options: estates, optionsText: 'estate_name', optionsCaption: 'Select estate...', value: estate, optionsAfterRender: setOptionValue('estate_id')" class="form-control" required></select>
+                            <div class="help-block with-errors"></div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-4"><label for="house_id">Apartment/House/Room</label></div>
                         <div class="col-md-8">
-                            <select name="house_id" data-bind="options: filteredHouses(), optionsText: 'house_no', optionsCaption: 'Select house...', value: house, optionsAfterRender: setOptionValue('house_id')" class="form-control"></select>
+                            <select name="house_id" data-bind="options: filteredHouses(), optionsText: 'house_no', optionsCaption: 'Select house...', value: house, optionsAfterRender: setOptionValue('house_id')" class="form-control" required></select>
+                            <div class="help-block with-errors"></div>
                         </div>
                     </div>
                     <div class="form-group" data-bind="with: house">
                         <div class="col-md-4"><label for="rent_rate">Amount</label></div>
                         <div class="col-md-8"><div class="input-group"><span class="input-group-addon">UGX</span><input type="text" class="form-control" data-bind="value: fixed_amount" id="rent_rate" name="rent_rate" value="<?php echo (set_value('rent_rate') != NULL) ? set_value('rent_rate') : (isset($tenancy['rent_rate']) ? $tenancy['rent_rate'] : ""); ?>" placeholder="Enter rent amount for this apartment" data-validation="number" data-validation-error-msg="Not a number/missing amount"></div>
+                            <div class="help-block with-errors"></div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-4"><label for="start_date">Start date</label></div>
-                        <div class="col-md-8"><div class="input-group"><input type="text" class="form-control datepicker" id="start_date" name="start_date" value="<?php echo (set_value('start_date') != NULL) ? set_value('start_date') : (isset($tenancy['start_date']) ? mdate("%d-%m-%Y", $tenancy['start_date']) : ""); ?>" placeholder="Enter start date" data-validation="date" data-validation-error-msg="Not a date/missing start date" data-validation-format="dd-mm-yyyy" data-provide="datepicker" ><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></div>
+                        <div class="col-md-8">
+                            <div class="input-group"><input type="text" class="form-control datepicker" id="start_date" name="start_date" value="<?php echo (set_value('start_date') != NULL) ? set_value('start_date') : (isset($tenancy['start_date']) ? mdate("%d-%m-%Y", $tenancy['start_date']) : ""); ?>" placeholder="Enter start date"  data-error="Not a vaild date. Enter as dd-mm-yyyy" pattern="^(((0[1-9]|[12]\d|3[01])-(0[13578]|1[02])-((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)-(0[13456789]|1[012])-((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])-02-((19|[2-9]\d)\d{2}))|(29-02-((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$" data-provide="datepicker" required><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>
+                            <div class="help-block with-errors"></div>
+                        </div>
                     </div>
                     <!--div class="form-group">
                       <div class="col-md-4"><label for="start_date">End date</label></div>
@@ -87,7 +93,7 @@
             };
             var viewModel = new ViewModel();
             ko.applyBindings(viewModel);
-            $('#tenancy_form').on('submit', function () {
+            $('#tenancyForm').on('submit', function () {
                 enableDisableButton(this, true);
             });
 
@@ -97,7 +103,7 @@
                 viewModel.estate(ko.utils.arrayFirst(viewModel.estates(), function (currentEstate) {
                     return (estate_id == currentEstate.estate_id);
                 }));
-                $('#estate_id').val(estate_id);
+                $('#estate_id').val(estate_id).trigger('change');
 <?php endif; ?>
 
 <?php if (isset($tenancy['house_id']) || isset($_POST['house_id'])): ?>
@@ -106,7 +112,7 @@
                 viewModel.house(ko.utils.arrayFirst(viewModel.houses(), function (currentHouse) {
                     return (house_id == currentHouse.house_id);
                 }));
-                $('#house_id').val(house_id);
+                $('#house_id').val(house_id).trigger('change');
 <?php endif; ?>
 
 <?php if ((isset($tenancy['rent_rate']) && is_numeric($tenancy['rent_rate'])) || (isset($_POST['rent_rate']) && is_numeric($_POST['rent_rate']))): ?>

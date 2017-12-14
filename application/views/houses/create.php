@@ -9,7 +9,7 @@
     $(document).ready(function () {
         var EstateModel = function () {
             var self = this;
-            self.rent_period = ko.observable();
+            self.time_interval = ko.observable();
             self.time_intervals = ko.observableArray(<?php echo json_encode($time_intervals); ?>);
             self.estate = ko.observable();
             self.estates = ko.observableArray(<?php echo json_encode($estates); ?>);

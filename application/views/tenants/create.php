@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <div class="col-md-3"><label for="district_id">Home district</label></div>
                     <div class="col-md-4">
-                        <select name="district_id" id="district_id" class="form-control">
+                        <select name="district_id" id="district_id" class="form-control select2able">
                             <option>Select district...</option>
                             <?php foreach ($districts as $district): ?>
                                 <option value="<?php echo $district['district_id']; ?>" <?php echo (set_select('district_id', $district['district_id']) != NULL) ? "selected" : ((isset($tenant['district_id']) && $tenant['district_id'] == $district['district_id']) ? "selected" : ""); ?>><?php echo $district['district']; ?></option>

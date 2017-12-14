@@ -127,9 +127,9 @@ class Tenancy extends CI_Controller {
 
         $this->form_validation->set_rules('tenant_id', 'Tenant', 'required', array('required' => '%s is missing.'));
         $this->form_validation->set_rules('house_id', 'House', 'required', array('required' => '%s has not been selected.'));
-        $this->form_validation->set_rules('start_date', 'Start date', 'required|datetime', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
-        $this->form_validation->set_rules('end_date', 'End date', 'datetime', array('datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
-        $this->form_validation->set_rules('rent_rate', 'Amount', 'required|numeric', array('required' => '%s is missing.'));
+        $this->form_validation->set_rules('start_date', 'Start date', 'required|valid_date[d-m-Y]', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
+        $this->form_validation->set_rules('end_date', 'End date', 'valid_date[d-m-Y]', array('valid_date' => '%s is invalid, required date format is dd-mm-yyyy.'));
+        $this->form_validation->set_rules('rent_rate', 'Amount', 'required|numeric', array('required' => '%s is missing.','numeric' => '%s must be a number.'));
         if ($this->form_validation->run() === FALSE) {
             $this->load->view('templates/header', $data);
             $this->load->view('tenancy/create', $data);

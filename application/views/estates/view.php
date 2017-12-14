@@ -16,7 +16,7 @@
                 <div id="tab-1" class="tab-pane active">
                     <div class="box box-solid">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Estate: <?php echo $sub_title; ?></h3>
+                            <h3 class="box-title"><?php echo $sub_title; ?></h3>
                             <div class="pull-right">
                                 <div class="btn-group">
                                     <a href="<?php echo site_url("estate/create"); ?>" class="btn btn-default" title="Create new estate"><i class="fa fa-plus-square"></i> New</a>
@@ -35,7 +35,7 @@
                         <div class="box-body">
                             <div class="col-lg-6">
                                 <table class="table table-striped table-condensed">
-                                    <tr><th>ID</th><td><?php echo $estate['estate_id']; ?></td></tr>
+                                    <!--tr><th>ID</th><td><?php echo $estate['estate_id']; ?></td></tr-->
                                     <tr><th>Telephone</th><td><?php echo $estate['phone']; ?></td></tr>
                                     <tr><th>Telephone2</th><td><?php echo $estate['phone2']; ?></td></tr>
                                     <tr><th>Address</th><td><?php echo $estate['address']; ?></td></tr>
@@ -52,56 +52,29 @@
                             <h3 class="box-title"><i class="fa fa-home"></i> Apartments/Houses </h3>
                             <div class="pull-right">
                                 <div class="btn-group">
-                                    <a href="#createHouseModal" data-toggle="modal" class="btn btn-default" title="Add new apartment/house/room"><i class="fa fa-plus-square"></i> Add Apartment/House/Room</a>
+                                    <a href="#saveHouseModal" data-toggle="modal" data-bind="click: setFormDefaults" class="btn btn-default" title="Add new apartment/house/room"><i class="fa fa-plus-square"></i> Add Apartment/House/Room</a>
                                 </div>
                             </div>
                         </div>
                         <div class="box-body">
-                            <div class="col-lg-7">
-                                <table class="table table-striped table-condensed table-hover">
+                            <div class="col-lg-10">
+                                <table id="tblHouses" class="table table-striped table-condensed table-hover" width="100%">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>House No</th>
                                             <!--th>Estate</th-->
-                                            <th>Fixed amount (UGX)</th>
-                                            <th>&nbsp;</th>
-                                            <th>&nbsp;</th>
+                                            <th>Rent rate (UGX)</th>
+                                            <th>Floor</th>
+                                            <th>Max Tenants</th>
                                             <!-- If the estates owner/admin is logged in -->
-                                            <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
+                                            <?php $last_cols=""; if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
                                                 <th>&nbsp;</th>
                                                 <th>&nbsp;</th>
-                                            <?php endif; ?>
+                                            <?php $last_cols = ",5,6"; endif; ?>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php if (empty($estate_houses)): ?>
-                                            <tr><td colspan="7">No house record in database</td></tr>
-                                        <?php else: ?>
-                                            <?php foreach ($estate_houses as $estate_house): ?>
-                                                <tr>
-                                                    <td><?php echo $estate_house['house_id']; ?></td>
-                                                    <td><a href="<?php echo site_url("house/view/{$estate_house['house_id']}"); ?>" title='Estate details'><?php echo $estate_house['house_no']; ?></a></td>
-                                                    <!--td><?php if (isset($estate_house['estate_name'])) { ?><a href="<?php echo site_url("estate/view/{$estate_house['estate_id']}"); ?>" title="<?php echo $estate_house['estate_name']; ?> details"><?php echo $estate_house['estate_name']; ?></a><?php } ?></td-->
-                                                    <td><?php echo number_format($estate_house['fixed_amount']); ?></td>
-                                                    <td>
-                                                        <a href="<?php echo site_url("bill/view/{$estate_house['house_id']}"); ?>" title='View bills for this house'><span class="fa fa-dollar"></span></a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="<?php echo site_url("payment/view/{$estate_house['house_id']}"); ?>" title='View payment records'><span class="fa fa-credit-card"></span></a>
-                                                    </td>
-                                                    <!-- If the estates owner/admin is logged in -->
-                                                    <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
-                                                        <td>
-                                                            <a href="<?php echo site_url("house/update/{$estate_house['house_id']}"); ?>" title='Update house'><span class="fa fa-edit"></span></a>
-                                                        </td>
-                                                        <td>
-                                                            <a href="<?php echo site_url("house/del_house/{$estate_house['house_id']}"); ?>" onclick="return confirm_delete('<?php echo "the house " . $estate_house['house_no']; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
-                                                        <?php } ?>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div><!-- /.col-lg-7 -->
@@ -158,11 +131,6 @@
                         <div class="box box-solid">
                             <div class="box-header with-border">
                                 <h3 class="box-title"><i class="fa fa-credit-card"></i> Payments</h3>
-                                <!--div class="pull-right">
-                                        <a class="btn btn-default" href="<?php echo site_url("payment/create/" . $tenant['tenant_id']); ?>" title="Enter payment for <?php echo $tenant['names']; ?>">
-                                                <i class="fa fa-plus-square"></i> Add
-                                        </a>
-                                </div-->
                             </div>
                             <div class="box-body">
                                 <div class="col-lg-12">
@@ -236,7 +204,7 @@
     </div><!-- /.col-lg-12 -->
 </div><!-- /.row -->
 <!-- row -->
-<div class="modal fade" id="createHouseModal">
+<div class="modal fade" id="saveHouseModal">
     <div class="col-lg-8 col-lg-offset-2">
         <div class="modal-content">
             <div class="modal-header">
@@ -249,6 +217,17 @@
     </div>
 </div>
 <script type="text/javascript">
+    function setFormDefaults(){
+<?php if (isset($estate)) {
+        ?>
+                $('#time_interval_id').val(<?php echo $estate['time_interval_id']; ?>).trigger('change');
+                $('input[value="<?php echo $estate['period_starts'];?>"]').prop("checked",true);
+                $('#billing_freq').val(<?php echo $estate['billing_freq']; ?>);
+        <?php
+    }
+?>
+    }
+    var floors = <?php echo json_encode($floors);?>;
     $(document).ready(function () {
         var HouseModel = function () {
             var self = this;
@@ -262,16 +241,95 @@
         $('#estateCreationForm').on('submit', function () {
             enableDisableButton(this, true);
         });
-<?php if (set_value('time_interval_id') != NULL) { ?>
-            $('#time_interval_id').val(<?php echo set_value('time_interval_id'); ?>).trigger('change');
-    <?php
-} else {
-    if (isset($estate)) {
-        ?>
-                $('#time_interval_id').val(<?php echo $estate['time_interval_id']; ?>).trigger('change');
-        <?php
-    }
-}
-?>
+        var dTable = {};
+        var handleDataTableButtons = function() {
+            if ($("#tblHouses").length) {
+                   dTable['tblHouses'] = $("#tblHouses").DataTable({
+                   "dom": '<".col-md-5"B><".col-md-3"l><".col-md-4"f>rt<".col-md-9"i><".col-md-3"p>',
+                   order: [[1, 'desc']],
+                   deferRender: true,
+                   autowidth: true,
+                   responsive: true,
+                   "ajax": {
+                       "url":"<?php echo site_url('house/HousesJsonList/'.$estate['estate_id'])?>",
+                       "dataType": "JSON"
+                   },
+                    columnDefs: [ {
+                    "targets": [0<?php echo $last_cols; ?>],
+                    "orderable": false,
+                    "searchable": false
+                    }],
+                   columns:[ { data: 'house_id', render: function ( data, type, full, meta ){ return meta.row+1;}},
+                       { data: 'house_no', render: function( data, type, full, meta ){return "<a href='<?php echo site_url("house/view/"); ?>/"+full.house_id+"' title='House details'>"+data+"</a>";}},
+                       { data: 'fixed_amount', render: function( data, type, full, meta ) {
+                               ret_val = curr_format(parseInt(data));
+                               if(type == 'filter'){
+                                   return data;
+                               }
+                               if(type == 'sort'){
+                                   return data;
+                               }
+                               return ret_val;
+                           }
+                       },
+                               {data: 'floor', render: function ( data, type, full, meta ) {return floors[data];}},
+                               {data: 'max_tenants'}
+                       // If the data estates owner/admin is logged in 
+                       <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>,
+                       //{ data: 'house_id', render: function ( data, type, full, meta ) {return '<a href="<?php echo site_url("house/update/"); ?>/'+data+'" title="Update details" ><i class="fa fa-pencil"></i></a>';}},
+                       { data: 'house_id', render: function ( data, type, full, meta ) {return '<a href="#saveHouseModal" data-toggle="modal" class="edit_me" title="Update details" ><i class="fa fa-pencil"></i></a>';}},
+                       { data: 'house_id', render: function ( data, type, full, meta ) {return '<a href="<?php echo site_url("house/del_house/"); ?>/'+data+'" onclick="return confirm_delete(\'this record\');" title="Delete"><span class="fa fa-trash text-danger"></span></a>';}}
+                       <?php endif; ?>	
+                       ],
+                   buttons: [ 'copy', 'excel', 'print' ]//, 'pdf'
+               });
+            }
+        };
+        TableManageButtons = function() {
+	  "use strict";
+	  return {
+		init: function() {
+		  handleDataTableButtons();
+		}
+	  };
+	}();
+        TableManageButtons.init();
+        //clicking the update icon
+        $('table#tblHouses tbody').on('click', '.edit_me', function () {            
+            var row = $(this).closest("tr");
+            var tbl = row.parent().parent();
+            var dt = dTable[$(tbl).attr("id")];
+            var data = dt.row(row).data();
+            if (typeof (data) === 'undefined') {
+                data = dt.row($(row).prev()).data();
+            }
+            edit_data(data, 'saveHouseForm');
+            //$('input[value="'+data.period_starts+'"]').prop("checked",true);
+        });
+        $('#saveHouseForm').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                // handle the invalid form...
+            } else {
+                e.preventDefault();
+                enableDisableButton(e.target, true);
+                $.post(
+                        '<?php echo site_url('house/save_house'); ?>',
+                        $(e.target).serialize(),
+                        function (response) {
+                            if (response.success) {
+                                alert("Success");
+                                setTimeout(function () {
+                                    dTable['tblHouses'].ajax.reload(null,true);
+                                    //$(e.target)[0].reset();
+                                    $("#saveHouseModal").modal('hide');
+                                }, 2000);
+                            } else {
+                                alert(response.message);
+                            }
+                            enableDisableButton(e.target, false);
+                        },
+                        'json');
+            }
+        });
     });
 </script>

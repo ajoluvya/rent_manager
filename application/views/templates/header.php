@@ -225,11 +225,11 @@
                                             <i class="fa fa-institution"></i> <span>Estates</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <!--li>
                                         <a href="<?php echo site_url("house"); ?>">
                                             <i class="fa fa-home"></i> <span>Houses</span>
                                         </a>
-                                    </li>
+                                    </li -->
                                 </ul>
                             </li>
                         <?php } ?>

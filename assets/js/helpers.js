@@ -25,7 +25,12 @@ function enableDisableButton(frm, status) {
 function edit_data(data_array, form) {
     $.each(data_array, function (key, val) {
         $.map($('#' + form + ' [name="' + key + '"]'), function (named_item) {
-            $(named_item).val(val).trigger('change');
+            if(named_item.type === 'radio' || named_item.type === 'checkbox' ){
+                $(named_item).prop("checked",(named_item.value==val?true:false));
+            }
+            else{
+                $(named_item).val(val).trigger('change');
+            }
         });
     });
 }
@@ -155,30 +160,39 @@ function draw_pie_chart(url_data) {
 
 /* Save function called when various buttons with .save are clicked */
 function saveData() {
-    $(".save").click(function () {
-        var fmid = $(this).closest("form");
-        var frmdata = fmid.serialize();
-        var tbl_id = fmid.attr("id");
-        $.ajax({
-            url: "save_data.php",
-            type: 'POST',
-            data: frmdata,
-            success: function (response) {
-                if ($.trim(response) == "success") {
-                    fmid[0].reset();
-                    showStatusMessage("Successfully added new record", "success");
-                    setTimeout(function () {
-                        var dt = dTable[tbl_id];
-                        dt.ajax.reload();
-                    }, 2000);
-                } else {//"Action not successful"
-                    showStatusMessage(response, "failed");
-                }
-
+    var fmid = $(this).closest("form");
+    var frmdata = fmid.serialize();
+    var tbl_id = fmid.attr("id");
+    $.ajax({
+        url: "save_data.php",
+        type: 'POST',
+        data: frmdata,
+        success: function (response) {
+            if ($.trim(response) == "success") {
+                fmid[0].reset();
+                showStatusMessage("Successfully added new record", "success");
+                setTimeout(function () {
+                    var dt = dTable[tbl_id];
+                    dt.ajax.reload();
+                }, 2000);
+            } else {//"Action not successful"
+                showStatusMessage(response, "failed");
             }
-        });
 
-        return false;
+        }
     });
+
+    return false;
 }
-	
+$(".modal").on("hide.bs.modal", function () {
+    // put your default event here
+    $('form', this)[0].reset();
+    //the assumption is that the input element with name=id will always be the first, cause of no other better selection criteria
+    //$('input[name$="id"]', this).val('');
+    $('input[name$="id"]:eq(0)', this).val('');
+});
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $($.fn.dataTable.tables(true)).DataTable()
+            .columns.adjust();
+    //.responsive.recalc()
+});	
