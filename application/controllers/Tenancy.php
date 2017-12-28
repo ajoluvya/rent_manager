@@ -129,8 +129,10 @@ class Tenancy extends CI_Controller {
         $this->form_validation->set_rules('house_id', 'House', 'required', array('required' => '%s has not been selected.'));
         $this->form_validation->set_rules('start_date', 'Start date', 'required|valid_date[d-m-Y]', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
         $this->form_validation->set_rules('end_date', 'End date', 'valid_date[d-m-Y]', array('valid_date' => '%s is invalid, required date format is dd-mm-yyyy.'));
-        $this->form_validation->set_rules('rent_rate', 'Amount', 'required|numeric', array('required' => '%s is missing.','numeric' => '%s must be a number.'));
+        $this->form_validation->set_rules('rent_rate', 'Amount', 'required|numeric', array('required' => '%s is missing.', 'numeric' => '%s must be a number.'));
         if ($this->form_validation->run() === FALSE) {
+            $this->load->model('timeInterval_model');
+            $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
             $this->load->view('templates/header', $data);
             $this->load->view('tenancy/create', $data);
             $this->load->view('templates/footer');
@@ -167,6 +169,8 @@ class Tenancy extends CI_Controller {
             $this->form_validation->set_rules('rent_rate', 'Amount', 'required|numeric', array('required' => '%s is missing.'));
 
             if ($this->form_validation->run() === FALSE) {
+                $this->load->model('timeInterval_model');
+                $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
                 $this->load->view('templates/header', $data);
                 $this->load->view('tenancy/create', $data);
                 $this->load->view('templates/footer');

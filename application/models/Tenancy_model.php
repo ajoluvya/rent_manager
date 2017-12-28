@@ -9,9 +9,9 @@ class Tenancy_model extends CI_Model {
     public function get_tenancy($filter = FALSE) {
         $this->db->select('`tenancy_id`, `tenancy`.`tenant_id`, `tenancy`.`house_id`, `tenancy`.`start_date`,'
                 . '`tenancy`.`end_date`, `tenancy`.`rent_rate`, `tenancy`.`time_interval_id`,'
-                . '`tenancy`.`time_interval_freq`, `tenancy`.`month_start_date`,`house_no`,`floor`,`estate_id`, `estate_name`, '
+                . '`tenancy`.`billing_freq`, `tenancy`.`billing_starts`,`house_no`,`floor`,`estate_id`, `estate_name`, '
                 . '`tenant`.`names`, `phone1`, `phone2`,`passport_photo`,`tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc`,'
-                . '(getDateDiff( `time_interval_id`, CURDATE(), FROM_UNIXTIME(`tenancy`.`end_date`) )*`time_interval_freq`) `date_diff`');
+                . '(getDateDiff( `time_interval_id`, CURDATE(), FROM_UNIXTIME(`tenancy`.`end_date`) )*`billing_freq`) `date_diff`');
         $this->db->from('tenancy');
         $this->db->join('tbl_time_interval', 'time_interval_id = tbl_time_interval.id');
         $this->db->join('tenant', 'tenant.tenant_id = tenancy.tenant_id');
@@ -35,7 +35,7 @@ class Tenancy_model extends CI_Model {
     }
 
     public function get_by_tenant_id($tenant_id = FALSE) {
-        $this->db->select('tenancy_id, tenancy.tenant_id, tenancy.house_id, tenancy.start_date, tenancy.rent_rate, house.house_no, house.estate_id, tenant.home_address, tenant.names, phone1, phone2');
+        $this->db->select('tenancy_id, tenancy.tenant_id, tenancy.house_id, `tenancy`.`time_interval_id`, tenancy.start_date, tenancy.rent_rate,`tenancy`.`billing_freq`, `tenancy`.`billing_starts`, house.house_no, house.estate_id, tenant.home_address, tenant.names, phone1, phone2');
         $this->db->from('tenancy');
         $this->db->join('tenant', 'tenant.tenant_id = tenancy.tenant_id');
         $this->db->join('house', 'house.house_id = tenancy.house_id');
@@ -65,9 +65,9 @@ class Tenancy_model extends CI_Model {
             'end_date' => $start_date,
             'rent_rate' => $this->input->post('rent_rate'),
             'time_interval_id' => $this->input->post('time_interval_id'),
-            'time_interval_freq' => $this->input->post('time_interval_freq'),
+            'billing_freq' => $this->input->post('billing_freq'),
             'full_payment' => $this->input->post('full_payment'),
-            'month_start_date' => $this->input->post('month_start_date'),
+            'billing_starts' => $this->input->post('billing_starts'),
             'created_by' => $_SESSION['user_id'],
             'date_created' => time(),
             'modified_by' => $_SESSION['user_id']

@@ -50,11 +50,15 @@
 <script type="text/javascript" src="<?php echo base_url("assets/js/form-validator/jquery.form-validator.min.js"); ?>"></script>
 <script type="text/javascript" src="<?php echo base_url("assets/js/helpers.js"); ?>"></script>
 <script>
-    $.validate();
+    //$.validate();
     $('.datepicker').datepicker({
+        autoclose: true,
         format: 'dd-mm-yyyy',
-        endDate: '0d',
-        startDate: '-3d'
+        startDate: '-3d',
+        endDate: '0d'
+    }).on('changeDate', function(e) {
+        $(e.target).trigger('change');
+        //$('form').validator('update');
     });
     $(document).ready(function () {
         $('.select2able').select2();

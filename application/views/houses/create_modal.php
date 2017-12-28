@@ -22,7 +22,7 @@
                 </div>
                 <?php endif;?>
                 <div class="form-group">
-                    <label class="control-label" for="house_no">Apartment/House/room No *</label>
+                    <label class="control-label" for="house_no">Apartment/House/Room No *</label>
                     <input type="text" class="form-control" id="house_no" name="house_no" value="<?php echo (set_value('house_no') != NULL) ? set_value('house_no') : (isset($house['house_no']) ? $house['house_no'] : ""); ?>" placeholder="E.g Room 21" required />
                 </div>
                 <div class="form-group">
@@ -72,10 +72,10 @@
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group" data-bind="with: time_interval">
-                    <label class="control-label" for="estate_name">Billing Starts *</label>
+                    <label class="control-label" for="period_starts">Billing Starts *</label>
                     <div>
                         <label class="radio-inline"><input type="radio" name="period_starts" value="1" <?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 1) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 1 ? "checked" : ""); ?> required/><span data-bind="text: period_start_array[id-1]">Start</span> that <span data-bind="text:description.toString().slice(0,-1).toLocaleLowerCase()">Period</span></label>                               
-                        <label class="radio-inline"><input type="radio" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
+                        <label class="radio-inline"><input type="radio" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified start <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
                         <!--div class="help-block with-errors"><i>When the billing should commence</i></div-->
                     </div>
                 </div>

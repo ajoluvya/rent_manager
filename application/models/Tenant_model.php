@@ -13,7 +13,7 @@ class Tenant_model extends CI_Model {
                 . '`rent_rate`, `house_no`,`floor`,`estate_name`, `estate_id`, `date_diff`');
         $this->db->from('tenant');
         $this->db->join('(SELECT `tenancy`.`tenancy_id`, `tenant_id`, `tenancy`.`house_id`,`start_date`,`end_date`,'
-                . '(getDateDiff( `time_interval_id`, CURDATE(), FROM_UNIXTIME(`end_date`) )*`time_interval_freq`) `date_diff`,'
+                . '(getDateDiff( `time_interval_id`, CURDATE(), FROM_UNIXTIME(`end_date`) )*`billing_freq`) `date_diff`,'
                 . '`rent_rate`, `house_no`, `time_interval_id`, `estate_id`,`floor`,`estate_name`,'
                 . '`tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc` FROM `tenancy`'
                 . 'JOIN `tbl_time_interval` ON `tbl_time_interval`.`id` = `tenancy`.`time_interval_id`'

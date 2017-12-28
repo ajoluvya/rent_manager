@@ -21,6 +21,7 @@ class House extends CI_Controller {
         $data['title'] = 'Houses';
         $data['sub_title'] = 'List of houses';
         $data['houses'] = $this->house_model->get_house();
+        $data['floors'] = $this->floors;
 
 
         $config['base_url'] = 'house/';

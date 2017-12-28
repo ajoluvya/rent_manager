@@ -1,5 +1,3 @@
-<!-- Main content -->
-<section class="content">
     <div class="row">
         <!-- left column -->
         <div class="col-md-6 col-md-offset-3">
@@ -16,7 +14,7 @@
                 <div class="box-body">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label for="tenant_id"><a href="<?= site_url("tenant/view/" . (isset($tenant_id) ? $tenant_id : set_value('tenant_id'))) ?>" title="View <?= ((isset($tenant_names)) ? $tenant_names : set_value('tenant_names')) ?>"><i class="fa fa-angle-double-left"></i> &nbsp;<?php echo ((isset($tenant_names)) ? $tenant_names : set_value('tenant_names')); ?></a></label>
+                            <label><a href="<?= site_url("tenant/view/" . (isset($tenant_id) ? $tenant_id : set_value('tenant_id'))) ?>" title="View <?= ((isset($tenant_names)) ? $tenant_names : set_value('tenant_names')) ?> details"><i class="fa fa-angle-double-left"></i> &nbsp;<?php echo ((isset($tenant_names)) ? $tenant_names : set_value('tenant_names')); ?></a></label>
                             <input type="hidden" id="tenant_id" name="tenant_id" value="<?php echo (isset($tenant_id) ? $tenant_id : set_value('tenant_id')); ?>">
                             <input type="hidden" id="tenant_names" name="tenant_names" value="<?php echo (isset($tenant_names)) ? $tenant_names : set_value('tenant_names'); ?>">
                         </div>
@@ -35,16 +33,38 @@
                             <div class="help-block with-errors"></div>
                         </div>
                     </div>
-                    <div class="form-group" data-bind="with: house">
+                    <!-- ko with: house -->
+                    <div class="form-group">
+                        <div class="col-md-4"><label>Description</label></div>
+                        <div class="col-md-8">
+                            <span data-bind="text: description">Billing Starts</span>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-md-4"><label>Billing Starts</label></div> 
+                        <div class="col-md-8">
+                            <span data-bind="text: parseInt(period_starts)==1?(period_start_array[parseInt(time_interval_id)-1]+' the immediate full'):'Specified start'">Start</span> <span data-bind="text:parseInt(period_starts)==1?((time_intervals[parseInt(time_interval_id)-1]['description']).toString().slice(0,-1).toLocaleLowerCase()):period_start_array2[time_interval_id-1]">Period</span>
+                            <input type="hidden" data-bind="value: <?php echo (set_value('time_interval_id') != NULL) ? set_value('time_interval_id') : (isset($tenancy['time_interval_id']) ? $tenancy['time_interval_id'] : "time_interval_id"); ?>" id="period_starts" name="time_interval_id" />                            <input type="hidden" data-bind="value: <?php echo (set_value('period_starts') != NULL) ? set_value('period_starts') : (isset($tenancy['period_starts']) ? $tenancy['period_starts'] : "period_starts"); ?>" id="period_starts" name="period_starts" />
+                        </div>
+                    </div>
+                        <div class="clearfix"></div>
+                    <div class="form-group">
                         <div class="col-md-4"><label for="rent_rate">Amount</label></div>
-                        <div class="col-md-8"><div class="input-group"><span class="input-group-addon">UGX</span><input type="text" class="form-control" data-bind="value: fixed_amount" id="rent_rate" name="rent_rate" value="<?php echo (set_value('rent_rate') != NULL) ? set_value('rent_rate') : (isset($tenancy['rent_rate']) ? $tenancy['rent_rate'] : ""); ?>" placeholder="Enter rent amount for this apartment" data-validation="number" data-validation-error-msg="Not a number/missing amount"></div>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">UGX</span>
+                                <input type="number" class="form-control" data-bind="value: fixed_amount" id="rent_rate" name="rent_rate" value="<?php echo (set_value('rent_rate') != NULL) ? set_value('rent_rate') : (isset($tenancy['rent_rate']) ? $tenancy['rent_rate'] : ""); ?>" placeholder="Rent amount for this apartment" data-error="Not a number/missing amount" />
+                            </div>
                             <div class="help-block with-errors"></div>
                         </div>
                     </div>
+                    <!--/ko -->
                     <div class="form-group">
-                        <div class="col-md-4"><label for="start_date">Start date</label></div>
+                        <div class="col-md-4"><label for="start_date">Entry date</label></div>
                         <div class="col-md-8">
-                            <div class="input-group"><input type="text" class="form-control datepicker" id="start_date" name="start_date" value="<?php echo (set_value('start_date') != NULL) ? set_value('start_date') : (isset($tenancy['start_date']) ? mdate("%d-%m-%Y", $tenancy['start_date']) : ""); ?>" placeholder="Enter start date"  data-error="Not a vaild date. Enter as dd-mm-yyyy" pattern="^(((0[1-9]|[12]\d|3[01])-(0[13578]|1[02])-((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)-(0[13456789]|1[012])-((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])-02-((19|[2-9]\d)\d{2}))|(29-02-((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$" data-provide="datepicker" required><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>
+                            <div class="input-group input-append date">
+                                <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="<?php echo (set_value('start_date') != NULL) ? set_value('start_date') : (isset($tenancy['start_date']) ? mdate("%d-%m-%Y", $tenancy['start_date']) : ""); ?>" placeholder="dd-mm-yyyy" data-required-error="Start date is required" data-pattern-error="Invalid format. Required format dd-mm-yyyy" pattern="^(((0[1-9]|[12]\d|3[01])-(0[13578]|1[02])-((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)-(0[13456789]|1[012])-((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])-02-((19|[2-9]\d)\d{2}))|(29-02-((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$" data-provide="datepicker" required/>
+                                <span class="input-group-addon add-on"><i class="fa fa-calendar"></i></span>
+                            </div>
                             <div class="help-block with-errors"></div>
                         </div>
                     </div>
@@ -55,7 +75,9 @@
                 </div><!-- /.box-body -->
 
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-primary"><?php echo isset($btn_text) ? $btn_text : "Submit"; ?></button>
+                    <div class="col-md-3 col-md-offset-4">
+                        <button type="submit" class="btn btn-primary"><?php echo isset($btn_text) ? $btn_text : "Submit"; ?></button>
+                    </div>
                 </div>
                 </form>
             </div><!-- /.box -->
@@ -63,6 +85,7 @@
         </div><!--/.col (left) -->
     </div>   <!-- /.row -->
     <script type="text/javascript">
+        time_intervals = <?php echo json_encode($time_intervals); ?>;
         $(document).ready(function () {
             var ViewModel = function () {
                 var self = this;
@@ -113,13 +136,20 @@
                     return (house_id == currentHouse.house_id);
                 }));
                 $('#house_id').val(house_id).trigger('change');
+                <?php if(set_value('time_interval_id') != NULL) {?>
+                     viewModel.house().time_interval_id = <?php echo set_value('time_interval_id'); ?> ;
+                <?php }
+                elseif(isset($tenancy['time_interval_id'])){ ?>
+                     viewModel.house().time_interval_id = <?php echo $tenancy['time_interval_id']; ?>;
+                <?php }
+                ?>
 <?php endif; ?>
 
 <?php if ((isset($tenancy['rent_rate']) && is_numeric($tenancy['rent_rate'])) || (isset($_POST['rent_rate']) && is_numeric($_POST['rent_rate']))): ?>
                 var rent_rate = <?= (isset($tenancy['rent_rate']) ? $tenancy['rent_rate'] : $_POST['rent_rate']) ?>
                 //we need to set the house object accordingly
                 //viewModel.house().rent_rate = rent_rate;
-                $('#house_id').val(rent_rate);
+                $('#rent_rate').val(rent_rate);
 <?php endif; ?>
         });
 
