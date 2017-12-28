@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2017 at 09:04 AM
+-- Generation Time: Dec 28, 2017 at 04:09 AM
 -- Server version: 5.7.9
 -- PHP Version: 5.6.16
 
@@ -248,8 +248,8 @@ CREATE TABLE IF NOT EXISTS `estate` (
 --
 
 INSERT INTO `estate` (`estate_id`, `estate_name`, `description`, `address`, `phone`, `phone2`, `district_id`, `time_interval_id`, `billing_freq`, `period_starts`, `full_payment`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
-(1, 'Wabyona plaza', 'Bweyogerere Estate', 'Plot 1601 Block 234,\r\nP O Box, 71187, Bweyogerere', '0782369372', '', 44, 0, 0, NULL, NULL, 0, 0, 0, '2017-11-29 17:48:43'),
-(2, 'Kigandanzi Plaza', 'Bweyogerere, Wakiso', 'Bweyogerere, Wakiso', '0782369372', '0752369372', 111, 0, 0, NULL, NULL, 0, 0, 0, '2017-11-29 17:48:43'),
+(1, 'Wabyona plaza', 'Bweyogerere Estate', 'Plot 1601 Block 234,\r\nP O Box, 71187, Bweyogerere', '0782369372', '', 44, 4, 1, 2, NULL, 0, 0, 2, '2017-12-14 01:09:17'),
+(2, 'Kigandanzi Plaza', 'Bweyogerere, Wakiso', 'Bweyogerere, Wakiso', '0782369372', '0752369372', 111, 4, 1, 2, NULL, 0, 0, 2, '2017-12-13 10:48:23'),
 (3, 'Musa Kasule Estates', 'Self Contained apartments and luxurious suites', 'Biina, Mutungo Kampala', '0772566734', '', 44, 4, 2, 1, 1, 2, 1513074947, 2, '2017-12-12 10:39:39');
 
 -- --------------------------------------------------------
@@ -265,15 +265,16 @@ CREATE TABLE IF NOT EXISTS `house` (
   `floor` tinyint(2) NOT NULL,
   `estate_id` tinyint(3) UNSIGNED NOT NULL,
   `description` varchar(100) DEFAULT NULL,
+  `max_tenants` tinyint(2) NOT NULL DEFAULT '1',
   `fixed_amount` decimal(10,0) UNSIGNED NOT NULL,
   `time_interval_id` int(2) NOT NULL,
-  `time_interval_freq` tinyint(2) NOT NULL COMMENT 'How often the above should be billed',
-  `month_start_date` tinyint(2) NOT NULL COMMENT 'Which day the month should start for this house',
+  `billing_freq` tinyint(2) NOT NULL COMMENT 'How often the above should be billed',
+  `period_starts` tinyint(2) NOT NULL COMMENT 'Which exactly the billing should happen',
   `full_payment` tinyint(1) DEFAULT NULL COMMENT 'Whether full amount should be paid each and everytime',
   `created_by` int(11) NOT NULL,
   `date_created` int(11) NOT NULL,
   `modified_by` int(11) NOT NULL,
-  `date_modified` int(11) NOT NULL,
+  `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`house_id`),
   KEY `estate_id` (`estate_id`),
   KEY `house_no` (`house_no`),
@@ -282,22 +283,23 @@ CREATE TABLE IF NOT EXISTS `house` (
   KEY `created_by` (`created_by`),
   KEY `modified_by` (`modified_by`),
   KEY `time_interval_id` (`time_interval_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `house`
 --
 
-INSERT INTO `house` (`house_id`, `house_no`, `floor`, `estate_id`, `description`, `fixed_amount`, `time_interval_id`, `time_interval_freq`, `month_start_date`, `full_payment`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
-(1, 'WP1', 0, 1, 'room next to the wash rooms', '2000000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(2, 'WP2', 0, 1, 'Found on ground floor', '1500000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(3, 'WP3', 0, 1, '', '1500000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(4, 'WP4', 0, 1, '', '800000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(5, 'WP5', 0, 1, '', '500000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(6, 'WP6', 0, 1, '', '300000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(7, 'WP7', 0, 1, '', '500000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(8, 'WP8', 0, 1, '', '400000', 0, 0, 0, NULL, 0, 0, 0, 0),
-(9, 'M4i3', 1, 2, 'Room next to the wash rooms', '250000', 0, 0, 0, NULL, 0, 0, 0, 0);
+INSERT INTO `house` (`house_id`, `house_no`, `floor`, `estate_id`, `description`, `max_tenants`, `fixed_amount`, `time_interval_id`, `billing_freq`, `period_starts`, `full_payment`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(1, 'WP1', 0, 1, 'room next to the wash rooms', 1, '2000000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-15 11:00:53'),
+(2, 'WP2', 0, 1, 'Found on ground floor', 1, '1500000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-15 11:00:29'),
+(3, 'WP3', 0, 1, 'Useful for guests from the West', 1, '1500000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-15 11:00:10'),
+(4, 'WP4', 0, 1, 'Nill', 1, '800000', 4, 1, 1, NULL, 0, 0, 2, '2017-12-15 15:42:13'),
+(5, 'WP5', 0, 1, 'Not specified', 1, '500000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-15 10:58:32'),
+(6, 'WP6', 0, 1, 'NA', 2, '300000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-15 10:57:44'),
+(7, 'WP7', 0, 1, 'The room reserved for Guests of Higher Value', 1, '500000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-15 10:57:15'),
+(8, 'WP8', 0, 1, 'The room right behind the kitchen area', 1, '400000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-15 14:31:14'),
+(9, 'M4i3', 0, 2, 'Room next to the wash rooms', 1, '250000', 4, 1, 2, NULL, 0, 0, 2, '2017-12-14 15:03:32'),
+(10, 'M4i6', 0, 2, '', 1, '300000', 4, 1, 2, NULL, 2, 1513262401, 2, '2017-12-14 14:40:01');
 
 --
 -- Triggers `house`
@@ -411,9 +413,9 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   `house_id` int(5) NOT NULL,
   `rent_rate` decimal(12,2) UNSIGNED NOT NULL,
   `time_interval_id` tinyint(2) NOT NULL DEFAULT '4' COMMENT 'The time interval for this tenancy',
-  `time_interval_freq` tinyint(2) NOT NULL DEFAULT '1',
+  `billing_freq` tinyint(2) NOT NULL DEFAULT '1',
   `full_payment` tinyint(1) DEFAULT NULL,
-  `month_start_date` tinyint(1) DEFAULT NULL,
+  `billing_starts` tinyint(1) DEFAULT NULL,
   `start_date` int(12) UNSIGNED NOT NULL,
   `end_date` int(12) UNSIGNED DEFAULT NULL,
   `date_created` int(11) NOT NULL,
@@ -435,7 +437,7 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
 -- Dumping data for table `tenancy`
 --
 
-INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `rent_rate`, `time_interval_id`, `time_interval_freq`, `full_payment`, `month_start_date`, `start_date`, `end_date`, `date_created`, `created_by`, `date_modified`, `modified_by`) VALUES
+INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `rent_rate`, `time_interval_id`, `billing_freq`, `full_payment`, `billing_starts`, `start_date`, `end_date`, `date_created`, `created_by`, `date_modified`, `modified_by`) VALUES
 (4, 5, 4, '650000.00', 4, 1, NULL, NULL, 1456876799, 1512259199, 0, 0, '2017-12-08 15:34:10', 0),
 (5, 6, 4, '800000.00', 4, 1, NULL, NULL, 1472947199, 1480550399, 0, 0, '2017-11-29 18:05:43', 0),
 (6, 3, 8, '400000.00', 4, 1, NULL, NULL, 1510790399, 1517011199, 0, 0, '2017-11-29 18:05:43', 0),
