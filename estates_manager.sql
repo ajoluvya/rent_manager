@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 28, 2017 at 04:09 AM
+-- Generation Time: Jan 19, 2018 at 03:53 PM
 -- Server version: 5.7.9
 -- PHP Version: 5.6.16
 
@@ -325,9 +325,10 @@ CREATE TABLE IF NOT EXISTS `payment` (
   `payment_date` int(10) UNSIGNED NOT NULL COMMENT 'Unix timestamp when payment was received',
   `account_id` int(11) UNSIGNED DEFAULT NULL COMMENT 'ID of the  Bank account through which payment was made',
   `particulars` varchar(200) NOT NULL COMMENT 'Details of payment',
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
+  `start_date` int(11) NOT NULL,
+  `end_date` int(11) NOT NULL,
   `rent_rate` decimal(12,2) NOT NULL,
+  `no_of_periods` smallint(6) NOT NULL,
   `amount` decimal(12,2) UNSIGNED NOT NULL,
   `created_by` int(10) UNSIGNED NOT NULL COMMENT 'Staff entering payment',
   `date_created` int(11) NOT NULL COMMENT 'Date this entry was entered into the database',
@@ -337,21 +338,22 @@ CREATE TABLE IF NOT EXISTS `payment` (
   KEY `fk_modified_by` (`modified_by`),
   KEY `tenancy_id` (`tenancy_id`) USING BTREE,
   KEY `fk_created_by` (`created_by`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `payment`
 --
 
-INSERT INTO `payment` (`payment_id`, `tenancy_id`, `payment_date`, `account_id`, `particulars`, `start_date`, `end_date`, `rent_rate`, `amount`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
-(2, 4, 1457999999, NULL, 'Accommodation for April - June', '2016-03-02', '2016-04-02', '650000.00', '650000.00', 1, 0, 2, '2017-11-23 22:59:36'),
-(4, 1, 1458863999, 2, 'Rent for March to April 2015', '0000-00-00', '0000-00-00', '0.00', '1200000.00', 1, 0, 0, '2017-11-22 06:01:30'),
-(6, 3, 1513814399, 2, 'Rent payment for June 2018 to January 2018', '0000-00-00', '0000-00-00', '0.00', '300000.00', 1, 0, 0, '2017-11-22 06:01:30'),
-(7, 4, 1511481599, NULL, 'The client has paid up all the accumulated balances as well as the forward balances', '2016-03-02', '2017-11-02', '650000.00', '13000000.00', 2, 1511472379, 2, '2017-11-23 21:26:19'),
-(8, 7, 1511567999, NULL, 'Thanks, well received', '2017-11-16', '2018-02-16', '350000.00', '1050000.00', 2, 1511524817, 2, '2017-11-24 12:00:17'),
-(9, 9, 1512777599, NULL, 'He has paid for this month', '2017-12-01', '2018-01-01', '1500000.00', '1500000.00', 2, 1512718422, 2, '2017-12-08 07:33:42'),
-(10, 4, 1512777599, NULL, 'htrtdfg', '2016-07-02', '2016-11-02', '650000.00', '2600000.00', 6, 1512746825, 6, '2017-12-08 15:27:05'),
-(11, 4, 1512777599, NULL, 'Fully cleared all the balances', '2016-11-02', '2017-12-02', '650000.00', '8450000.00', 6, 1512747250, 6, '2017-12-08 15:34:10');
+INSERT INTO `payment` (`payment_id`, `tenancy_id`, `payment_date`, `account_id`, `particulars`, `start_date`, `end_date`, `rent_rate`, `no_of_periods`, `amount`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(2, 4, 1457999999, NULL, 'Accommodation for April - June', 1456866000, 1459544400, '650000.00', 0, '650000.00', 1, 0, 2, '2018-01-18 08:44:50'),
+(4, 1, 1458863999, 2, 'Rent for March to April 2015', 0, 0, '0.00', 0, '1200000.00', 1, 0, 0, '2017-11-22 06:01:30'),
+(6, 3, 1513814399, 2, 'Rent payment for June 2018 to January 2018', 0, 0, '0.00', 0, '300000.00', 1, 0, 0, '2017-11-22 06:01:30'),
+(7, 4, 1511481599, NULL, 'The client has paid up all the accumulated balances as well as the forward balances', 1456866000, 1509570000, '650000.00', 0, '13000000.00', 2, 1511472379, 2, '2018-01-18 08:44:50'),
+(8, 7, 1511567999, NULL, 'Thanks, well received', 1510779600, 1518728400, '350000.00', 0, '1050000.00', 2, 1511524817, 2, '2018-01-18 08:44:50'),
+(9, 9, 1512777599, NULL, 'He has paid for this month', 1512075600, 1514754000, '1500000.00', 0, '1500000.00', 2, 1512718422, 2, '2018-01-18 08:44:50'),
+(10, 4, 1512777599, NULL, 'htrtdfg', 1467406800, 1478034000, '650000.00', 0, '2600000.00', 6, 1512746825, 6, '2018-01-18 08:44:50'),
+(11, 4, 1512777599, NULL, 'Fully cleared all the balances', 1478034000, 1512162000, '650000.00', 0, '8450000.00', 6, 1512747250, 6, '2018-01-18 08:44:50'),
+(12, 10, 1516147199, NULL, 'Payment for first semester', 1515445200, 1525813200, '800000.00', 1, '800000.00', 2, 1516108670, 2, '2018-01-18 08:44:50');
 
 -- --------------------------------------------------------
 
@@ -373,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `role` (
 INSERT INTO `role` (`role_code`, `role_name`) VALUES
 (1, 'Staff'),
 (2, 'Supervisor'),
-(3, 'Boss'),
+(3, 'Manager'),
 (4, 'Admin');
 
 -- --------------------------------------------------------
@@ -386,19 +388,21 @@ DROP TABLE IF EXISTS `tbl_time_interval`;
 CREATE TABLE IF NOT EXISTS `tbl_time_interval` (
   `id` tinyint(2) NOT NULL AUTO_INCREMENT,
   `label` varchar(1) NOT NULL,
-  `description` varchar(6) NOT NULL,
+  `description` varchar(10) NOT NULL,
+  `adjective` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COMMENT='The values in this table must rhyme with what is expected in the PHP date format';
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COMMENT='The values in this table must rhyme with what is expected in the PHP date format';
 
 --
 -- Dumping data for table `tbl_time_interval`
 --
 
-INSERT INTO `tbl_time_interval` (`id`, `label`, `description`) VALUES
-(1, 'h', 'Hours'),
-(2, 'd', 'Days'),
-(3, 'W', 'Weeks'),
-(4, 'm', 'Months');
+INSERT INTO `tbl_time_interval` (`id`, `label`, `description`, `adjective`) VALUES
+(1, 'h', 'Hours', 'Hourly'),
+(2, 'd', 'Days', 'Daily'),
+(3, 'w', 'Weeks', 'Weekly'),
+(4, 'M', 'Months', 'Monthly'),
+(5, 'Q', 'Quarters', 'Quarterly');
 
 -- --------------------------------------------------------
 
@@ -431,7 +435,7 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   KEY `time_interval_id` (`time_interval_id`),
   KEY `modified_by` (`modified_by`),
   KEY `created_by` (`created_by`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenancy`
@@ -442,8 +446,10 @@ INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `rent_rate`, `time
 (5, 6, 4, '800000.00', 4, 1, NULL, NULL, 1472947199, 1480550399, 0, 0, '2017-11-29 18:05:43', 0),
 (6, 3, 8, '400000.00', 4, 1, NULL, NULL, 1510790399, 1517011199, 0, 0, '2017-11-29 18:05:43', 0),
 (7, 7, 9, '250000.00', 4, 1, NULL, NULL, 1510790399, 1518728400, 0, 0, '2017-12-08 09:01:06', 0),
-(8, 2, 1, '2000000.00', 4, 1, NULL, NULL, 1511740799, 1511740799, 0, 0, '2017-11-29 18:05:43', 0),
-(9, 5, 2, '1500000.00', 4, 1, NULL, NULL, 1512086399, 1514840399, 0, 0, '2017-12-08 08:22:56', 0);
+(8, 2, 1, '2000000.00', 4, 1, NULL, 2, 1511740799, 1511740799, 0, 0, '2018-01-19 13:01:42', 2),
+(9, 5, 2, '1500000.00', 4, 1, NULL, NULL, 1512086399, 1514840399, 0, 0, '2017-12-08 08:22:56', 0),
+(10, 8, 2, '800000.00', 4, 4, NULL, NULL, 1515542399, 1525910399, 1515635121, 2, '2018-01-16 13:17:50', 2),
+(11, 1, 4, '800000.00', 4, 1, NULL, NULL, 1516147199, 1516147199, 1516214797, 2, '2018-01-17 18:46:37', 2);
 
 -- --------------------------------------------------------
 
