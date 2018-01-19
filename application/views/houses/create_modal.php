@@ -29,7 +29,7 @@
                     <label class="control-label" for="floor">Floor *</label>
                     <select id="floor" name="floor" class="form-control" required>
                         <?php foreach ($floors as $key => $floor): ?>
-                            <option value="<?php echo $key; ?>" <?php echo (set_select('floor', $key + 1) != NULL) ? "selected" : ((isset($house['floor']) && $key == $house['floor']) ? "selected" : ""); ?>><?php echo $floor; ?> floor</option>
+                            <option value="<?php echo $key + 1; ?>" <?php echo (set_select('floor', $key + 1) != NULL) ? "selected" : ((isset($house['floor']) && $key == $house['floor']) ? "selected" : ""); ?>><?php echo $floor; ?> floor</option>
                         <?php endforeach; ?>
                     </select>
                     <div class="help-block with-errors"></div>

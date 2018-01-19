@@ -1,5 +1,5 @@
-var period_start_array = ['1st minute', 'Midnight', 'Monday', '1st of'];
-var period_start_array2 = ['minute', 'hour', 'day', 'day'];//set options value afterwards
+var period_start_array = ['1st minute', 'Midnight', 'Monday', '1st of', '1st of the 1st month of'];
+var period_start_array2 = ['minute', 'hour', 'day', 'day', 'day of the 1st month'];//set options value afterwards
 var setOptionValue = function (propId) {
     return function (option, item) {
         if (item === undefined) {

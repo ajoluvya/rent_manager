@@ -1,9 +1,14 @@
 <div class="row">
-    <!-- left column -->
-    <div class="col-md-8 col-md-offset-2">
-        <!-- general form elements -->
-        <?php echo $create_modal; ?>
-    </div><!--/.col (left) -->
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-8 col-md-offset-2">
+                    <!-- general form elements -->
+                    <?php echo $create_modal; ?>
+                </div><!--/.col (left) -->
+            </div><!-- /.panel-body -->
+        </div><!-- /.panel -->
+    </div><!-- /.col-lg-12 -->
 </div>   <!-- /.row -->
 <script type="text/javascript">
     $(document).ready(function () {

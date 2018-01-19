@@ -17,6 +17,9 @@
 
         <!-- Daterangepicker CSS -->
         <link rel="stylesheet" href="<?php echo base_url("assets/css/daterangepicker.css"); ?>" />
+        
+        <!-- Bootstrap Datetimeepicker CSS
+        <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap-datetimepicker.css"); ?>" /> -->
 
         <!-- Select 2 CSS -->
         <link rel="stylesheet" href="<?php echo base_url("assets/css/select2.min.css"); ?>" />
@@ -130,6 +133,13 @@
                                         <?php } ?>
                                     </li>
                                 </ul>
+                            </li>
+                            <li class="user user-menu">
+                                <?php if (isset($_SESSION['user_id'])) { ?>
+                                <a href="<?php echo site_url("user/logout/"); ?>" title="Log off" class="text-danger"> <i class="fa fa-power-off"></i></a>
+                                <?php } else {?>
+                                <a href="<?php echo site_url("user/login/"); ?>" class="text-primary"> <i class="fa fa-lock"></i></a>
+                                <?php } ?>
                             </li>
                         </ul>
                     </div>

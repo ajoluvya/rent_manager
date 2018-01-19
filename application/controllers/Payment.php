@@ -119,10 +119,12 @@ class Payment extends CI_Controller {
             $this->form_validation->set_rules('rent_rate', 'Rent rate', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('amount', 'Amount paid', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('payment_date', 'Date of payment', 'required|datetime', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
-            $this->form_validation->set_rules('no_of_months', 'No of months', 'required|numeric', array('required' => '%s is missing.', 'numeric' => '%s is invalid, enter a number.'));
+            $this->form_validation->set_rules('no_of_periods', 'No of periods', 'required|greater_than[0]', array('required' => '%s is missing.', 'greater_than' => '%s is less than 1.'));
             $this->form_validation->set_rules('start_date', 'Start date', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('end_date', 'End date', 'required', array('required' => '%s is missing.'));
             if ($this->form_validation->run() === FALSE) {
+                $this->load->model('timeInterval_model');
+                $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
                 $this->load->view('templates/header', $data);
                 $this->load->view('payments/create', $data);
                 $this->load->view('templates/footer');
@@ -163,7 +165,7 @@ class Payment extends CI_Controller {
             $this->form_validation->set_rules('rent_rate', 'Rent rate', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('amount', 'Amount paid', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('payment_date', 'Date of payment', 'required|datetime', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
-            $this->form_validation->set_rules('no_of_months', 'No of months', 'required|numeric', array('required' => '%s is missing.', 'numeric' => '%s is invalid, enter a number.'));
+            $this->form_validation->set_rules('no_of_periods', 'No of periods', 'required|greater_than[0]', array('required' => '%s is missing.', 'greater_than' => '%s is less than 1.'));
             $this->form_validation->set_rules('start_date', 'Start date', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('end_date', 'End date', 'required', array('required' => '%s is missing.'));
 
@@ -201,8 +203,8 @@ class Payment extends CI_Controller {
         if (isset($_SESSION['role']) && $_SESSION['role'] < 3) {
             $this->index();
         }
-            $data['title'] = 'Payments';
-            $data['sub_title'] = 'Payment record deleted';
+        $data['title'] = 'Payments';
+        $data['sub_title'] = 'Payment record deleted';
         if ($payment_id != NULL) {
             $this->payment_model->del_payment($payment_id);
 
@@ -219,4 +221,5 @@ class Payment extends CI_Controller {
             $this->load->view('templates/footer');
         }
     }
+
 }
