@@ -9,8 +9,7 @@ var setOptionValue = function (propId) {
         }
     };
 };
-function confirm_delete(delValue)
-{
+function confirm_delete(delValue){
     var really = confirm("Do you really want to delete " + delValue + "?");
     return really;
 }
@@ -157,7 +156,6 @@ function draw_pie_chart(url_data) {
             }]
     });
 }
-
 /* Save function called when various buttons with .save are clicked */
 function saveData() {
     var fmid = $(this).closest("form");

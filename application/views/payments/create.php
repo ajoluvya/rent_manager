@@ -146,7 +146,49 @@
             self.start_date = ko.observable("<?php echo ((isset($tenancy['end_date']) && $tenancy['end_date'] != "") ? $tenancy['end_date'] : $tenancy['start_date']); ?>");
 
             self.no_of_periods = ko.observable(<?php echo ((isset($payment['no_of_periods']) && is_numeric($payment['no_of_periods'])) ? $payment['no_of_periods'] : 1); ?>);
-
+            
+            if(self.s_date === self.e_date && <?php echo $tenancy['billing_starts']; ?> === 1 ){ //we can tell, at this point, that its the first payment to be made
+                //based on the time interval id, the start time, we are able to push the time to the start point of the next hour/day/week/month/quarter
+                switch(<?php echo $tenancy['time_interval_id']; ?>){
+                    case 1: // for hourly rent rates
+                        var start_time = moment(self.start_date(),'X');
+                        var minutes = start_time.minute();
+                        start_time.add(60-minutes,'m');
+                        start_time.startOf('hour');
+                        self.start_date(start_time.format('X'));
+                        break;
+                    case 2: // for daily rent rates
+                        var start_time = moment(self.start_date(),'X');
+                        var hours = start_time.hour();
+                        start_time.add(24-hours,'h');
+                        start_time.startOf('day');
+                        self.start_date(start_time.format('X'));
+                        break;
+                    case 3: // for weekly rent rates
+                        var start_time = moment(self.start_date(),'X');
+                        var day = start_time.day();
+                        start_time.add(7-day+1,'d');
+                        start_time.startOf('week');
+                        self.start_date(start_time.format('X'));
+                        break;
+                    case 4: // for monthly rent rates
+                        var start_time = moment(self.start_date(),'X');
+                        var date_month = start_time.date();
+                        start_time.add(start_time.daysInMonth()-date_month+1,'d');
+                        start_time.startOf('month');
+                        self.start_date(start_time.format('X'));
+                        break;
+                    case 5: // for quarterly rent rates
+                        var start_time = moment(self.start_date(),'X');
+                        var startOf_qtr = moment(self.start_date(),'X').startOf('quarter');
+                        if(startOf_qtr.isBefore(start_time, 'day')){
+                            start_time.add(1,'Q');
+                        }
+                        start_time.startOf('quarter');
+                        self.start_date(start_time.format('X'));
+                        break;
+                }
+            }
             self.total_amount = ko.computed(function () {
                 var rent_rate = <?php echo $tenancy['rent_rate']; ?>;
                 if (self.no_of_periods()) {
@@ -156,7 +198,7 @@
             });
 
             self.end_date = ko.computed(function () {
-                return moment(self.start_date(), 'X').add(self.no_of_periods()*<?php echo $tenancy['billing_freq']; ?>, ('<?php echo $tenancy['label']; ?>'));
+                return moment(self.start_date(), 'X').add(self.no_of_periods()*<?php echo $tenancy['billing_freq']; ?>, '<?php echo $tenancy['label']; ?>');
             });
         };
         ko.applyBindings(new PaymentModel());
