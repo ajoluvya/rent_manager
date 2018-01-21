@@ -9,13 +9,12 @@ class Tenant_model extends CI_Model {
     public function get_tenant($filter = FALSE) {
         $this->db->select('`tenant`.`tenant_id`, `names`, `phone1`, `phone2`, `home_address`,`label`,'
                 . '`period_desc`, `district`, `tenant`.`district_id`, `tenant`.`date_created`, `passport_photo`,'
-                . ' `id_card_no`, `id_card_url`, `tenancy_id`, `tenant`.`status`, `house_id`, `start_date`,`end_date`,'
-                . '`rent_rate`, `house_no`,`floor`,`estate_name`, `estate_id`, `date_diff`');
+                . ' `id_card_no`, `id_card_url`, `tenancy_id`, `status`, `house_id`, `start_date`, `end_date`,`exit_date`, '
+                . '`rent_rate`, `house_no`,`floor`,`estate_name`, `estate_id`, `status`,`billing_freq`,`time_interval_id`');
         $this->db->from('tenant');
         $this->db->join('(SELECT `tenancy`.`tenancy_id`, `tenant_id`, `tenancy`.`house_id`,`start_date`,`end_date`,'
-                . '(getDateDiff( `time_interval_id`, CURDATE(), FROM_UNIXTIME(`end_date`) )*`billing_freq`) `date_diff`,'
-                . '`rent_rate`, `house_no`, `time_interval_id`, `estate_id`,`floor`,`estate_name`,'
-                . '`tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc` FROM `tenancy`'
+                . '`rent_rate`, `house_no`, `time_interval_id`, `estate_id`, `floor`, `estate_name`, `status`, `tenancy`.`billing_freq`, '
+                . '`exit_date`, `tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc` FROM `tenancy`'
                 . 'JOIN `tbl_time_interval` ON `tbl_time_interval`.`id` = `tenancy`.`time_interval_id`'
                 . 'JOIN (SELECT `house_id`,`house_no`,`floor`,`estate_name`, `house`.`estate_id`'
                 . ' FROM `house` JOIN `estate` ON `house`.`estate_id`=`estate`.`estate_id`) `estate_house`'

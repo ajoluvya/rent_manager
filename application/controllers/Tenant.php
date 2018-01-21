@@ -15,28 +15,24 @@ class Tenant extends CI_Controller {
     }
 
     public function index() {
-        $this->load->helper('form');
-        $this->load->library('pagination');
-
-        $where = "";
-
-        if ($this->input->post('search') != "") {
-            $where .= "names LIKE '%{$this->input->post('search')}%'";
-        }
-
         $data['title'] = 'Tenants';
         $data['sub_title'] = 'List of tenants';
-        $data['tenants'] = $this->tenant_model->get_tenant($where);
-
-        $config['base_url'] = 'tenant/';
-        $config['total_rows'] = count($data['tenants']);
-
-        $data['pag_links'] = $this->pagination->create_links();
-
+        $this->load->model('timeInterval_model');
+        $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
 
         $this->load->view('templates/header', $data);
         $this->load->view('tenants/index');
         $this->load->view('templates/footer');
+    }
+
+    public function tenantsJsonList($status = FALSE) {
+        $this->load->helper('form');
+        $where = "";
+        if ($this->input->post('start_date') != "") {
+            $where .= "start_date = '{$this->input->post('start_date')}'";
+        }
+        $tenants['data'] = $this->tenant_model->get_tenant();
+        echo json_encode($tenants);
     }
 
     public function view($tenant_id = NULL) {
@@ -127,8 +123,8 @@ class Tenant extends CI_Controller {
         if (!is_dir($config["upload_path"])) {
             mkdir($config["upload_path"], 0777, true);
         } else {
-            if (file_exists($config["upload_path"]."/".$previous_file)) {
-                unlink($config["upload_path"]."/".$previous_file);
+            if (file_exists($config["upload_path"] . "/" . $previous_file)) {
+                unlink($config["upload_path"] . "/" . $previous_file);
             }
         }
         $this->upload->initialize($config);
@@ -169,13 +165,13 @@ class Tenant extends CI_Controller {
                 //upload the photos
                 $this->load->library('upload');
                 $photo_urls = array();
-                if (!empty($_FILES['id_card_url'])&&isset($_FILES['id_card_url']['name'])) {
+                if (!empty($_FILES['id_card_url']) && isset($_FILES['id_card_url']['name'])) {
                     $id_card_file_data = $this->process_upload('id_card_url', `tenants`, $data['tenant']['id_card_url']);
                     if (isset($id_card_file_data['file_name'])) {
                         $photo_urls['id_card_url'] = $id_card_file_data['file_name'];
                     }
                 }
-                if (!empty($_FILES['passport_photo'])&&isset($_FILES['passport_photo']['name'])) {
+                if (!empty($_FILES['passport_photo']) && isset($_FILES['passport_photo']['name'])) {
                     $passport_photo_data = $this->process_upload('passport_photo', 'tenants', $data['tenant']['passport_photo']);
 
                     if (isset($passport_photo_data['file_name'])) {
