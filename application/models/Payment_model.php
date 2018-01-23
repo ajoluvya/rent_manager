@@ -7,10 +7,10 @@ class Payment_model extends CI_Model {
     }
 
     public function get_payment($filter = FALSE) {
-        $this->db->select('`payment_id`, `payment`.`tenancy_id`, `tenant_id`, `payment_date`, `particulars`, payment.`start_date`, payment.`end_date`, TIMESTAMPDIFF(MONTH, payment.`start_date`, payment.`end_date`) `no_of_months`, `amount`, `no_of_periods`, `created_by`, `account`.`acc_id`, `bank_name`, `acc_no`, `names`, `house_id`, `house_no`,`floor`');
+        $this->db->select('`payment_id`, `payment`.`tenancy_id`, `tenant_id`, `payment_date`, `particulars`, payment.`start_date`, payment.`end_date`, `amount`, `no_of_periods`, `created_by`, `account`.`acc_id`, `bank_name`, `acc_no`, `names`, `house_id`, `house_no`,`floor`, `label`, `period_desc`, `billing_starts`, `billing_freq`, `time_interval_id`');
         $this->db->from('payment');
         $this->db->join('account', 'account.acc_id = payment.account_id', 'left');
-        $this->db->join("(SELECT `tenant`.`tenant_id`, `names`,`tenant_house`.`tenancy_id`,`start_date`, `end_date`, `house_id`, `house_no`,`floor` FROM `tenant` JOIN (SELECT `tenancy_id`, `start_date`, `end_date`, `tenant_id`, `tenancy`.`house_id`, `house_no`,`floor` FROM `tenancy` JOIN `house` ON `house`.`house_id`=`tenancy`.`house_id`) `tenant_house` ON `tenant`.`tenant_id` = `tenant_house`.`tenant_id`) `tenancy_house`", '`tenancy_house`.`tenancy_id` = `payment`.`tenancy_id`');
+        $this->db->join("(SELECT `tenant`.`tenant_id`, `names`,`tenant_house`.`tenancy_id`,`start_date`, `end_date`, `house_id`, `house_no`,`floor`, `label`, `period_desc`, `billing_freq`, `billing_starts`, `time_interval_id` FROM `tenant` JOIN (SELECT `tenancy_id`, `start_date`, `end_date`, `tenant_id`, `tenancy`.`house_id`, `house_no`,`floor`, `tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc`, `tenancy`.`billing_starts`, `tenancy`.`billing_freq`, `tenancy`.`time_interval_id` FROM `tenancy` JOIN `house` ON `house`.`house_id`=`tenancy`.`house_id` JOIN `tbl_time_interval` ON `tbl_time_interval`.`id` = `tenancy`.`time_interval_id`) `tenant_house` ON `tenant`.`tenant_id` = `tenant_house`.`tenant_id`) `tenancy_house`", '`tenancy_house`.`tenancy_id` = `payment`.`tenancy_id`');
         $this->db->order_by('`payment`.`payment_date` ASC');
 
         if ($filter == FALSE) {

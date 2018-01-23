@@ -9,6 +9,26 @@ var setOptionValue = function (propId) {
         }
     };
 };
+function printPageSection(sectionId,cssLinkTag) {
+    var printContent = document.getElementById(sectionId);
+    var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+    WinPrint.document.write('<link rel="stylesheet" href="'+cssLinkTag+'">');
+    WinPrint.document.write('<style>.hidden-print{display:none}</style>');
+    WinPrint.document.write(printContent.innerHTML);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+}
+function zeroFill(number, width)
+{
+    width -= number.toString().length;
+    if (width > 0)
+    {
+        return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
+    }
+    return number + ""; // always return a string
+}
 function confirm_delete(delValue){
     var really = confirm("Do you really want to delete " + delValue + "?");
     return really;
@@ -184,10 +204,12 @@ function saveData() {
 }
 $(".modal").on("hide.bs.modal", function () {
     // put your default event here
-    $('form', this)[0].reset();
-    //the assumption is that the input element with name=id will always be the first, cause of no other better selection criteria
-    //$('input[name$="id"]', this).val('');
-    $('input[name$="id"]:eq(0)', this).val('');
+    if($('form', this).length){
+        $('form', this)[0].reset();
+        //the assumption is that the input element with name=id will always be the first, cause of no other better selection criteria
+        //$('input[name$="id"]', this).val('');
+        $('input[name$="id"]:eq(0)', this).val('');
+    }
 });
 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     $($.fn.dataTable.tables(true)).DataTable()

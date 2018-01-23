@@ -7,13 +7,13 @@ class Tenant_model extends CI_Model {
     }
 
     public function get_tenant($filter = FALSE) {
-        $this->db->select('`tenant`.`tenant_id`, `names`, `phone1`, `phone2`, `home_address`,`label`,'
+        $this->db->select('`tenant`.`tenant_id`, `names`, `phone1`, `phone2`, `home_address`,`label`, `billing_starts`,'
                 . '`period_desc`, `district`, `tenant`.`district_id`, `tenant`.`date_created`, `passport_photo`,'
                 . ' `id_card_no`, `id_card_url`, `tenancy_id`, `status`, `house_id`, `start_date`, `end_date`,`exit_date`, '
                 . '`rent_rate`, `house_no`,`floor`,`estate_name`, `estate_id`, `status`,`billing_freq`,`time_interval_id`');
         $this->db->from('tenant');
-        $this->db->join('(SELECT `tenancy`.`tenancy_id`, `tenant_id`, `tenancy`.`house_id`,`start_date`,`end_date`,'
-                . '`rent_rate`, `house_no`, `time_interval_id`, `estate_id`, `floor`, `estate_name`, `status`, `tenancy`.`billing_freq`, '
+        $this->db->join('(SELECT `tenancy`.`tenancy_id`, `tenant_id`, `tenancy`.`house_id`,`start_date`,`end_date`,`rent_rate`, `house_no`, '
+                . '`time_interval_id`, `estate_id`, `floor`, `estate_name`, `status`, `tenancy`.`billing_freq`, `tenancy`.`billing_starts`, '
                 . '`exit_date`, `tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc` FROM `tenancy`'
                 . 'JOIN `tbl_time_interval` ON `tbl_time_interval`.`id` = `tenancy`.`time_interval_id`'
                 . 'JOIN (SELECT `house_id`,`house_no`,`floor`,`estate_name`, `house`.`estate_id`'

@@ -8,7 +8,7 @@ class Tenancy_model extends CI_Model {
 
     public function get_tenancy($filter = FALSE) {
         $this->db->select('`tenancy_id`, `tenancy`.`tenant_id`, `tenancy`.`house_id`, `tenancy`.`start_date`,'
-                . '`tenancy`.`end_date`, `tenancy`.`rent_rate`, `tenancy`.`time_interval_id`,`tenancy`.`billing_freq`, `status`, `exit_date`'
+                . '`tenancy`.`end_date`, `tenancy`.`rent_rate`, `tenancy`.`time_interval_id`,`tenancy`.`billing_freq`, `status`, `exit_date`,'
                 . '`tenancy`.`billing_starts`,`house_no`,`floor`,`estate_id`, `estate_name`, `tenant`.`names`, `phone1`, `phone2`,'
                 . '`passport_photo`,`tbl_time_interval`.`label`,`tbl_time_interval`.`description` `period_desc`,`tbl_time_interval`.`adjective`,'
                 . '(getDateDiff( `time_interval_id`, CURDATE(), FROM_UNIXTIME(`tenancy`.`end_date`) )*`billing_freq`) `date_diff`');
@@ -99,9 +99,12 @@ class Tenancy_model extends CI_Model {
 
     public function update_tenancy_end_date($tenancy_id) {
         $date_array = explode('-', $this->input->post('end_date'));
-
+        $hour_min = $this->input->post('hour_select') . $this->input->post('min_select');
+        $start_date = count($date_array)==3?mysql_to_unix($date_array[0] . $date_array[1] . $date_array[2] . (($hour_min?$hour_min:"0000")."00")):$this->input->post('end_date');
+        
         $data = array(
-            'end_date' => mysql_to_unix($date_array[0] . $date_array[1] . $date_array[2] . "235959")
+            'end_date' => $start_date,
+            'exit_date' => $start_date
         );
         $this->db->where('tenancy_id', $tenancy_id);
         return $this->db->update('tenancy', $data);

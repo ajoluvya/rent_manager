@@ -15,31 +15,26 @@ class Payment extends CI_Controller {
 
     public function index() {
         $this->load->helper('form');
-        $this->load->library('pagination');
-
-        $where = "";
-        if ($this->input->post('start') != "" && $this->input->post('end') != "") {
-
-            $where = "(payment_date BETWEEN " . $this->input->post('start') . " AND " . $this->input->post('end') . ")";
-        }
-
-        if ($this->input->post('search') != "") {
-            $where .= ((strlen($where) > 1) ? " AND" : "") . " names LIKE '%{$this->input->post('search')}%'";
-        }
 
         $data['title'] = 'Payments';
-        $data['sub_title'] = 'All payments';
-        $data['payments'] = $this->payment_model->get_payment($where);
+        $data['sub_title'] = 'Payments and non-payments';
 
-
-        $config['base_url'] = 'account/';
-        $config['total_rows'] = count($data['payments']);
-
-        $data['pag_links'] = $this->pagination->create_links();
+        $data['paymentReceiptModal'] = $this->load->view('payments/paymentReceiptModal', NULL, TRUE);
 
         $this->load->view('templates/header', $data);
         $this->load->view('payments/index');
         $this->load->view('templates/footer');
+    }
+
+    public function paymentsJsonList($status = FALSE) {
+        $this->load->helper('form');
+        $where = "";
+        if ($this->input->post('start_date') != "" && $this->input->post('end_date') != "") {
+
+            $where = "(`payment_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
+        }
+        $payments['data'] = $this->payment_model->get_payment($where);
+        echo json_encode($payments);
     }
 
     public function view($payment_id = NULL) {
@@ -130,8 +125,8 @@ class Payment extends CI_Controller {
                 $this->load->view('templates/footer');
             } else {
                 $payment_id = $this->payment_model->set_payment();
-                $this->tenancy_model->update_tenancy_end_date($tenancy_id);
-                $this->view($payment_id);
+                $this->tenancy_model->update_tenancy_dates($tenancy_id);
+                redirect("payment/view$payment_id");
             }
         } else {
             $data['sub_title'] = 'No data';
@@ -151,6 +146,8 @@ class Payment extends CI_Controller {
         if ($payment_id != NULL) {
             $this->load->helper('form');
             $this->load->library('form_validation');
+            $this->load->model('timeInterval_model');
+            $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
 
             $data['title'] = 'Payment';
             $data['sub_title'] = 'Update payment details';

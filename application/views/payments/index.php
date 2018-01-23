@@ -15,15 +15,15 @@
                             <input type="hidden" name="end" id="endDate"/>
                             </form>
                         </div>
-                        <table class="table table-striped table-condensed table-hover dynamicTables">
+                        <table class="table table-striped table-condensed table-hover" id="tblPayments">
                             <thead>
                                 <tr>
-                                    <th>Receipt No</th>
                                     <th>Date</th>
                                     <th>Tenant</th>
                                     <th>House</th>
                                     <th>Payment for</th>
-                                    <th>Amount</th>
+                                    <th>Amount (UGX)</th>
+                                    <th>Receipt</th>
                                     <!--th>Bank account</th-->
                                     <!-- If the estates owner/admin is logged in -->
                                     <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
@@ -33,42 +33,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $total_cash = 0;
-                                if (!empty($payments)):
-                                    ?>
-                                    <?php foreach ($payments as $payment): ?>
-                                        <tr>
-                                            <td>
-                                                <a href="<?php echo site_url("payment/view/{$payment['payment_id']}"); ?>" title="Receipt"><?php echo $payment['payment_id']; ?></a>
-                                            </td>
-                                            <td><?php echo mdate("%j%S %M, %Y", $payment['payment_date']); ?></td>
-                                            <td><a href="<?php echo site_url("tenant/view/{$payment['tenant_id']}"); ?>" title="Tenant details"><?php echo $payment['names']; ?></a></td>
-                                            <td><a href="<?php echo site_url("house/view/{$payment['house_id']}"); ?>" title="House details"><?php echo $payment['house_no']; ?></a></td>
-                                            <td><?php echo mdate('%j%S %M, %Y', $payment['start_date']); ?> - <?php echo mdate('%j%S %M, %Y', $payment['end_date']); ?></td>
-                                            <td><?php
-                                                echo number_format($payment['amount']);
-                                                $total_cash += $payment['amount'];
-                                                ?></td>
-                                            <!--td><?php if (isset($payment['acc_id'])): ?><?php echo $payment['acc_no']; ?>, <?php echo $payment['bank_name']; ?><?php endif; ?></td-->
-
-                                            <!-- If the estates owner/admin is logged in -->
-                                            <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
-                                                <td>
-                                                    <a href="<?php echo site_url("payment/update/{$payment['payment_id']}"); ?>" title="Update payment details" ><span class="fa fa-edit"></span></a>
-                                                </td>
-                                                <td>
-                                                    <a href="<?php echo site_url("payment/del_payment/{$payment['payment_id']}"); ?>" onclick="return confirm_delete('<?php echo "the payment Ref#" . $payment['payment_id']; ?>');" title="Delete"><span class="fa fa-trash text-danger"></span></a>
-                                                </td>
-                                            <?php } ?>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="5">TOTAL (UGX)</th>
-                                    <th><?php echo number_format($total_cash); ?></th>
+                                    <th colspan="4">TOTAL (UGX)</th>
+                                    <th></th>
+                                    <th></th>
                                     <!--th>&nbsp;</th-->
                                     <!-- If the estates owner/admin is logged in -->
                                     <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
@@ -77,30 +47,146 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <?php echo $pag_links; ?>
                     </div><!-- /.box -->
                 </div><!-- /.col-lg-12 -->
             </div><!-- /.panel-body -->
         </div><!-- /.panel -->
     </div><!-- /.col-lg-12 -->
 </div><!-- /.row -->
-<script type="text/javascript">
-    $(function () {
-
-        var start = moment(<?php echo (set_value('start') != NULL) ? (set_value("start") . ",'X')") : ").startOf('month')"; ?>;
-                var end = moment(<?php echo (set_value('end') != NULL) ? set_value("end") . ",'X'" : ""; ?>);
-        function cb(start, end) {
-            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    <?php echo $paymentReceiptModal; ?>
+<script>
+     
+    $(document).ready(function () {
+        var ViewModel = function () {
+            var self = this;
+            self.payment_receipt = ko.observable();
+        };
+        viewModel = new ViewModel();
+        ko.applyBindings(viewModel);
+        
+        var dTable = {}, endDate = moment(), startDate = moment().startOf('month');
+        var handleDataTableButtons = function() {
+            if ($("#tblPayments").length) {
+                   dTable['tblPayments'] = $('#tblPayments').DataTable({
+                        "dom": '<".col-md-7"B><".col-md-2"l><".col-md-3"f>rt<".col-md-7"i><".col-md-5"p>',
+                        "order": [[0, 'desc']],
+                        "buttons": [
+                            'copy', 'excel', 'print'//, 'pdf'
+                        ],
+                        "deferRender": true,
+                        "ajax": {
+                            "url":"<?php echo site_url("payment/paymentsJsonList")?>",
+                            "dataType": "JSON",
+                            "type": "POST",
+                            "data": function(d){
+                                d.start_date = startDate.format('X');
+                                d.end_date = endDate.format('X');
+                            }
+                        },
+                         "columnDefs": [ {
+                         "targets": [5<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,6,7<?php } ?>],
+                         "orderable": false,
+                         "searchable": false
+                         }],
+			"footerCallback": function (tfoot, data, start, end, display ) {
+				var api = this.api();
+				var pageTotal = api.column(4, { page: 'current'}).data().sum();
+				var total = api.column(4).data().sum();
+                                $(api.column(4).footer()).html( curr_format(pageTotal) + ' (' + curr_format(total) + ')' );
+			},
+                        "columns":[
+                            { data: 'payment_date', render: function( data, type, full, meta ) {
+                                    if(data){
+                                        ret_val = moment(data,'X').format('Do-MMM-YYYY');
+                                        if(type == 'filter'){
+                                        }
+                                        if(type == 'sort'){
+                                            return data;
+                                        }
+                                        return ret_val;
+                                    }
+                                    return '';
+                                }
+                            },
+                            { data: 'names', render: function( data, type, full, meta ) { return '<a href="<?php echo site_url("tenant/view"); ?>/'+full.tenant_id+'" title="'+data+'\'s details">'+data+'</a>'; } },
+                            { data: 'house_no', render: function( data, type, full, meta ) {return data?('<a href="<?php echo site_url("house/view"); ?>/'+full.house_id+'" title="'+data+'s details">'+data+'</a>'):'';}},
+                            { data: 'start_date', render: function( data, type, full, meta ) {
+                                    if(data){
+                                        get_time_range_display(data, full.end_date, full.time_interval_id, full.billing_starts, full.label);
+                                        if(type == 'sort'){
+                                            return data;
+                                        }
+                                        return ret_val;
+                                    }
+                                    return '';
+                                }
+                            },
+                            { data: 'amount', render: function( data, type, full, meta ) {return data?curr_format(parseInt(data)):'';}},
+                            { data: 'payment_id', render: function( data, type, full, meta ) {
+                                    receipt_link = '<?php echo site_url("payment/view"); ?>/'+data;
+                                        return '<a href="'+receipt_link+'" title="Display receipt" ><span class="fa fa-file-o"></span></a>';
+                                }
+                            }
+                            // If the estates owner/admin is logged in 
+                            <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>,
+                            { data: 'payment_id', render: function( data, type, full, meta ) {
+                                    tenant_link = '<?php echo site_url("payment/update"); ?>/'+data;
+                                    return '<a href="'+tenant_link+'" title="Update payment details" ><span class="fa fa-edit"></span></a>';
+                                }
+                            },
+                            { data: 'payment_id', render: function( data, type, full, meta ) {
+                                    return '<a href="<?php echo site_url("payment/del_payment"); ?>/'+data+'" onclick="return confirm_delete(\'the payment Ref#' + data + '\');" title="Delete"><span class="fa fa-trash text-danger"></span></a>';
+                                }
+                            }
+                            <?php endif; ?>
+                            ]
+                    });
+            }
+        };
+        TableManageButtons = function() {
+            "use strict";
+            return {
+                init: function() {
+                    handleDataTableButtons();
+                }
+            };
+        }();
+        TableManageButtons.init();
+        //clicking the update icon
+        $('table tbody').on('click', '.payment_receipt', function () {            
+            var row = $(this).closest("tr");
+            var tbl = row.parent().parent();
+            var dt = dTable[$(tbl).attr("id")];
+            var data = dt.row(row).data();
+            if (typeof (data) === 'undefined') {
+                data = dt.row($(row).prev()).data();
+            }
+            viewModel.payment_report(data);
+        });
+        //clicking the update icon
+        $('table tbody').on('click', '.edit_me', function () {            
+            var row = $(this).closest("tr");
+            var tbl = row.parent().parent();
+            var dt = dTable[$(tbl).attr("id")];
+            var data = dt.row(row).data();
+            if (typeof (data) === 'undefined') {
+                data = dt.row($(row).prev()).data();
+            }
+            edit_data(data, 'editPaymentForm');
+        });
+        
+        function cb(startTime, endTime) {
+            $('#reportrange span').html(startTime.format('MMMM D, YYYY') + ' - ' + endTime.format('MMMM D, YYYY'));
         }
 
         $('#reportrange').daterangepicker({
             "showDropdowns": true, //
             "linkedCalendars": true,
-            startDate: start,
-            endDate: end,
+            startDate: startDate,
+            endDate: endDate,
             "minDate": "<?php echo mdate('%m/%d/%Y', strtotime('-10 year')); ?>",
             "maxDate": "<?php echo mdate('%m/%d/%Y'); ?>",
-            locale: {
+            "locale": {
                 applyLabel: 'Search'
             },
             //format: 'DD/MM/YYYY',
@@ -111,13 +197,37 @@
                 'Past 1 Year': [moment().subtract(1, 'year').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             }
         }, cb).on('apply.daterangepicker', function (ev, picker) {
-            //do something, like clearing an input
-            $("#startDate").val(picker.startDate.format('X'));
-            $("#endDate").val(picker.endDate.format('X'));
-            $("#getPaymentsForm").submit();
-            //$.post({url:"<?php echo current_url(); ?>",data:{start:startDate,end:endDate},success:function(){location.reload();}});
+            startDate = picker.startDate;
+            endDate = picker.endDate;
+            dTable['tblPayments'].ajax.reload(null,true);
         });
-        cb(start, end);
+        cb(startDate, endDate);
 
     });
+    function get_time_range_display(start_date, end_date, time_interval_id, billing_starts, label){
+        ret_val = moment(start_date,'X').format('D-MMM-YYYY') + " - " + moment(end_date,'X').format('D-MMM-YYYY');
+        date_diff = moment(end_date,'X').diff(moment(start_date,'X'),label);
+        switch(parseInt(time_interval_id)){
+            case 1: //hourly basis
+                format = (date_diff === 1 && billing_starts == 1 )?('h:sA D-MMM-YYYY') : ('h:sA D-MMM-YYYY');
+                ret_val =(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
+                break;
+            case 2: //daily basis
+                format = ('dddd, D-MMM-YYYY');
+                ret_val =(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
+                break;
+            case 3: //weekly basis
+                ret_val = moment(start_date,'X').format('D-MMM-YYYY') + " - " + moment(end_date,'X').format('D-MMM-YYYY [(W]w[)]');
+                break;
+            case 4: //monthly billing
+                format = (date_diff === 1 && billing_starts == 1 )?('MMMM-YYYY') : ((date_diff > 0 && billing_starts == 1 )?('MMMM-YYYY') : ('D-MMM-YYYY'));
+                ret_val =(date_diff === 1 && billing_starts == 1 )?(moment(start_date,'X').format(format)):(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
+                break;
+            case 5: //quarterly billing
+                format = (date_diff === 1 && billing_starts == 1 )?('Qo [quarter, ] YYYY') : ((date_diff > 0 && billing_starts == 1 )?('Qo [quarter, ] YYYY') : ('D-MMM-YYYY'));
+                ret_val =(date_diff === 1 && billing_starts == 1 )?(moment(start_date,'X').format(format)):(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
+                break;
+        }
+        return ret_val;
+    }
 </script>

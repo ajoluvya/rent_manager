@@ -95,7 +95,7 @@
                                     <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="form-group col-md-2">
-                                    <select class="form-control" id="sec_select" name="sec_select" data-required-error="select item">
+                                    <select class="form-control" id="ampm_select" name="sec_select" data-required-error="select item">
                                         <option value="1">AM</option>
                                         <option value="2">PM</option>
                                     </select>

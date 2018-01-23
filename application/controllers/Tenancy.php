@@ -130,6 +130,11 @@ class Tenancy extends CI_Controller {
         $this->form_validation->set_rules('start_date', 'Start date', 'required|valid_date[d-m-Y]', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
         $this->form_validation->set_rules('end_date', 'End date', 'valid_date[d-m-Y]', array('valid_date' => '%s is invalid, required date format is dd-mm-yyyy.'));
         $this->form_validation->set_rules('rent_rate', 'Amount', 'required|numeric', array('required' => '%s is missing.', 'numeric' => '%s must be a number.'));
+        if($this->input->post('time_interval_id')<3){
+            $this->form_validation->set_rules('hour_select', 'hour', 'required', array('required' => 'Please select %s.'));
+            $this->form_validation->set_rules('min_select', 'minute', 'required', array('required' => 'Please select %s.'));
+            $this->form_validation->set_rules('ampm_select', 'AM/PM', 'required', array('required' => 'Please select %s.'));
+        }
         if ($this->form_validation->run() === FALSE) {
             $this->load->model('timeInterval_model');
             $data['time_intervals'] = $this->timeInterval_model->get_time_interval();

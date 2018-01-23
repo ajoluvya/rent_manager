@@ -35,22 +35,31 @@
         </div><!-- /.panel -->
     </div><!-- /.col-lg-12 -->
 </div>
+    <?php echo $paymentReportModal; ?>
+
 <script>
-    var time_intervals = <?php echo json_encode($time_intervals); ?>;
-    var dTable = {};
     $(document).ready(function () {
+        var dTable = {}, viewModel = {}, endDate = moment(), startDate = moment().startOf('month');
+        var ViewModel = function () {
+            var self = this;
+            self.payment_report = ko.observable();
+        };
+        viewModel = new ViewModel();
+        ko.applyBindings(viewModel);
+        
         var handleDataTableButtons = function() {
             if ($("#tblTenants").length) {
                    dTable['tblTenants'] = $('#tblTenants').DataTable({
                         "dom": '<".col-md-7"B><".col-md-2"l><".col-md-3"f>rt<".col-md-7"i><".col-md-5"p>',
-                        "order": [[1, 'asc']],
+                        "order": [[5, 'desc']],
                         "buttons": [
                             'copy', 'excel', 'print'//, 'pdf'
                         ],
                         "deferRender": true,
                         "ajax": {
                             "url":"<?php echo site_url("tenant/tenantsJsonList")?>",
-                            "dataType": "JSON"
+                            "dataType": "JSON",
+                            "type": "POST",
                         }/* ,
                          columnDefs: [ {
                          "targets": [5],
@@ -105,13 +114,12 @@
                                             date_diff = moment(full.exit_date,'X').diff(moment(full.end_date,'X'), full.label);
                                             break;
                                         }
-                                        label_text = time_intervals[parseInt(full.time_interval_id)-1]['description'];
-                                        complete_label = Math.abs(date_diff) + " " + (date_diff == 1 ? (label_text.substr(0,label_text.length-1)) : label_text );
+                                        complete_label = Math.abs(date_diff) + " " + (date_diff == 1 ? (full.period_desc.substr(0,full.period_desc.length-1)) : (full.period_desc) );
                                         if(date_diff < 1){
                                             button_class = "info";
                                         }
                                         if(date_diff > 0){
-                                            complete_label = curr_format((Math.abs(date_diff)/full.billing_freq) * parseFloat(full.rent_rate)*1) + " X " + date_diff + " " + (date_diff == 1 ? (label_text.substr(0,label_text.length-1)) : label_text );
+                                            complete_label = curr_format((Math.abs(date_diff)/full.billing_freq) * parseFloat(full.rent_rate)*1) + " X " + date_diff + " " + (date_diff == 1 ? (full.period_desc.substr(0,full.period_desc.length-1)) : full.period_desc );
                                             title_text = Math.abs(date_diff) + " " + full.period_desc + " arrears totalling Ugx: " + curr_format((Math.abs(date_diff)/full.billing_freq) * parseFloat(full.rent_rate)*1);
                                         }
                                         if(date_diff > 1){
@@ -130,7 +138,7 @@
                                         if(type == 'sort'){
                                             return date_diff;
                                         }
-                                        return '<span class="btn btn-sm btn-'+button_class+'" title="'+title_text+'">'+complete_label+'</span>';
+                                        return '<a data-toggle="modal" href="#paymentReportModal" ><span class="payment_report btn btn-sm btn-'+button_class+'" title="'+title_text+'">'+complete_label+'</span></a>';
                                     }
                                     return '';
                                 }
@@ -169,5 +177,44 @@
             };
         }();
         TableManageButtons.init();
+        //clicking the update icon
+        $('table tbody').on('click', '.payment_report', function () {            
+            var row = $(this).closest("tr");
+            var tbl = row.parent().parent();
+            var dt = dTable[$(tbl).attr("id")];
+            var data = dt.row(row).data();
+            if (typeof (data) === 'undefined') {
+                data = dt.row($(row).prev()).data();
+            }
+            viewModel.payment_report(data);
+        });
+        
+        function cb(startTime, endTime) {
+            $('#reportrange span').html(startTime.format('MMMM D, YYYY') + ' - ' + endTime.format('MMMM D, YYYY'));
+        }
+
+        $('#reportrange').daterangepicker({
+            "showDropdowns": true, //
+            "linkedCalendars": true,
+            startDate: startDate,
+            endDate: endDate,
+            "minDate": "<?php echo mdate('%m/%d/%Y', strtotime('-10 year')); ?>",
+            "maxDate": "<?php echo mdate('%m/%d/%Y'); ?>",
+            "locale": {
+                applyLabel: 'Search'
+            },
+            //format: 'DD/MM/YYYY',
+            ranges: {
+                'This Month': [moment().startOf('month'), moment()],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Past 6 Months': [moment().subtract(6, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Past 1 Year': [moment().subtract(1, 'year').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, cb).on('apply.daterangepicker', function (ev, picker) {
+            startDate = picker.startDate;
+            endDate = picker.endDate;
+            dTable['tblPayments'].ajax.reload(null,true);
+        });
+        //cb(startDate, endDate);
     });
 </script>

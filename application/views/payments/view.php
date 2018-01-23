@@ -42,7 +42,38 @@
                     <table class="table table-striped">
                         <tr>
                             <th>Payment for:</th>
-                            <td><?php echo mdate("%j%S %F, %Y", strtotime($payment['start_date'])); ?> to <?php echo mdate("%j%S %F, %Y", strtotime($payment['end_date'])); ?></td>
+                            <td>
+                                <?php
+                                $datetime1 = new DateTime(mdate("%Y-%m-%d %h:%i:%s",$payment['start_date']));
+                                $datetime2 = new DateTime(mdate("%Y-%m-%d %h:%i:%s",$payment['end_date']));
+                                $interval = $datetime2->diff($datetime1);
+                                $date_diff = (int) $interval->format('%'.$payment['label']);
+                                
+                                $ret_val = mdate("%j%S %M, %Y", $payment['start_date']) . " - " . mdate("%j%S %M, %Y", $payment['end_date']);
+                                
+                                switch((int)($payment['time_interval_id'])){
+                                    case 1: //hourly basis
+                                        $format = ($date_diff === 1 && (int)$payment['billing_starts'] == 1 )?('%h:%i%A %j-%M-%Y') : ('%h:%i%A %j-%M-%Y');
+                                        $ret_val =(mdate($format, $payment['start_date']) . " - " . mdate($format, $payment['end_date']));
+                                        break;
+                                    case 2: //daily basis
+                                        $format = ('dddd, D-MMM-YYYY');
+                                        $ret_val =(mdate($format, $payment['start_date']) . " - " . mdate($format, $payment['end_date']));
+                                        break;
+                                    case 3: //weekly basis
+                                        $ret_val = mdate('%j%S-%M-%Y', $payment['start_date']) + " - " . mdate('%j%S-%M-%Y (W%W)', $payment['end_date']);
+                                        break;
+                                    case 4: //monthly billing
+                                        $format = ($date_diff === 1 && (int)$payment['billing_starts'] == 1 )?('%F-%Y') : (($date_diff > 0 && (int)$payment['billing_starts'] == 1 )?('%F-%Y') : ('%j%S-%M-%Y'));
+                                        $ret_val =($date_diff === 1 && (int)$payment['billing_starts'] == 1 )?(mdate($format, $payment['start_date'])):(mdate($format, $payment['start_date']) . " - " . mdate($format, $payment['end_date']));
+                                        break;
+                                    case 5: //quarterly billing
+                                        //$format = ($date_diff === 1 && (int)$payment['billing_starts'] == 1 )?('Qo [quarter, ] %Y') : (($date_diff > 0 && (int)$payment['billing_starts'] == 1 )?('Qo [quarter, ] %Y') : ('%j-%M-%Y'));
+                                        //$ret_val =($date_diff === 1 && (int)$payment['billing_starts'] == 1 )?(mdate($format, $payment['start_date'])):(mdate($format, $payment['start_date']) + " - " + mdate($format, $payment['end_date']));
+                                        break;
+                                }
+                                    echo $ret_val; ?>
+                            </td>
                         </tr>
                         <tr>
                             <th>Amount paid:</th>

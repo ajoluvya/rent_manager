@@ -33,7 +33,7 @@
                     <div class="col-md-3"><label for="passport_photo">Passport Photo</label></div>
                     <div class="col-md-4">
                         <?php if (isset($tenant['passport_photo']) && $tenant['passport_photo'] != ""): ?>
-                            <img class="img-thumbnail img-lg" src="<?php echo site_url("uploads/tenants/" . $tenant['passport_photo']); ?>">
+                            <img class="img-thumbnail img-lg" src="<?php echo site_url("uploads/tenants/" . $tenant['passport_photo']); ?>"/>
                         <?php endif; ?>
                         <input type="file" class="form-control" id="passport_photo" name="passport_photo" accept=".png,.jpeg,.gif,.jpg,.pdf,image/gif,image/jpg,image/jpeg,image/pjpeg,image/png,application/pdf" />
                     </div>

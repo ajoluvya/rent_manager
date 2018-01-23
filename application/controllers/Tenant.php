@@ -17,9 +17,9 @@ class Tenant extends CI_Controller {
     public function index() {
         $data['title'] = 'Tenants';
         $data['sub_title'] = 'List of tenants';
-        $this->load->model('timeInterval_model');
-        $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
 
+        $data['paymentReportModal'] = $this->load->view('tenants/paymentReportModal', NULL, TRUE);
+        
         $this->load->view('templates/header', $data);
         $this->load->view('tenants/index');
         $this->load->view('templates/footer');
