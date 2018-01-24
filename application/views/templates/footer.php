@@ -34,6 +34,10 @@
 <script type="text/javascript" src="<?php echo base_url("assets/js/daterangepicker.js"); ?>"></script>
 <!-- Datetimepicker
 <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-datetimepicker.js"); ?>"></script> -->
+<!-- PNotify -->
+<script src="<?php echo base_url("assets/plugins/pnotify/dist/pnotify.js"); ?>"></script>
+<script src="<?php echo base_url("assets/plugins/pnotify/dist/pnotify.buttons.js"); ?>"></script>
+<script src="<?php echo base_url("assets/plugins/pnotify/dist/pnotify.nonblock.js"); ?>"></script>
 <!-- DataTables -->
 <!--script type="text/javascript" src="<?php echo base_url("assets/js/jquery.dataTables.min.js"); ?>"></script>
 <script type="text/javascript" src="<?php echo base_url("assets/js/dataTables.bootstrap.min.js"); ?>"></script-->

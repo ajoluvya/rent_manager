@@ -17,7 +17,7 @@ class Payment extends CI_Controller {
         $this->load->helper('form');
 
         $data['title'] = 'Payments';
-        $data['sub_title'] = 'Payments and non-payments';
+        $data['sub_title'] = 'Payments/non-payments';
 
         $data['paymentReceiptModal'] = $this->load->view('payments/paymentReceiptModal', NULL, TRUE);
 

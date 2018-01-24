@@ -116,12 +116,11 @@ class Tenancy extends CI_Controller {
 
         if ($tenant_id !== NULL) {
             $data['tenant_id'] = $tenant_id;
-            $tenant = $this->tenant_model->get_tenant($tenant_id);
-            $data['tenant_names'] = $tenant['names'];
+            $data['tenant'] = $this->tenant_model->get_tenant($tenant_id);
         }
         $data['title'] = "Tenancy";
         $data['sub_title'] = "Assign apartment/house/room";
-        $data['houses'] = $this->house_model->get_house("`house_id` NOT IN (SELECT `house_id` FROM `tenancy` WHERE `end_date` > UNIX_TIMESTAMP())");
+        $data['houses'] = $this->house_model->get_house("`house_id` NOT IN (SELECT `house_id` FROM `tenancy` WHERE `status` = 1)");
         $data['estates'] = $this->estate_model->get_estate();
         $data['step_text'] = TRUE;
 
@@ -162,7 +161,6 @@ class Tenancy extends CI_Controller {
             $data['btn_text'] = 'Update';
 
             $data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
-            $data['tenant_names'] = $data['tenancy']['names'];
             $data['tenant_id'] = $data['tenancy']['tenant_id'];
             $data['houses'] = $this->house_model->get_house("`house_id` NOT IN (SELECT `house_id` FROM `tenancy` WHERE `end_date` > UNIX_TIMESTAMP())");
             $data['estates'] = $this->estate_model->get_estate();
@@ -211,6 +209,18 @@ class Tenancy extends CI_Controller {
         } else {
             $this->index();
         }
+    }
+
+    public function change_status() {
+        $data['message'] = "Access denied. You do not have the permission to perform this operation, contact the admin for further assistance.";
+        $data['success'] = FALSE;
+        //if (isset($_SESSION['role']) && $_SESSION['role'] > 3) {
+            $data['message'] = $this->tenancy_model->change_status();
+            if ($data['message'] === true) {
+                $data['success'] = TRUE;
+            }
+        //}
+        echo json_encode($data);
     }
 
 }

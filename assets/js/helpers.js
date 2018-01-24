@@ -9,10 +9,52 @@ var setOptionValue = function (propId) {
         }
     };
 };
-function printPageSection(sectionId,cssLinkTag) {
+function change_tenancy_status(element, url, tenancy) {
+    var allGood=confirm('Are you sure?');
+    if (allGood) {
+        new_status = (tenancy.status==2||tenancy.status==3?1:(get_date_diff(tenancy)>0?3:2));
+        $.post(
+                url,{tenancy_id:tenancy.tenancy_id, status:new_status},
+                function (response) {
+                    if (response.success) {
+                        tenancy.status = new_status;
+                        tenancy.exit_date = moment().format('X');
+                        viewModel.tenancy(tenancy);
+                        var response_text = "'active'";
+                        if (new_status == 2) {
+                            response_text = "'terminated without arrears'";
+                        }
+                        if (new_status == 3) {
+                            response_text = "'terminated with arrears'";
+                        }
+                        showStatusMessage("Tenancy status successfully changed to " + response_text, "success");
+                        setTimeout(function () {
+                            dTable['tblTenants'].ajax.reload(null, true);
+                        }, 2000);
+                    } else {
+                        showStatusMessage("Tenancy status was not changed. Reason(s):<ol>" + response.message + "</ol>", "fail");
+                    }
+                },
+                'json').fail(function (jqXHR, textStatus, errorThrown) {
+            msg = "Network error. Please check your network/internet connection or get in touch with the admin.";
+            switch (jqXHR.status) {
+                case 500:
+                    msg = "There was a server problem.\nPlease report the following message to admin\n" + textStatus;
+                    break;
+                case 404:
+                    msg = "Data submission was unsuccessful.\n Please report the following message to admin\n" + textStatus + "\n" + errorThrown;
+                    break;
+                default:
+                    break;
+            }
+            showStatusMessage(msg, "fail");
+        });
+    }
+}
+function printPageSection(sectionId, cssLinkTag) {
     var printContent = document.getElementById(sectionId);
     var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
-    WinPrint.document.write('<link rel="stylesheet" href="'+cssLinkTag+'">');
+    WinPrint.document.write('<link rel="stylesheet" href="' + cssLinkTag + '">');
     WinPrint.document.write('<style>.hidden-print{display:none}</style>');
     WinPrint.document.write(printContent.innerHTML);
     WinPrint.document.close();
@@ -29,7 +71,7 @@ function zeroFill(number, width)
     }
     return number + ""; // always return a string
 }
-function confirm_delete(delValue){
+function confirm_delete(delValue) {
     var really = confirm("Do you really want to delete " + delValue + "?");
     return really;
 }
@@ -44,10 +86,9 @@ function enableDisableButton(frm, status) {
 function edit_data(data_array, form) {
     $.each(data_array, function (key, val) {
         $.map($('#' + form + ' [name="' + key + '"]'), function (named_item) {
-            if(named_item.type === 'radio' || named_item.type === 'checkbox' ){
-                $(named_item).prop("checked",(named_item.value==val?true:false));
-            }
-            else{
+            if (named_item.type === 'radio' || named_item.type === 'checkbox') {
+                $(named_item).prop("checked", (named_item.value == val ? true : false));
+            } else {
                 $(named_item).val(val).trigger('change');
             }
         });
@@ -202,9 +243,43 @@ function saveData() {
 
     return false;
 }
+function showStatusMessage(message = '', display_type = 'success') {
+    new PNotify({
+        title: "Action response",
+        text: message,
+        type: display_type,
+        styling: 'bootstrap3',
+        sound: true,
+        hide: true,
+        buttons: {
+            closer_hover: false,
+        },
+        confirm: {
+            confirm: true,
+            buttons: [{
+                    text: 'Ok',
+                    addClass: 'btn-primary',
+                    click: function (notice) {
+                        notice.remove();
+                    }
+                },
+                null]
+        },
+        animate: {
+            animate: true,
+            in_class: 'zoomInLeft',
+            out_class: 'zoomOutRight'
+        },
+        nonblock: {
+            nonblock: true
+        }
+
+    });
+
+}
 $(".modal").on("hide.bs.modal", function () {
     // put your default event here
-    if($('form', this).length){
+    if ($('form', this).length) {
         $('form', this)[0].reset();
         //the assumption is that the input element with name=id will always be the first, cause of no other better selection criteria
         //$('input[name$="id"]', this).val('');

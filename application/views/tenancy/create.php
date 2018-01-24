@@ -2,23 +2,23 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class="col-md-8 col-md-offset-2">
-                    <!-- general form elements -->
-                    <div class="box box-solid">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><?php echo $sub_title; ?> &nbsp;<small><?php echo isset($step_text) ? "Step 2 0f 3" : ""; ?></small></h3>
-                        </div><!-- /.box-header -->
-                        <!-- form start -->
-                        <?php echo validation_errors("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>", "</div>"); ?>
+                <!-- general form elements -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><?php echo $sub_title; ?> &nbsp;<small><?php echo isset($step_text) ? "Step 2 0f 3" : ""; ?></small></h3>
+                    </div><!-- /.box-header -->
+                    <!-- form start -->
+                    <?php echo validation_errors("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>", "</div>"); ?>
 
-                        <?php $form_url = isset($btn_text) ? uri_string() : "tenancy/create"; ?>
-                        <?php echo form_open($form_url, array('name' => 'create/update_tenancy', 'role' => 'form', 'data-toggle' => 'validator', 'id' => 'tenancyForm')); ?>
-                        <div class="box-body">
+                    <?php $form_url = isset($btn_text) ? uri_string() : "tenancy/create"; ?>
+                    <?php echo form_open($form_url, array('name' => 'create/update_tenancy', 'role' => 'form', 'data-toggle' => 'validator', 'id' => 'tenancyForm')); ?>
+                    <div class="box-body">
+                        <div class="col-md-8 col-md-offset-1">
                             <div class="form-group">
                                 <div class="col-md-12">
-                                    <label><a href="<?= site_url("tenant/view/" . (isset($tenant_id) ? $tenant_id : set_value('tenant_id'))) ?>" title="View <?= ((isset($tenant_names)) ? $tenant_names : set_value('tenant_names')) ?> details"><i class="fa fa-angle-double-left"></i> &nbsp;<?php echo ((isset($tenant_names)) ? $tenant_names : set_value('tenant_names')); ?></a></label>
+                                    <label><a href="<?= site_url("tenant/view/" . (isset($tenant_id) ? $tenant_id : set_value('tenant_id'))) ?>" title="View <?php echo (isset($tenant)) ? $tenant['names'] : (isset($tenancy) ? $tenancy['names']:set_value('tenant_names')); ?> details"><i class="fa fa-angle-double-left"></i> &nbsp;<?php echo (isset($tenant)) ? $tenant['names'] : (isset($tenancy) ? $tenancy['names']:set_value('tenant_names')); ?></a></label>
                                     <input type="hidden" id="tenant_id" name="tenant_id" value="<?php echo (isset($tenant_id) ? $tenant_id : set_value('tenant_id')); ?>">
-                                    <input type="hidden" id="tenant_names" name="tenant_names" value="<?php echo (isset($tenant_names)) ? $tenant_names : set_value('tenant_names'); ?>">
+                                    <input type="hidden" id="tenant_names" name="tenant_names" value="<?php echo (isset($tenant)) ? $tenant['names'] : (isset($tenancy) ? $tenancy['names']:set_value('tenant_names')); ?>">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -42,7 +42,7 @@
                                     <span data-bind="text: description">Billing Starts</span>
                                 </div>
                                 <div class="clearfix"></div>
-                                <div class="col-md-6"><label>Billing Starts <sup><i class="fa fa-question-circle" title="An example is when a client comes in the middle of the month, and yet in the apartment it is preferred that the tenants uniformly pay at the beginnning of each month. In this case, the tenant may pay an amount of money comensurate with the remaining days to the end of the month. Then the monthly billing commences effective 1st of the next month."></i></sup></label></div> 
+                                <div class="col-md-6"><label>Billing Starts <sup><i class="fa fa-question-circle" title="An example is when a client comes in the middle of the month, and yet in the apartment it is preferred that the tenants uniformly pay at the beginning of each month. In this case, the tenant may pay an amount of money comensurate with the remaining days to the end of the month. Then the monthly billing commences effective 1st of the next month."></i></sup></label></div> 
                                 <div class="col-md-6">
                                     <span data-bind="text: parseInt(period_starts)==1?(period_start_array[parseInt(time_interval_id)-1]+' the immediate full'):'Specified start'">Start</span> <span data-bind="text:parseInt(period_starts)==1?((time_intervals[parseInt(time_interval_id)-1]['description']).toString().slice(0,-1).toLocaleLowerCase()):period_start_array2[time_interval_id-1]">Period</span>
                                     <input type="hidden" data-bind="value: <?php echo (set_value('time_interval_id') != NULL) ? set_value('time_interval_id') : (isset($tenancy['time_interval_id']) ? $tenancy['time_interval_id'] : "time_interval_id"); ?>" id="time_interval_id" name="time_interval_id" />
@@ -119,17 +119,20 @@
                               <div class="col-md-8"><div class="input-group"><input type="text" class="form-control datepicker" id="end_date" name="end_date" value="<?php echo (set_value('end_date') != NULL) ? set_value('end_date') : (isset($tenancy['end_date']) ? mdate("%d-%m-%Y", $tenancy['end_date']) : ""); ?>" placeholder="Optional, end date" data-validation="date" data-validation-error-msg="Not a date value" data-validation-format="dd-mm-yyyy" data-validation-optional="true" data-provide="datepicker"><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></div>
                             </div>
                             -->
-                        </div><!-- /.box-body -->
-
+                        </div><!-- /.col-md-8 -->
+                        <div class="col-md-2">
+                            <?php if((isset($tenant['passport_photo']) && $tenant['passport_photo'] != '')||(isset($tenancy['passport_photo']) && $tenancy['passport_photo'] != '')): ?>
+                            <img class="img-thumbnail img-responsive" src="<?php echo (isset($tenant)) ? (site_url("uploads/tenants").'/'.$tenant['passport_photo']) : (isset($tenancy['passport_photo']) ? (site_url("uploads/tenants").'/'.$tenancy['passport_photo']):''); ?>" />
+                            <?php endif; ?>
+                        </div><!--/.col-md-2 -->
                         <div class="box-footer">
                             <div class="col-md-3 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary"><?php echo isset($btn_text) ? $btn_text : "Submit"; ?></button>
                             </div>
                         </div>
-                        </form>
-                    </div><!-- /.box -->
-
-                </div><!--/.col (left) -->
+                    </div><!--/.box-body -->
+                    </form>
+                </div><!-- /.box box-solid -->
             </div><!-- /.panel-body -->
         </div><!-- /.panel -->
     </div><!-- /.col-lg-12 -->

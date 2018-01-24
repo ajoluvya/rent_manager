@@ -17,7 +17,7 @@
                                     <th>House No.</th>
                                     <th>Rate (UGX)</th>
                                     <th>Entry Date</th>
-                                    <th>Last payment</th>
+                                    <th>Payments made upto</th>
                                     <th>Status</th>
                                     <th>&nbsp;</th>
                                     <!-- If the estates owner/admin is logged in -->
@@ -38,11 +38,30 @@
     <?php echo $paymentReportModal; ?>
 
 <script>
+    var dTable = {}, viewModel = {};
+    function get_date_diff(full){
+        date_diff = 0;
+        switch(parseInt(full.status)){
+            case 1:
+                date_diff = moment().diff(moment(full.end_date,'X'), full.label);
+                break;
+            case 2:
+                //date_diff = moment(full.end_date,'X').diff(moment(full.end_date,'X'), full.label);
+                break;
+            case 3:
+                date_diff = moment(full.exit_date,'X').diff(moment(full.end_date,'X'), full.label);
+                break;
+        }
+        return date_diff;
+    }
     $(document).ready(function () {
-        var dTable = {}, viewModel = {}, endDate = moment(), startDate = moment().startOf('month');
+        var endDate = moment(), startDate = moment().startOf('month');
         var ViewModel = function () {
             var self = this;
-            self.payment_report = ko.observable();
+            self.tenancy = ko.observable();
+            self.onClick = function (tenancy, event){
+                change_tenancy_status(event.target, '<?php echo site_url('tenancy/change_status'); ?>',tenancy);
+            }
         };
         viewModel = new ViewModel();
         ko.applyBindings(viewModel);
@@ -102,35 +121,25 @@
                                     if(data){
                                         button_class = "warning";
                                         title_text = "No arrears";
-                                        date_diff = 0;
-                                        switch(parseInt(full.status)){
-                                            case 1:
-                                            date_diff = moment(<?php echo time();?>,'X').diff(moment(full.end_date,'X'), full.label);
-                                            break;
-                                            case 2:
-                                            //date_diff = moment(full.end_date,'X').diff(moment(full.end_date,'X'), full.label);
-                                            break;
-                                            case 3:
-                                            date_diff = moment(full.exit_date,'X').diff(moment(full.end_date,'X'), full.label);
-                                            break;
-                                        }
+                                        date_diff = get_date_diff(full);
+                                        
                                         complete_label = Math.abs(date_diff) + " " + (date_diff == 1 ? (full.period_desc.substr(0,full.period_desc.length-1)) : (full.period_desc) );
                                         if(date_diff < 1){
                                             button_class = "info";
                                         }
                                         if(date_diff > 0){
-                                            complete_label = curr_format((Math.abs(date_diff)/full.billing_freq) * parseFloat(full.rent_rate)*1) + " X " + date_diff + " " + (date_diff == 1 ? (full.period_desc.substr(0,full.period_desc.length-1)) : full.period_desc );
-                                            title_text = Math.abs(date_diff) + " " + full.period_desc + " arrears totalling Ugx: " + curr_format((Math.abs(date_diff)/full.billing_freq) * parseFloat(full.rent_rate)*1);
+                                            title_text = complete_label + " arrears totalling Ugx: " + curr_format((Math.abs(date_diff)/full.billing_freq) * parseFloat(full.rent_rate)*1);
+                                            complete_label = curr_format((Math.abs(date_diff)/full.billing_freq) * parseFloat(full.rent_rate)*1) + " (" + complete_label + ") ";
                                         }
                                         if(date_diff > 1){
                                             button_class = "danger";
                                         }
                                         if(full.status == 2){
-                                            complete_label = "Ended";
+                                            complete_label = "Terminated";
                                             button_class = "success";
                                         }
                                         if(full.status == 3){
-                                            complete_label = "Ended";
+                                            complete_label = "Terminated";
                                         }
                                         if(type == 'filter'){
                                             return complete_label;
@@ -186,7 +195,7 @@
             if (typeof (data) === 'undefined') {
                 data = dt.row($(row).prev()).data();
             }
-            viewModel.payment_report(data);
+            viewModel.tenancy(data);
         });
         
         function cb(startTime, endTime) {

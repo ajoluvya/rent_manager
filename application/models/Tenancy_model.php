@@ -114,5 +114,16 @@ class Tenancy_model extends CI_Model {
         $this->db->where('tenancy_id', $tenancy_id);
         return $this->db->delete('tenancy');
     }
+    public function change_status() {
+
+        $data = array(
+            'status' => $this->input->post('status'),
+            'exit_date' => time(),
+            'modified_by' => $_SESSION['user_id']
+        );
+        
+        $this->db->where('tenancy_id', $this->input->post('tenancy_id'));
+        return $this->db->update('tenancy', $data);
+    }
 
 }
