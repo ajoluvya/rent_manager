@@ -125,8 +125,8 @@ class Payment extends CI_Controller {
                 $this->load->view('templates/footer');
             } else {
                 $payment_id = $this->payment_model->set_payment();
-                $this->tenancy_model->update_tenancy_dates($tenancy_id);
-                redirect("payment/view$payment_id");
+                $this->tenancy_model->update_tenancy_end_date($tenancy_id);
+                redirect("payment/view/$payment_id");
             }
         } else {
             $data['sub_title'] = 'No data';
