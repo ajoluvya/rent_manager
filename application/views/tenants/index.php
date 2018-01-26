@@ -5,8 +5,15 @@
                 <div class="col-lg-12">
                     <div class="box box-solid">
                         <div class="box-header with-border">
-                            <h3 class="box-title"><?php echo $sub_title; ?></h3>
-                            <div class="pull-right"><a href="<?php echo site_url("tenant/create"); ?>" class="btn btn-sm btn-default" title="Add Tenant"><i class="fa fa-edit"></i> New</a></div>
+                            <h3 class="box-title"><?php echo $sub_title; ?></h3>&nbsp;&nbsp;
+                            <a href="<?php echo site_url("tenant/create"); ?>" class="btn btn-sm btn-default" title="Add New Tenant"><i class="fa fa-edit"></i> New</a>
+                            <div id="reportrange" class="pull-right daterangepicker_div">
+                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                                <span></span> <b class="caret"></b>
+                            </div>
+                            <div class="pull-right daterangepicker_div">
+                                <strong>Entry date/time:</strong>
+                            </div>
                         </div>
                         <table class="table table-striped table-condensed table-hover" id="tblTenants">
                             <thead>
@@ -39,23 +46,8 @@
 
 <script>
     var dTable = {}, viewModel = {};
-    function get_date_diff(full){
-        date_diff = 0;
-        switch(parseInt(full.status)){
-            case 1:
-                date_diff = moment().diff(moment(full.end_date,'X'), full.label);
-                break;
-            case 2:
-                //date_diff = moment(full.end_date,'X').diff(moment(full.end_date,'X'), full.label);
-                break;
-            case 3:
-                date_diff = moment(full.exit_date,'X').diff(moment(full.end_date,'X'), full.label);
-                break;
-        }
-        return date_diff;
-    }
     $(document).ready(function () {
-        var endDate = moment(), startDate = moment().startOf('month');
+        var endDate = moment(), startDate = moment().subtract(3,'years');
         var ViewModel = function () {
             var self = this;
             self.tenancy = ko.observable();
@@ -79,12 +71,16 @@
                             "url":"<?php echo site_url("tenant/tenantsJsonList")?>",
                             "dataType": "JSON",
                             "type": "POST",
-                        }/* ,
-                         columnDefs: [ {
-                         "targets": [5],
+                            "data": function(d){
+                                d.start_date = startDate.format('X');
+                                d.end_date = endDate.format('X');
+                            }
+                        },
+                         "columnDefs": [ {
+                         "targets": [8<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,9<?php } ?>],
                          "orderable": false,
                          "searchable": false
-                         }] */,
+                         }],
                         columns:[
                             { data: 'names', render: function( data, type, full, meta ) { return '<a href="<?php echo site_url("tenant/view"); ?>/'+full.tenant_id+'" title="'+data+'\'s details">'+data+'</a>'; } },
                             { data: 'phone1', render: function( data, type, full, meta ) {return '<a href="tel:'+data+'" title="call now">'+data+'</a>';}},
@@ -207,10 +203,13 @@
             "linkedCalendars": true,
             startDate: startDate,
             endDate: endDate,
-            "minDate": "<?php echo mdate('%m/%d/%Y', strtotime('-10 year')); ?>",
-            "maxDate": "<?php echo mdate('%m/%d/%Y'); ?>",
+            timePicker: true,
+            timePickerIncrement: 10,
+            "minDate": "<?php echo mdate('%d/%m/%Y', strtotime('-10 year')); ?>",
+            "maxDate": "<?php echo mdate('%d/%m/%Y'); ?>",
             "locale": {
-                applyLabel: 'Search'
+                applyLabel: 'Search',
+                format: 'DD/MM/YYYY h:mm A'
             },
             //format: 'DD/MM/YYYY',
             ranges: {
@@ -222,8 +221,8 @@
         }, cb).on('apply.daterangepicker', function (ev, picker) {
             startDate = picker.startDate;
             endDate = picker.endDate;
-            dTable['tblPayments'].ajax.reload(null,true);
+            dTable['tblTenants'].ajax.reload(null,true);
         });
-        //cb(startDate, endDate);
+        cb(startDate, endDate);
     });
 </script>

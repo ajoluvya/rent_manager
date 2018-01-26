@@ -44,20 +44,15 @@ class Estate extends CI_Controller {
             $this->load->view('templates/404', $data);
             $this->load->view('templates/footer');
         } else {
-            $this->load->model('tenant_model');
-            //$this->load->model('house_model');
-            $this->load->model('payment_model');
             $this->load->model('timeInterval_model');
 
             $data['sub_title'] = $data['estate']['estate_name'];
 
-            $data['estate_tenants'] = $this->tenant_model->get_tenant("`estate_id`=" . $estate_id);
-            //$data['estate_houses'] = $this->house_model->get_house("`estate`.`estate_id`=" . $estate_id);
-            $data['payments'] = $this->payment_model->get_payment("`house_id` IN (SELECT `house_id` FROM `house` WHERE `estate_id` = $estate_id)");
             $data['floors'] = $this->floors;
             $data['time_intervals'] = $this->timeInterval_model->get_time_interval();
 
             $data['create_modal'] = $this->load->view('houses/create_modal', $data, TRUE);
+            $data['paymentReportModal'] = $this->load->view('tenants/paymentReportModal', NULL, TRUE);
             $this->load->view('templates/header', $data);
             $this->load->view('estates/view', $data);
             $this->load->view('templates/footer');

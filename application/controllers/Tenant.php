@@ -28,10 +28,14 @@ class Tenant extends CI_Controller {
     public function tenantsJsonList($status = FALSE) {
         $this->load->helper('form');
         $where = "";
-        if ($this->input->post('start_date') != "") {
-            $where .= "start_date = '{$this->input->post('start_date')}'";
+        if ($this->input->post('start_date') != "" && $this->input->post('end_date') != "") {
+
+            $where .= "(`start_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
         }
-        $tenants['data'] = $this->tenant_model->get_tenant();
+        if ($this->input->post('tenant_id') != "") {
+            $where .= (strlen($where)>1?"AND ":""). "tenant.`tenant_id` = " . $this->input->post('tenant_id');
+        }
+        $tenants['data'] = $this->tenant_model->get_tenant($where);
         echo json_encode($tenants);
     }
 
@@ -52,9 +56,7 @@ class Tenant extends CI_Controller {
             $this->load->model('tenancy_model');
 
             $data['sub_title'] = $data['tenant']['names'];
-            $data['houses'] = $this->tenancy_model->get_tenancy("`tenancy`.`tenant_id`=" . $tenant_id);
-            $data['payments'] = $this->payment_model->get_by_tenant_id($tenant_id);
-            $data['total_payments'] = $this->payment_model->get_sum($tenant_id);
+            $data['paymentReportModal'] = $this->load->view('tenants/paymentReportModal', NULL, TRUE);
 
             $this->load->view('templates/header', $data);
             $this->load->view('tenants/view', $data);

@@ -130,7 +130,6 @@
                         </div>
                         </form>
                     </div><!-- /.box -->
-
                 </div><!--/.col (left) -->
             </div><!-- /.panel-body -->
         </div><!-- /.panel -->
@@ -198,7 +197,7 @@
             });
 
             self.end_date = ko.computed(function () {
-                return moment(self.start_date(), 'X').add(self.no_of_periods()*<?php echo $tenancy['billing_freq']; ?>, '<?php echo $tenancy['label']; ?>');
+                return moment(self.start_date(), 'X').add(self.no_of_periods()*<?php echo $tenancy['billing_freq']; ?>-1, '<?php echo $tenancy['label']; ?>').endOf('<?php echo $tenancy['period_desc']; ?>');
             });
         };
         ko.applyBindings(new PaymentModel());

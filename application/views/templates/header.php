@@ -70,6 +70,12 @@
             body {
                 background-color: #f6f6f6;
             }
+            .daterangepicker_div {
+                background: #fff;
+                cursor: pointer;
+                padding: 5px 10px;
+                border: 1px solid #ccc;
+            }
         </style>
     </head>
 

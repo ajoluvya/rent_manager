@@ -10,11 +10,11 @@ var setOptionValue = function (propId) {
     };
 };
 function change_tenancy_status(element, url, tenancy) {
-    var allGood=confirm('Are you sure?');
+    var allGood = confirm('Are you sure?');
     if (allGood) {
-        new_status = (tenancy.status==2||tenancy.status==3?1:(get_date_diff(tenancy)>0?3:2));
+        new_status = (tenancy.status == 2 || tenancy.status == 3 ? 1 : (get_date_diff(tenancy) > 0 ? 3 : 2));
         $.post(
-                url,{tenancy_id:tenancy.tenancy_id, status:new_status},
+                url, {tenancy_id: tenancy.tenancy_id, status: new_status},
                 function (response) {
                     if (response.success) {
                         tenancy.status = new_status;
@@ -50,6 +50,47 @@ function change_tenancy_status(element, url, tenancy) {
             showStatusMessage(msg, "fail");
         });
     }
+}
+function get_time_range_display(start_date, end_date, time_interval_id, billing_starts, label) {
+    ret_val = moment(start_date, 'X').format('D-MMM-YYYY') + " - " + moment(end_date, 'X').format('D-MMM-YYYY');
+    date_diff = moment(end_date, 'X').diff(moment(start_date, 'X'), label);
+    switch (parseInt(time_interval_id)) {
+        case 1: //hourly basis
+            format = (date_diff === 1 && billing_starts == 1) ? ('h:sA D-MMM-YYYY') : ('h:sA D-MMM-YYYY');
+            ret_val = (moment(start_date, 'X').format(format) + " - " + moment(end_date, 'X').format(format));
+            break;
+        case 2: //daily basis
+            format = ('dddd, D-MMM-YYYY');
+            ret_val = (moment(start_date, 'X').format(format) + " - " + moment(end_date, 'X').format(format));
+            break;
+        case 3: //weekly basis
+            ret_val = moment(start_date, 'X').format('D-MMM-YYYY') + " - " + moment(end_date, 'X').format('D-MMM-YYYY [(W]w[)]');
+            break;
+        case 4: //monthly billing
+            format = (date_diff === 1 && billing_starts == 1) ? ('MMMM-YYYY') : ((date_diff > 0 && billing_starts == 1) ? ('MMMM-YYYY') : ('D-MMM-YYYY'));
+            ret_val = (date_diff === 1 && billing_starts == 1) ? (moment(start_date, 'X').format(format)) : (moment(start_date, 'X').format(format) + " - " + moment(end_date, 'X').format(format));
+            break;
+        case 5: //quarterly billing
+            format = (date_diff === 1 && billing_starts == 1) ? ('Qo [quarter, ] YYYY') : ((date_diff > 0 && billing_starts == 1) ? ('Qo [quarter, ] YYYY') : ('D-MMM-YYYY'));
+            ret_val = (date_diff === 1 && billing_starts == 1) ? (moment(start_date, 'X').format(format)) : (moment(start_date, 'X').format(format) + " - " + moment(end_date, 'X').format(format));
+            break;
+    }
+    return ret_val;
+}
+function get_date_diff(full) {
+    date_diff = 0;
+    switch (parseInt(full.status)) {
+        case 1:
+            date_diff = moment().diff(moment(full.end_date, 'X'), full.label);
+            break;
+        case 2:
+            //date_diff = moment(full.end_date,'X').diff(moment(full.end_date,'X'), full.label);
+            break;
+        case 3:
+            date_diff = moment(full.exit_date, 'X').diff(moment(full.end_date, 'X'), full.label);
+            break;
+    }
+    return date_diff;
 }
 function printPageSection(sectionId, cssLinkTag) {
     var printContent = document.getElementById(sectionId);

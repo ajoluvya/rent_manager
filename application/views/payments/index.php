@@ -6,19 +6,18 @@
                     <div class="box box-solid">
                         <div class="box-header with-border">
                             <h3 class="box-title"><?php echo $sub_title; ?></h3>
-                            <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc;">
+                            <div id="reportrange" class="pull-right daterangepicker_div">
                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
                                 <span></span> <b class="caret"></b>
                             </div>
-                            <?php echo form_open(uri_string(), array('id' => 'getPaymentsForm', 'name' => 'getPaymentsForm', 'role' => 'form')); ?>
-                            <input type="hidden" name="start" id="startDate"/>
-                            <input type="hidden" name="end" id="endDate"/>
-                            </form>
+                            <div class="pull-right daterangepicker_div">
+                                <strong>Date of payment:</strong>
+                            </div>
                         </div>
                         <table class="table table-striped table-condensed table-hover" id="tblPayments">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
+                                    <th>Date of payment</th>
                                     <th>Tenant</th>
                                     <th>House</th>
                                     <th>Payment for</th>
@@ -184,12 +183,12 @@
             "linkedCalendars": true,
             startDate: startDate,
             endDate: endDate,
-            "minDate": "<?php echo mdate('%m/%d/%Y', strtotime('-10 year')); ?>",
-            "maxDate": "<?php echo mdate('%m/%d/%Y'); ?>",
+            "minDate": "<?php echo mdate('%d/%m/%Y', strtotime('-10 year')); ?>",
+            "maxDate": "<?php echo mdate('%d/%m/%Y'); ?>",
             "locale": {
-                applyLabel: 'Search'
+                applyLabel: 'Search',
+                format: 'DD/MM/YYYY'
             },
-            //format: 'DD/MM/YYYY',
             ranges: {
                 'This Month': [moment().startOf('month'), moment()],
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
@@ -204,30 +203,4 @@
         cb(startDate, endDate);
 
     });
-    function get_time_range_display(start_date, end_date, time_interval_id, billing_starts, label){
-        ret_val = moment(start_date,'X').format('D-MMM-YYYY') + " - " + moment(end_date,'X').format('D-MMM-YYYY');
-        date_diff = moment(end_date,'X').diff(moment(start_date,'X'),label);
-        switch(parseInt(time_interval_id)){
-            case 1: //hourly basis
-                format = (date_diff === 1 && billing_starts == 1 )?('h:sA D-MMM-YYYY') : ('h:sA D-MMM-YYYY');
-                ret_val =(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
-                break;
-            case 2: //daily basis
-                format = ('dddd, D-MMM-YYYY');
-                ret_val =(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
-                break;
-            case 3: //weekly basis
-                ret_val = moment(start_date,'X').format('D-MMM-YYYY') + " - " + moment(end_date,'X').format('D-MMM-YYYY [(W]w[)]');
-                break;
-            case 4: //monthly billing
-                format = (date_diff === 1 && billing_starts == 1 )?('MMMM-YYYY') : ((date_diff > 0 && billing_starts == 1 )?('MMMM-YYYY') : ('D-MMM-YYYY'));
-                ret_val =(date_diff === 1 && billing_starts == 1 )?(moment(start_date,'X').format(format)):(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
-                break;
-            case 5: //quarterly billing
-                format = (date_diff === 1 && billing_starts == 1 )?('Qo [quarter, ] YYYY') : ((date_diff > 0 && billing_starts == 1 )?('Qo [quarter, ] YYYY') : ('D-MMM-YYYY'));
-                ret_val =(date_diff === 1 && billing_starts == 1 )?(moment(start_date,'X').format(format)):(moment(start_date,'X').format(format) + " - " + moment(end_date,'X').format(format));
-                break;
-        }
-        return ret_val;
-    }
 </script>

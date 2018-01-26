@@ -25,7 +25,7 @@
                                                 <th>Status</th>
                                                 <td>
                                                     <span class="btn btn-sm" data-bind="css: {'btn-info':status==1,'btn-danger':(status==2||status==3)}, text:status==1?'Active':(status==2?'Ended':'Terminated with arrears')"></span>
-                                                    <span class="btn btn-sm" data-bind="css: {'btn-danger':status==1,'btn-info':(status==2||status==3)}, text:(status==2||status==3?'Reactivate':('Terminate '+(get_date_diff($data)>0?' with arrears':''))), attr:{'title': (status==2||status==3?'Reactivate tenancy agreement':('Terminate tenancy agreement'+(get_date_diff($data)>0?' (with arrears)':'')))}, click: $parent.onClick"></span>
+                                                    <span class="hidden-print btn btn-sm" data-bind="css: {'btn-danger':status==1,'btn-info':(status==2||status==3)}, text:(status==2||status==3?'Reactivate':('Terminate '+(get_date_diff($data)>0?' with arrears':''))), attr:{'title': (status==2||status==3?'Reactivate tenancy agreement':('Terminate tenancy agreement'+(get_date_diff($data)>0?' (with arrears)':'')))}, click: $parent.onClick"></span>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -52,7 +52,7 @@
                                         <tr><th>Estate</th><td data-bind="text: estate_name"></td></tr>
                                         <tr><th>Apartment/House No.</th><td data-bind="text: house_no"></td></tr>
                                         <tr><th>Floor</th><td data-bind="text: parseInt(floor)+1"></td></tr>
-                                        <tr><th>Rent rate (UGX)</th><td><span data-bind="text: curr_format(parseFloat(rent_rate)*1)"></span></td></tr>
+                                        <tr><th>Rent Rate (UGX)</th><td><span data-bind="text: curr_format(parseFloat(rent_rate)*1)"></span></td></tr>
                                         <tr><th>Entry date/time</th><td data-bind="text: moment(start_date,'X').format((parseInt(time_interval_id)<3?'hh:mm A':'')+'Do-MMM-YYYY')"></td></tr>
                                         <tr><th>Payments made upto</th><td data-bind="text: moment(end_date,'X').format(parseInt(time_interval_id)<3?'hh:mm A Do-MMM-YYYY':(parseInt(billing_starts)==1?'MMM-YYYY':'Do-MMM-YYYY'))"></td></tr>
                                         <!-- ko if: status > 1 -->

@@ -31,7 +31,13 @@ class Payment extends CI_Controller {
         $where = "";
         if ($this->input->post('start_date') != "" && $this->input->post('end_date') != "") {
 
-            $where = "(`payment_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
+            $where .= "(`payment_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
+        }
+        if ($this->input->post('tenant_id') != "") {
+            $where .= (strlen($where)>1?"AND":""). " `tenant_id` = " . $this->input->post('tenant_id');
+        }
+        if ($this->input->post('estate_id') != "") {
+            $where .= (strlen($where)>1?"AND":""). "`house_id` IN (SELECT `house_id` FROM `house` WHERE `estate_id` = " . $this->input->post('estate_id').")";
         }
         $payments['data'] = $this->payment_model->get_payment($where);
         echo json_encode($payments);

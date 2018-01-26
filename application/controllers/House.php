@@ -56,7 +56,7 @@ class House extends CI_Controller {
         } else {
             $data['sub_title'] = $data['house']['house_no'];
             $data['floor'] = $this->floors[$data['house']['floor']];
-            $data['house_tenants'] = $this->house_model->get_house_tenants($house_id);
+            $data['paymentReportModal'] = $this->load->view('tenants/paymentReportModal', NULL, TRUE);
 
             $this->load->view('templates/header', $data);
             $this->load->view('houses/view', $data);
