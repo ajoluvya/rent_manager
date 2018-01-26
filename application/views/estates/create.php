@@ -57,35 +57,31 @@
                             </fieldset>
                             <fieldset>
                                 <legend>Default Tenancy Terms</legend>
-                                <div class="col-lg-5">
+                                <div class="col-lg-4">
                                     <div class="form-group">
-                                        <div class="col-md-5"><label class="control-label"  for="estate_name">Rent Period *</label></div>
-                                        <div class="col-md-7">
-                                            <select class="form-control" id="time_interval_id" name="time_interval_id" data-bind='options:time_intervals, optionsText: "description", optionsCaption: "-- Select --", optionsAfterRender: setOptionValue("id"), value: rent_period' required>
-                                            </select>
+                                        <label for="billing_freq">Billing Frequency *</label>
+                                        <div class="input-group"><span class="input-group-addon">Every</span><input type="number" class="form-control" id="billing_freq" name="billing_freq" value="<?php echo (set_value('billing_freq') != NULL) ? set_value('billing_freq') : (isset($estate['billing_freq']) ? $estate['billing_freq'] : 1); ?>" required/>
                                         </div>
+                                        <div class="help-block with-errors"><i>How often the bill is generated</i></div>
                                     </div>
                                 </div>
-                                <!-- ko with: rent_period -->
-                                <div class="col-lg-7">
+                                <div class="col-lg-4">
                                     <div class="form-group">
-                                        <div class="col-md-4"><label class="control-label" for="estate_name">Billing Starts *</label></div>
-                                        <div class="col-md-8">
-                                            <label class="radio-inline"><input type="radio" id="period_starts1" name="period_starts" value="1" <?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 1) ? "checked" : (isset($estate['period_starts']) && $estate['period_starts'] == 1 ? "checked" : ""); ?> required/><span data-bind="text: period_start_array[id-1]">Start</span> that <span data-bind="text:description.toString().slice(0,-1).toLocaleLowerCase()">Period</span></label>                               
-                                            <label class="radio-inline"><input type="radio" id="period_starts2" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($estate['period_starts']) && $estate['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
-                                            <!--div class="help-block with-errors"><i>When the billing should commence</i></div-->
-                                        </div>
+                                        <label class="control-label"  for="time_interval_id">&nbsp;&nbsp;</label>
+                                        <select class="form-control" id="time_interval_id" name="time_interval_id" data-bind='options:time_intervals, optionsText: "description", optionsCaption: "-- Select --", optionsAfterRender: setOptionValue("id"), value: rent_period' required></select>
+                                        <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
-                                <div class="col-lg-8">
+                                <!-- ko with: rent_period -->
+                                <div class="col-lg-12">
                                     <div class="form-group">
-                                        <div class="col-md-3"><label for="estate_name">Billing Frequency *</label></div>
-                                        <div class="col-md-4">
-                                            <input type="number" class="form-control" id="billing_freq" name="billing_freq" value="<?php echo (set_value('billing_freq') != NULL) ? set_value('billing_freq') : (isset($estate['billing_freq']) ? $estate['billing_freq'] : 1); ?>" required/>
+                                        <div class="col-md-3"><label class="control-label" for="estate_name">Billing happens at/on*</label></div>
+                                        <div class="col-md-9">
+                                            <label class="radio-inline"><input type="radio" id="period_starts1" name="period_starts" value="1" <?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 1) ? "checked" : (isset($estate['period_starts']) && $estate['period_starts'] == 1 ? "checked" : ""); ?> required/><span data-bind="text: period_start_array[id-1]">Start</span> billing <span data-bind="text:description.toString().slice(0,-1).toLocaleLowerCase()">Period</span></label>                               
+                                            <label class="radio-inline"><input type="radio" id="period_starts2" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($estate['period_starts']) && $estate['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
+                                            <div class="help-block with-errors"></div>
                                         </div>
-                                        <div class="col-md-5 help-block with-errors"><i>How often the bill is generated</i></div>
-
                                     </div>
                                 </div>
                                 <!-- /ko -->
@@ -100,7 +96,7 @@
                         </div>
                         </form>
                     </div><!-- /.box -->
-                </div><!--/.col (left) -->
+                </div><!--/.col-lg-10 col-lg-offset-1 -->
             </div><!-- /.panel-body -->
         </div><!-- /.panel -->
     </div><!-- /.col-lg-12 -->

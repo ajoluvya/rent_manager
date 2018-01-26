@@ -195,24 +195,23 @@
                                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
-                        <li>
+                        <li class="treeview">
                             <a href="<?php echo site_url("tenant"); ?>">
-                                <i class="fa fa-hotel"></i> <span>Tenants</span>
+                                <i class="fa fa-hotel"></i> <span>Tenants</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
-                            <!--ul class="treeview-menu"> <i class="fa fa-angle-left pull-right"></i>
-                              <li><a href="<?php echo site_url("tenant/create"); ?>"><i class="fa fa-edit"></i> New</a></li>
-                              <li><a href="<?php echo site_url("tenancy"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
-                              <li><a href="<?php echo site_url("tenant"); ?>"><i class="fa fa-hotel"></i> Other  tenants</a></li>
-                            </ul-->
+                            <ul class="treeview-menu">
+                              <li><a href="<?php echo site_url("tenant/create"); ?>"><i class="fa fa-plus-square-o"></i> New Tenant</a></li>
+                              <li><a href="<?php echo site_url("tenancy"); ?>"><i class="fa fa-list-ol"></i> View</a></li>
+                            </ul>
                         </li>
                         <li class="treeview">
                             <a href="<?php echo site_url("payment"); ?>">
-                                <i class="fa fa-credit-card"></i> <span>Payments</span>
+                                <i class="fa fa-credit-card"></i> <span>Payments</span> <i class="fa fa-angle-left pull-right"></i>
                             </a>
-                            <!--ul class="treeview-menu">
-                              <li><a href="<?php echo site_url("payment/create"); ?>"><i class="fa fa-edit"></i> New</a></li>
-                              <li><a href="<?php echo site_url("payment"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
-                            </ul-->
+                            <ul class="treeview-menu">
+                              <li><a href="<?php echo site_url("payment/create"); ?>"><i class="fa fa-plus-square-o"></i> New Payment</a></li>
+                              <li><a href="<?php echo site_url("payment"); ?>"><i class="fa fa-list-ol"></i> View</a></li>
+                            </ul>
                         </li>
                         <!-- If the estates owner/admininistrator is logged in -->
                         <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
@@ -221,8 +220,8 @@
                                     <i class="fa fa-user"></i> <span>Users</span> <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="<?php echo site_url("user/create"); ?>"><i class="fa fa-edit"></i> New</a></li>
-                                    <li><a href="<?php echo site_url("user"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
+                                    <li><a href="<?php echo site_url("user/create"); ?>"><i class="fa fa-plus-square-o"></i> New</a></li>
+                                    <li><a href="<?php echo site_url("user"); ?>"><i class="fa fa-list-ol"></i> View</a></li>
                                 </ul>
                             </li>
 
@@ -236,8 +235,8 @@
                                             <i class="fa fa-money"></i> <span>Accounts</span> <i class="fa fa-angle-left pull-right"></i>
                                         </a>
                                         <ul class="treeview-menu">
-                                            <li><a href="<?php echo site_url("account/create"); ?>"><i class="fa fa-edit"></i> New</a></li>
-                                            <li><a href="<?php echo site_url("account"); ?>"><i class="fa fa-binoculars"></i> View</a></li>
+                                            <li><a href="<?php echo site_url("account/create"); ?>"><i class="fa fa-plus-square-o"></i> New</a></li>
+                                            <li><a href="<?php echo site_url("account"); ?>"><i class="fa fa-list-ol"></i> View</a></li>
                                         </ul>
                                     </li>
                                     <li>

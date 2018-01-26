@@ -27,6 +27,7 @@
                                     <th>Payments made upto</th>
                                     <th>Status</th>
                                     <th>&nbsp;</th>
+                                    <th>&nbsp;</th>
                                     <!-- If the estates owner/admin is logged in -->
                                     <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
                                         <th>&nbsp;</th>
@@ -77,7 +78,7 @@
                             }
                         },
                          "columnDefs": [ {
-                         "targets": [8<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,9<?php } ?>],
+                         "targets": [8,9<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,10<?php } ?>],
                          "orderable": false,
                          "searchable": false
                          }],
@@ -149,12 +150,20 @@
                                 }
                             },
                             { data: 'names', render: function( data, type, full, meta ) {
+                                    if (full.tenancy_id && (full.status == 1 || full.status == 2)){
+                                        tenant_link = '<?php echo site_url("payment/create"); ?>/'+full.tenancy_id;
+                                        return '<a href="'+tenant_link+'" title="Make payment for '+data+' (house no: '+full.house_no+')" ><span class="fa fa-money"></span></a>';
+                                    }
+                                    return '';
+                                }
+                            },
+                            { data: 'names', render: function( data, type, full, meta ) {
                                     tenant_link = '<?php echo site_url("tenant/update"); ?>/'+full.tenant_id;
                                     if (full.tenancy_id){
                                         tenant_link = '<?php echo site_url("tenancy/update"); ?>/'+full.tenancy_id;
                                     }
                                     if (!full.tenancy_id ||(full.start_date === full.end_date)){
-                                        return '<a href="'+tenant_link+'" title="Update '+data+'\'s details" ><span class="fa fa-edit"></span></a>';
+                                        return '<a href="'+tenant_link+'" title="Update '+data+'\'s tenancy details" ><span class="fa fa-edit"></span></a>';
                                     }
                                     return '';
                                 }

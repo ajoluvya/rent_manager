@@ -29,7 +29,7 @@
                     <label class="control-label" for="floor">Floor *</label>
                     <select id="floor" name="floor" class="form-control" required>
                         <?php foreach ($floors as $key => $floor): ?>
-                            <option value="<?php echo $key + 1; ?>" <?php echo (set_select('floor', $key + 1) != NULL) ? "selected" : ((isset($house['floor']) && $key == $house['floor']) ? "selected" : ""); ?>><?php echo $floor; ?> floor</option>
+                            <option value="<?php echo $key; ?>" <?php echo (set_select('floor', $key) != NULL) ? "selected" : ((isset($house['floor']) && $key == $house['floor']) ? "selected" : ""); ?>><?php echo $floor; ?> floor</option>
                         <?php endforeach; ?>
                     </select>
                     <div class="help-block with-errors"></div>
@@ -53,30 +53,34 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label class="control-label" for="fixed_amount">Rent rate*</label>
-                    <div class="input-group"><span class="input-group-addon">UGX</span><input type="number" class="form-control" id="fixed_amount" name="fixed_amount" value="<?php echo (set_value('fixed_amount') != NULL) ? set_value('fixed_amount') : (isset($house['fixed_amount']) ? $house['fixed_amount'] : ""); ?>" placeholder="Rent amount"></div>
+                    <div class="input-group"><span class="input-group-addon">UGX</span><input type="number" class="form-control" id="fixed_amount" name="fixed_amount" value="<?php echo (set_value('fixed_amount') != NULL) ? set_value('fixed_amount') : (isset($house['fixed_amount']) ? $house['fixed_amount'] : ""); ?>" placeholder="Rent amount" data-required-error="Rent rate is required" required></div>
                     <div class="help-block with-errors"></div>
                 </div>
-                <!-- ko with: time_interval -->
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-lg-4">
                 <div class="form-group">
                     <label for="estate_name">Billing Frequency *</label>
-                    <input type="number" class="form-control" id="billing_freq" name="billing_freq" value="<?php echo (set_value('billing_freq') != NULL) ? set_value('billing_freq') : (isset($house['billing_freq']) ? $house['billing_freq'] : 1); ?>" required/>
+                    <div class="input-group"><span class="input-group-addon">Every</span><input type="number" class="form-control" id="billing_freq" name="billing_freq" value="<?php echo (set_value('billing_freq') != NULL) ? set_value('billing_freq') : (isset($house['billing_freq']) ? $house['billing_freq'] : 1); ?>" required/></div>
                 </div>
                 <div class="help-block with-errors"><i>How often the bill is generated</i></div>
-                <!-- /ko -->
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="form-group">
-                    <label class="control-label"  for="estate_name">Rent Period *</label>
+                    <label class="control-label"  for="time_interval_id">&nbsp;&nbsp;</label>
                     <select class="form-control" id="time_interval_id" name="time_interval_id" data-bind='options:time_intervals, optionsText: "description", optionsCaption: "-- Select --", optionsAfterRender: setOptionValue("id"), value: time_interval' required>
                     </select>
                     <div class="help-block with-errors"></div>
                 </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-lg-12">
                 <div class="form-group" data-bind="with: time_interval">
-                    <label class="control-label" for="period_starts">Billing Starts *</label>
-                    <div>
-                        <label class="radio-inline"><input type="radio" name="period_starts" value="1" <?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 1) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 1 ? "checked" : ""); ?> required/><span data-bind="text: period_start_array[id-1]">Start</span> that <span data-bind="text:description.toString().slice(0,-1).toLocaleLowerCase()">Period</span></label>                               
-                        <label class="radio-inline"><input type="radio" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified start <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
-                        <!--div class="help-block with-errors"><i>When the billing should commence</i></div-->
+                    <label class="control-label col-md-3" for="period_starts">Billing happens at/on*</label>
+                    <div class="col-md-9">
+                        <label class="radio-inline"><input type="radio" name="period_starts" value="1" <?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 1) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 1 ? "checked" : ""); ?> required/><span data-bind="text: period_start_array[id-1]">Start</span> billing <span data-bind="text:description.toString().slice(0,-1).toLocaleLowerCase()">Period</span></label>                               
+                        <label class="radio-inline"><input type="radio" name="period_starts" value="2"<?php echo (set_value('period_starts') != NULL && set_value('period_starts') == 2 ) ? "checked" : (isset($house['period_starts']) && $house['period_starts'] == 2 ? "checked" : ""); ?> required/>Specified <span data-bind="text:period_start_array2[id-1]">moment</span></label>                                
+                        <div class="help-block with-errors"></div>
                     </div>
                 </div>
             </div>

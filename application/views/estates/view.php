@@ -5,7 +5,7 @@
                 <div class="col-lg-12">
                     <div class="tabs-container" id="estates_page">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-home"></i> Details</a></li>
+                            <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-list-alt"></i> Details</a></li>
                             <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-home"></i> Apartments/Houses</a></li>
                             <li><a data-toggle="tab" href="#tab-3"><i class="fa fa-hotel"></i> Tenants</a></li>
                             <li><a data-toggle="tab" href="#tab-4"><i class="fa fa-credit-card"></i> Payments</a></li>
@@ -105,6 +105,7 @@
                                                             <th>Entry Date</th>
                                                             <th>Payments made upto</th>
                                                             <th>Status</th>
+                                                            <th>&nbsp;</th>
                                                             <th>&nbsp;</th>
                                                             <!-- If the estates owner/admin is logged in -->
                                                             <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
@@ -255,8 +256,8 @@
                                return ret_val;
                            }
                        },
-                               {data: 'floor', render: function ( data, type, full, meta ) {return floors[data];}},
-                               {data: 'max_tenants'}
+                        {data: 'floor', render: function ( data, type, full, meta ) {return floors[data];}},
+                        {data: 'max_tenants'}
                        // If the data estates owner/admin is logged in 
                        <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>,
                        //{ data: 'house_id', render: function ( data, type, full, meta ) {return '<a href="<?php echo site_url("house/update/"); ?>/'+data+'" title="Update details" ><i class="fa fa-pencil"></i></a>';}},
@@ -286,7 +287,7 @@
                             }
                         },
                          "columnDefs": [ {
-                         "targets": [<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,7,8<?php } ?>],
+                         "targets": [7,8<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,9<?php } ?>],
                          "orderable": false,
                          "searchable": false
                          }],
@@ -352,6 +353,14 @@
                                             return date_diff;
                                         }
                                         return '<a data-toggle="modal" href="#paymentReportModal" ><span class="payment_report btn btn-sm btn-'+button_class+'" title="'+title_text+'">'+complete_label+'</span></a>';
+                                    }
+                                    return '';
+                                }
+                            },
+                            { data: 'names', render: function( data, type, full, meta ) {
+                                    if (full.tenancy_id && (full.status == 1 || full.status == 2)){
+                                        tenant_link = '<?php echo site_url("payment/create"); ?>/'+full.tenancy_id;
+                                        return '<a href="'+tenant_link+'" title="Make payment for '+data+' (house no: '+full.house_no+') details" ><span class="fa fa-money"></span></a>';
                                     }
                                     return '';
                                 }

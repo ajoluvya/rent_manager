@@ -140,69 +140,105 @@
     $(document).ready(function () {
         var PaymentModel = function () {
             var self = this;
-            self.s_date = "<?php echo $tenancy['start_date']; ?>";
-            self.e_date = "<?php echo $tenancy['end_date']; ?>";
-            self.start_date = ko.observable("<?php echo ((isset($tenancy['end_date']) && $tenancy['end_date'] != "") ? $tenancy['end_date'] : $tenancy['start_date']); ?>");
+            self.tenancy = ko.observable(<?php echo isset($tenancy)?json_encode($tenancy):''; ?>);
+            self.tenancies = ko.observableArray(<?php echo isset($tenancies)?json_encode($tenancies):''; ?>);
+            
+            self.start_date = ko.observable();
 
             self.no_of_periods = ko.observable(<?php echo ((isset($payment['no_of_periods']) && is_numeric($payment['no_of_periods'])) ? $payment['no_of_periods'] : 1); ?>);
             
-            if(self.s_date === self.e_date && <?php echo $tenancy['billing_starts']; ?> === 1 ){ //we can tell, at this point, that its the first payment to be made
+            if(typeof self.tenancy()!= 'undefined' && (self.tenancy().start_date === self.tenancy().end_date && parseInt(self.tenancy().billing_starts) === 1) ){ //we can tell, at this point, that its the first payment to be made
                 //based on the time interval id, the start time, we are able to push the time to the start point of the next hour/day/week/month/quarter
-                switch(<?php echo $tenancy['time_interval_id']; ?>){
+                switch(parseInt(self.tenancy().time_interval_id)){
                     case 1: // for hourly rent rates
-                        var start_time = moment(self.start_date(),'X');
-                        var minutes = start_time.minute();
-                        start_time.add(60-minutes,'m');
-                        start_time.startOf('hour');
+                        var start_time = moment(self.tenancy().end_date,'X');
+                        /*var minutes = start_time.minute();
+                        if(minutes>1){
+                            start_time.add(60-minutes,'m');
+                        }*/
+                            start_time.startOf('hour');
                         self.start_date(start_time.format('X'));
                         break;
                     case 2: // for daily rent rates
-                        var start_time = moment(self.start_date(),'X');
-                        var hours = start_time.hour();
-                        start_time.add(24-hours,'h');
-                        start_time.startOf('day');
+                        var start_time = moment(self.tenancy().end_date,'X');
+                        /*var hours = start_time.hour();
+                        if(hours>1){
+                            start_time.add(24-hours,'h');
+                        }*/
+                            start_time.startOf('day');
                         self.start_date(start_time.format('X'));
                         break;
                     case 3: // for weekly rent rates
-                        var start_time = moment(self.start_date(),'X');
-                        var day = start_time.day();
-                        start_time.add(7-day+1,'d');
-                        start_time.startOf('week');
+                        var start_time = moment(self.tenancy().end_date,'X');
+                        /*var day = start_time.day();
+                        if(day>1){
+                            start_time.add(7-day+1,'d');
+                        }*/
+                            start_time.startOf('week');
                         self.start_date(start_time.format('X'));
                         break;
                     case 4: // for monthly rent rates
-                        var start_time = moment(self.start_date(),'X');
-                        var date_month = start_time.date();
-                        start_time.add(start_time.daysInMonth()-date_month+1,'d');
-                        start_time.startOf('month');
+                        var start_time = moment(self.tenancy().end_date,'X');
+                        /*var date_month = start_time.date();
+                        if(date_month>1){
+                            start_time.add(start_time.daysInMonth()-date_month+1,'d');
+                            start_time.startOf('month');
+                        }*/
                         self.start_date(start_time.format('X'));
                         break;
                     case 5: // for quarterly rent rates
-                        var start_time = moment(self.start_date(),'X');
-                        var startOf_qtr = moment(self.start_date(),'X').startOf('quarter');
+                        var start_time = moment(self.tenancy().end_date,'X');
+                        /*var startOf_qtr = moment(self.tenancy().end_date,'X').startOf('quarter');
                         if(startOf_qtr.isBefore(start_time, 'day')){
                             start_time.add(1,'Q');
-                        }
+                        }*/
                         start_time.startOf('quarter');
                         self.start_date(start_time.format('X'));
                         break;
                 }
+                self.end_date = ko.computed(function () {
+                    return moment(self.start_date(), 'X').add(self.no_of_periods()*parseInt(self.tenancy().billing_freq)-1, self.tenancy().label).endOf(self.tenancy().period_desc);
+                });
+            }
+            else if( typeof self.tenancy()!= 'undefined' && !(self.tenancy().start_date === self.tenancy().end_date && parseInt(self.tenancy().billing_starts) === 1) ){ 
+                self.start_date(self.tenancy().start_date);
+                self.end_date = ko.computed(function () {
+                    return moment(self.start_date(), 'X').add(self.no_of_periods()*parseInt(self.tenancy().billing_freq)-1, self.tenancy().label);
+                });
+            }
+            else {
+                self.end_date = ko.computed(function () {
+                    if( typeof self.tenancy()!= 'undefined'){
+                        return moment(self.start_date(), 'X').add(self.no_of_periods()*parseInt(self.tenancy().billing_freq)-1, self.tenancy().label);
+                    }
+                });
             }
             self.total_amount = ko.computed(function () {
-                var rent_rate = <?php echo $tenancy['rent_rate']; ?>;
-                if (self.no_of_periods()) {
-                    return self.no_of_periods() * parseFloat(rent_rate);
-                } else
-                    return rent_rate;
+                if( typeof self.tenancy()!= 'undefined'){
+                    if (self.no_of_periods()) {
+                        return self.no_of_periods() * parseFloat(self.tenancy().rent_rate);
+                    } else{
+                        return self.tenancy().rent_rate;
+                    }
+                }
             });
 
-            self.end_date = ko.computed(function () {
-                return moment(self.start_date(), 'X').add(self.no_of_periods()*<?php echo $tenancy['billing_freq']; ?>-1, '<?php echo $tenancy['label']; ?>').endOf('<?php echo $tenancy['period_desc']; ?>');
-            });
+            
         };
         ko.applyBindings(new PaymentModel());
         $('#payment_form').on('submit', function () {
             enableDisableButton(this, true);
         });
     });
+    
+<?php 
+if(isset($tenancies)):
+    if (isset($_POST['tenancy_id'])): ?>
+        //we need to set the estate object accordingly
+        viewModel.tenancy(ko.utils.arrayFirst(viewModel.tenancies(), function (currentTenancy) {
+                return (<?php echo $_POST['tenancy_id'] ?> == currentTenancy.tenancy_id);
+        }));
+        $('#tenancy_id').val(<?php echo $_POST['tenancy_id'] ?>).trigger('change');
+<?php endif;
+endif; ?>
 </script>

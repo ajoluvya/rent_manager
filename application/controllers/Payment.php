@@ -34,10 +34,10 @@ class Payment extends CI_Controller {
             $where .= "(`payment_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
         }
         if ($this->input->post('tenant_id') != "") {
-            $where .= (strlen($where)>1?"AND":""). " `tenant_id` = " . $this->input->post('tenant_id');
+            $where .= (strlen($where)>1?" AND ":""). " `tenant_id` = " . $this->input->post('tenant_id');
         }
         if ($this->input->post('estate_id') != "") {
-            $where .= (strlen($where)>1?"AND":""). "`house_id` IN (SELECT `house_id` FROM `house` WHERE `estate_id` = " . $this->input->post('estate_id').")";
+            $where .= (strlen($where)>1?" AND ":""). " `house_id` IN (SELECT `house_id` FROM `house` WHERE `estate_id` = " . $this->input->post('estate_id').")";
         }
         $payments['data'] = $this->payment_model->get_payment($where);
         echo json_encode($payments);
@@ -104,15 +104,18 @@ class Payment extends CI_Controller {
         }
     }
 
-    public function create($tenancy_id) {
+    public function create($tenancy_id = FALSE) {
         if ($tenancy_id !== NULL) {
+            $data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
+        } else {
+            $data['tenancies'] = $this->tenancy_model->get_tenancy("`status`=1 OR `status`=2");
+        }
             $this->load->helper('form');
             $this->load->library('form_validation');
 
             $data['title'] = "Payment";
             $data['sub_title'] = "Capture payment details";
             $data['accounts'] = $this->account_model->get_account();
-            $data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
 
             $data['step_text'] = TRUE;
 
@@ -131,17 +134,9 @@ class Payment extends CI_Controller {
                 $this->load->view('templates/footer');
             } else {
                 $payment_id = $this->payment_model->set_payment();
-                $this->tenancy_model->update_tenancy_end_date($tenancy_id);
+                $this->tenancy_model->update_tenancy_end_date();
                 redirect("payment/view/$payment_id");
             }
-        } else {
-            $data['sub_title'] = 'No data';
-            $data['message'] = 'The payment record was not found';
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/404', $data);
-            $this->load->view('templates/footer');
-        }
     }
 
     public function update($payment_id = NULL) {

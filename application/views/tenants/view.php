@@ -59,7 +59,7 @@
                                         <a class="btn btn-default" href="<?php echo site_url("tenancy/create/" . $tenant['tenant_id']); ?>" title="Assign <?php echo $tenant['names']; ?> a house">
                                             <i class="fa fa-plus-square"></i> Add
                                         </a>
-                                        <div id="reportrange" class="pull-right daterangepicker_div reportrange">
+                                        <div id="tenancies_dp" class="pull-right daterangepicker_div reportrange">
                                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
                                             <span></span> <b class="caret"></b>
                                         </div>
@@ -78,6 +78,7 @@
                                                     <th>Entry Date</th>
                                                     <th>Payments made upto</th>
                                                     <th>Status</th>
+                                                    <th>&nbsp;</th>
                                                     <th>&nbsp;</th>
                                                     <!-- If the estates owner/admin is logged in -->
                                                     <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
@@ -104,7 +105,7 @@
                                                         <i class="fa fa-plus-square"></i> Add
                                                 </a>
                                         </div-->
-                                        <div id="reportrange" class="pull-right daterangepicker_div reportrange">
+                                        <div id="payments_dp" class="pull-right daterangepicker_div reportrange">
                                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
                                             <span></span> <b class="caret"></b>
                                         </div>
@@ -193,7 +194,7 @@
                             }
                         },
                          "columnDefs": [ {
-                         "targets": [<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,7,8<?php } ?>],
+                         "targets": [7,8<?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>,9<?php } ?>],
                          "orderable": false,
                          "searchable": false
                          }],
@@ -259,6 +260,14 @@
                                             return date_diff;
                                         }
                                         return '<a data-toggle="modal" href="#paymentReportModal" ><span class="payment_report btn btn-sm btn-'+button_class+'" title="'+title_text+'">'+complete_label+'</span></a>';
+                                    }
+                                    return '';
+                                }
+                            },
+                            { data: 'names', render: function( data, type, full, meta ) {
+                                    if (full.tenancy_id && (full.status == 1 || full.status == 2)){
+                                        tenant_link = '<?php echo site_url("payment/create"); ?>/'+full.tenancy_id;
+                                        return '<a href="'+tenant_link+'" title="Make payment for '+data+' (house no: '+full.house_no+')" ><span class="fa fa-money"></span></a>';
                                     }
                                     return '';
                                 }

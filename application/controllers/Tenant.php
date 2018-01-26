@@ -33,7 +33,13 @@ class Tenant extends CI_Controller {
             $where .= "(`start_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
         }
         if ($this->input->post('tenant_id') != "") {
-            $where .= (strlen($where)>1?"AND ":""). "tenant.`tenant_id` = " . $this->input->post('tenant_id');
+            $where .= (strlen($where)>1?" AND ":""). " tenant.`tenant_id` = " . $this->input->post('tenant_id');
+        }
+        if ($this->input->post('estate_id') != "") {
+            $where .= (strlen($where)>1?" AND ":""). " `estate_id` = " . $this->input->post('estate_id');
+        }
+        if ($this->input->post('house_id') != "") {
+            $where .= (strlen($where)>1?" AND ":""). " `house_id` = " . $this->input->post('house_id');
         }
         $tenants['data'] = $this->tenant_model->get_tenant($where);
         echo json_encode($tenants);

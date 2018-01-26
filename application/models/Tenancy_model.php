@@ -97,7 +97,7 @@ class Tenancy_model extends CI_Model {
         return $this->db->update('tenancy', $data);
     }
 
-    public function update_tenancy_end_date($tenancy_id) {
+    public function update_tenancy_end_date() {
         $date_array = explode('-', $this->input->post('end_date'));
         $hour_min = $this->input->post('hour_select') . $this->input->post('min_select');
         $start_date = count($date_array)==3?mysql_to_unix($date_array[0] . $date_array[1] . $date_array[2] . (($hour_min?$hour_min:"0000")."00")):$this->input->post('end_date');
@@ -106,7 +106,7 @@ class Tenancy_model extends CI_Model {
             'end_date' => $start_date,
             'exit_date' => $start_date
         );
-        $this->db->where('tenancy_id', $tenancy_id);
+        $this->db->where('tenancy_id', $this->input->post('tenancy_id'));
         return $this->db->update('tenancy', $data);
     }
 
