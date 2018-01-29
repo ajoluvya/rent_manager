@@ -19,7 +19,7 @@ class Tenant extends CI_Controller {
         $data['sub_title'] = 'List of tenants';
 
         $data['paymentReportModal'] = $this->load->view('tenants/paymentReportModal', NULL, TRUE);
-        
+
         $this->load->view('templates/header', $data);
         $this->load->view('tenants/index');
         $this->load->view('templates/footer');
@@ -33,13 +33,13 @@ class Tenant extends CI_Controller {
             $where .= "(`start_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
         }
         if ($this->input->post('tenant_id') != "") {
-            $where .= (strlen($where)>1?" AND ":""). " tenant.`tenant_id` = " . $this->input->post('tenant_id');
+            $where .= (strlen($where) > 1 ? " AND " : "") . " tenant.`tenant_id` = " . $this->input->post('tenant_id');
         }
         if ($this->input->post('estate_id') != "") {
-            $where .= (strlen($where)>1?" AND ":""). " `estate_id` = " . $this->input->post('estate_id');
+            $where .= (strlen($where) > 1 ? " AND " : "") . " `estate_id` = " . $this->input->post('estate_id');
         }
         if ($this->input->post('house_id') != "") {
-            $where .= (strlen($where)>1?" AND ":""). " `house_id` = " . $this->input->post('house_id');
+            $where .= (strlen($where) > 1 ? " AND " : "") . " `house_id` = " . $this->input->post('house_id');
         }
         $tenants['data'] = $this->tenant_model->get_tenant($where);
         echo json_encode($tenants);
@@ -77,6 +77,8 @@ class Tenant extends CI_Controller {
         $data['title'] = "Tenant";
         $data['sub_title'] = "Capture tenant data";
         $data['districts'] = $this->district_model->get_district();
+        $data['houses'] = $this->house_model->get_house();
+        $data['estates'] = $this->estate_model->get_estate();
         $data['step_text'] = TRUE;
 
         $this->form_validation->set_rules('names', 'Tenant names', 'required|max_length[100]', array('required' => '%s is missing.', 'max_length' => '%s must be less than 100 characters'));
@@ -109,13 +111,11 @@ class Tenant extends CI_Controller {
             }
             $data['tenant_id'] = $this->tenant_model->set_tenant($photo_urls);
             $data['tenant_names'] = $this->input->post('names');
-            $data['houses'] = $this->house_model->get_house();
-            $data['estates'] = $this->estate_model->get_estate();
             $data['step_text'] = TRUE;
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('tenancy/create', $data);
-            $this->load->view('templates/footer');
+            redirect('tenancy/create/'.$data['tenant_id']);
+            //$this->load->view('templates/header', $data);
+            //$this->load->view('tenancy/create', $data);
+            //$this->load->view('templates/footer');
         }
     }
 
