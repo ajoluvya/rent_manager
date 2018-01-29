@@ -105,16 +105,16 @@ class Payment extends CI_Controller {
     }
 
     public function create($tenancy_id = FALSE) {
-        if ($tenancy_id !== NULL) {
+        if ($tenancy_id !== FALSE) {
             $data['tenancy'] = $this->tenancy_model->get_tenancy($tenancy_id);
         } else {
-            $data['tenancies'] = $this->tenancy_model->get_tenancy("`status`=1 OR `status`=2");
+            $data['tenancies'] = $this->tenancy_model->get_tenancy("`status`=1 OR `status`=3"); //active tenants and those deactivated with arrears
         }
             $this->load->helper('form');
             $this->load->library('form_validation');
 
             $data['title'] = "Payment";
-            $data['sub_title'] = "Capture payment details";
+            $data['sub_title'] = "New payment";
             $data['accounts'] = $this->account_model->get_account();
 
             $data['step_text'] = TRUE;
@@ -183,8 +183,6 @@ class Payment extends CI_Controller {
                         $this->tenancy_model->update_tenancy_end_date($data['payment']['tenancy_id']);
                     }
                 }
-
-
                 $data['message'] = 'Payment details successfully updated';
 
                 $this->load->view('templates/header', $data);

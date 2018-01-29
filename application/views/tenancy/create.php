@@ -14,45 +14,45 @@
                     <?php echo form_open($form_url, array('name' => 'create/update_tenancy', 'role' => 'form', 'data-toggle' => 'validator', 'id' => 'tenancyForm')); ?>
                     <div class="box-body">
                         <div class="col-md-8 col-md-offset-1">
-                            <div class="form-group">
+                            <div class="col-lg-12">
                                 <div class="col-md-12">
                                     <label><a href="<?= site_url("tenant/view/" . (isset($tenant_id) ? $tenant_id : set_value('tenant_id'))) ?>" title="View <?php echo (isset($tenant)) ? $tenant['names'] : (isset($tenancy) ? $tenancy['names']:set_value('tenant_names')); ?> details"><i class="fa fa-angle-double-left"></i> &nbsp;<?php echo (isset($tenant)) ? $tenant['names'] : (isset($tenancy) ? $tenancy['names']:set_value('tenant_names')); ?></a></label>
                                     <input type="hidden" id="tenant_id" name="tenant_id" value="<?php echo (isset($tenant_id) ? $tenant_id : set_value('tenant_id')); ?>">
                                     <input type="hidden" id="tenant_names" name="tenant_names" value="<?php echo (isset($tenant)) ? $tenant['names'] : (isset($tenancy) ? $tenancy['names']:set_value('tenant_names')); ?>">
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="col-lg-12">
                                 <div class="col-md-6"><label for="estate_id">Estate</label></div>
-                                <div class="col-md-6">
+                                <div class="form-group col-md-6">
                                     <select name="estate_id" data-bind="options: estates, optionsText: 'estate_name', optionsCaption: 'Select estate...', value: estate, optionsAfterRender: setOptionValue('estate_id')" class="form-control" required></select>
                                     <div class="help-block with-errors"></div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="col-lg-12">
                                 <div class="col-md-6"><label for="house_id">Apartment/House/Room</label></div>
-                                <div class="col-md-6">
+                                <div class="form-group col-md-6">
                                     <select name="house_id" data-bind="options: filteredHouses(), optionsText: 'house_no', optionsCaption: 'Select house...', value: house, optionsAfterRender: setOptionValue('house_id')" class="form-control" required></select>
                                     <div class="help-block with-errors"></div>
                                 </div>
                             </div>
                             <!-- ko with: house -->
-                            <div class="form-group">
+                            <div class="col-lg-12">
                                 <div class="col-md-6"><label>Description</label></div>
-                                <div class="col-md-6">
+                                <div class="form-group col-md-6">
                                     <span data-bind="text: description">Billing Starts</span>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="col-md-6"><label>Billing happens <sup><i class="fa fa-question-circle" data-toggle="tooltip" data-placement="auto" title="An example is when a potential tenant comes in the middle of the month, and yet in the apartment it is preferred for all the tenants to uniformly pay at the beginning of each month. In this case, the tenant may pay an amount of money comensurate with the days remaining till the end of the month. Then the monthly billing commences effective 1st of the next month."></i></sup></label></div> 
-                                <div class="col-md-6">
+                                <div class="form-group col-md-6">
                                     <span data-bind="text: parseInt(period_starts)==1?(period_start_array[parseInt(time_interval_id)-1]+' the immediate full'):'Specified start'">Start</span> <span data-bind="text:parseInt(period_starts)==1?((time_intervals[parseInt(time_interval_id)-1]['description']).toString().slice(0,-1).toLocaleLowerCase()):period_start_array2[time_interval_id-1]">Period</span>
                                     <input type="hidden" data-bind="value: <?php echo (set_value('time_interval_id') != NULL) ? set_value('time_interval_id') : (isset($tenancy['time_interval_id']) ? $tenancy['time_interval_id'] : "time_interval_id"); ?>" id="time_interval_id" name="time_interval_id" />
                                     <input type="hidden" data-bind="value: <?php echo (set_value('billing_starts') != NULL) ? set_value('billing_starts') : (isset($tenancy['billing_starts']) ? $tenancy['billing_starts'] : "period_starts"); ?>" id="billing_starts" name="billing_starts" />
                                 </div>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="form-group">
+                            <div class="col-lg-12">
                                 <div class="col-md-6"><label for="rent_rate">Amount</label></div>
-                                <div class="col-md-6">
+                                <div class="form-group col-md-6">
                                     <div class="input-group">
                                         <span class="input-group-addon"><strong>UGX</strong></span>
                                         <input type="number" class="form-control" data-bind="value: fixed_amount,attr: {required:'required'}" id="rent_rate" name="rent_rate" value="<?php echo (set_value('rent_rate') != NULL) ? set_value('rent_rate') : (isset($tenancy['rent_rate']) ? $tenancy['rent_rate'] : ""); ?>" placeholder="Rent amount for this apartment" data-error="Missing amount" />
@@ -61,9 +61,9 @@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="form-group">
+                            <div class="col-lg-12">
                                 <div class="col-md-6"><label for="billing_freq">Billing frequency</label></div>
-                                <div class="col-md-6">
+                                <div class="form-group col-md-6">
                                     <div class="input-group">
                                         <span class="input-group-addon"><strong>Every</strong></span>
                                         <input type="number" class="form-control" id="billing_freq" name="billing_freq" value="<?php echo (set_value('billing_freq') != NULL) ? set_value('billing_freq') : (isset($tenancy['billing_freq']) ? $tenancy['billing_freq'] : "1"); ?>" data-bind="attr: {required:'required'}" placeholder="How often the bill is generated" data-required-error="Billing frequency is required" />
@@ -73,7 +73,7 @@
                                 </div>
                             </div>
                             <!--/ko -->
-                            <div class="form-group">
+                            <div class="col-lg-12">
                                 <div data-bind="css:{'col-md-3':(typeof house()=='undefined'||(typeof house()!='undefined'&&parseInt(house().time_interval_id)<3)),'col-md-6':((typeof house()!='undefined'&&parseInt(house().time_interval_id)>2))}"><label for="start_date">Entry date/time <sup><i class="fa fa-question-circle" data-toggle="tooltip" data-placement="auto" title="The date and/or time the tenant enters into the apartment/house/room"></i></sup></label></div>
                                 <div class="form-group" data-bind="css:{'col-md-3':(typeof house()=='undefined'||(typeof house()!='undefined'&&parseInt(house().time_interval_id)<3)),'col-md-6':((typeof house()!='undefined'&&parseInt(house().time_interval_id)>2))}">
                                         <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="<?php echo (set_value('start_date') != NULL) ? set_value('start_date') : (isset($tenancy['start_date']) ? mdate("%d-%m-%Y", $tenancy['start_date']) : ""); ?>" placeholder="dd-mm-yyyy" data-required-error="Start date is required" data-pattern-error="Invalid format. Required format dd-mm-yyyy" pattern="^(((0[1-9]|[12]\d|3[01])-(0[13578]|1[02])-((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)-(0[13456789]|1[012])-((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])-02-((19|[2-9]\d)\d{2}))|(29-02-((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$" data-provide="datepicker" required/>

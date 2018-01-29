@@ -201,7 +201,7 @@
                             </a>
                             <ul class="treeview-menu">
                               <li><a href="<?php echo site_url("tenant/create"); ?>"><i class="fa fa-plus-square-o"></i> New Tenant</a></li>
-                              <li><a href="<?php echo site_url("tenancy"); ?>"><i class="fa fa-list-ol"></i> View</a></li>
+                              <li><a href="<?php echo site_url("tenant"); ?>"><i class="fa fa-list-ol"></i> View</a></li>
                             </ul>
                         </li>
                         <li class="treeview">

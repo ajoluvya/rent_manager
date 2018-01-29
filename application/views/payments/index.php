@@ -3,56 +3,71 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="col-lg-12">
-                    <div class="box box-solid">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><?php echo $sub_title; ?></h3>
-                            <div id="reportrange" class="pull-right daterangepicker_div">
-                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
-                                <span></span> <b class="caret"></b>
-                            </div>
-                            <div class="pull-right daterangepicker_div">
-                                <strong>Date of payment:</strong>
-                            </div>
-                        </div>
-                        <table class="table table-striped table-condensed table-hover" id="tblPayments">
-                            <thead>
-                                <tr>
-                                    <th>Date of payment</th>
-                                    <th>Tenant</th>
-                                    <th>House</th>
-                                    <th>Payment for</th>
-                                    <th>Amount (UGX)</th>
-                                    <th>Receipt</th>
-                                    <!--th>Bank account</th-->
-                                    <!-- If the estates owner/admin is logged in -->
-                                    <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
-                                        <th>&nbsp;</th>
-                                        <th>&nbsp;</th>
-                                    <?php endif; ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="4">TOTAL (UGX)</th>
-                                    <th></th>
-                                    <th></th>
-                                    <!--th>&nbsp;</th-->
-                                    <!-- If the estates owner/admin is logged in -->
-                                    <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
-                                        <th colspan="2"></th>
-                                    <?php } ?>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div><!-- /.box -->
-                </div><!-- /.col-lg-12 -->
+                    <div class="tabs-container" id="estates_page">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-money"></i> Paid</a></li>
+                            <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-ban"></i> Non paid</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <!-- Payments section -->
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="box box-solid">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title"><?php echo $sub_title; ?></h3>
+                                        <a href="<?php echo site_url("payment/create"); ?>" class="btn btn-sm btn-default" title="Add New Payment"><i class="fa fa-edit"></i> New</a>
+                                        <div id="reportrange" class="pull-right daterangepicker_div reportrange">
+                                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                                            <span></span> <b class="caret"></b>
+                                        </div>
+                                        <div class="pull-right daterangepicker_div">
+                                            <strong>Date of payment:</strong>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-condensed table-hover" id="tblPayments">
+                                        <thead>
+                                            <tr>
+                                                <th>Date of payment</th>
+                                                <th>Tenant</th>
+                                                <th>House</th>
+                                                <th>Payment for</th>
+                                                <th>Amount (UGX)</th>
+                                                <th>Receipt</th>
+                                                <!--th>Bank account</th-->
+                                                <!-- If the estates owner/admin is logged in -->
+                                                <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3): ?>
+                                                    <th>&nbsp;</th>
+                                                    <th>&nbsp;</th>
+                                                <?php endif; ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="4">TOTAL (UGX)</th>
+                                                <th></th>
+                                                <th></th>
+                                                <!--th>&nbsp;</th-->
+                                                <!-- If the estates owner/admin is logged in -->
+                                                <?php if ($_SESSION['role'] == 4 || $_SESSION['role'] == 3) { ?>
+                                                    <th colspan="2"></th>
+                                                <?php } ?>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div><!-- /.box -->
+                            </div><!-- /.col-lg-12 -->
+                        </div> <!-- tab-1 end Payments section -->
+                        <!-- Non payments -->
+                        <div id="tab-2" class="tab-pane">
+                        </div> <!-- tab-2 end Non payments section -->
+                    </div><!-- tab-content -->
+                </div><!-- tabs-container -->
             </div><!-- /.panel-body -->
         </div><!-- /.panel -->
     </div><!-- /.col-lg-12 -->
 </div><!-- /.row -->
-    <?php echo $paymentReceiptModal; ?>
+<?php echo $paymentReceiptModal; ?>
 <script>
      
     $(document).ready(function () {
@@ -175,10 +190,10 @@
         });
         
         function cb(startTime, endTime) {
-            $('#reportrange span').html(startTime.format('MMMM D, YYYY') + ' - ' + endTime.format('MMMM D, YYYY'));
+            $('.reportrange span').html(startTime.format('MMMM D, YYYY') + ' - ' + endTime.format('MMMM D, YYYY'));
         }
 
-        $('#reportrange').daterangepicker({
+        $('.reportrange').daterangepicker({
             "showDropdowns": true, //
             "linkedCalendars": true,
             startDate: startDate,
@@ -199,6 +214,7 @@
             startDate = picker.startDate;
             endDate = picker.endDate;
             dTable['tblPayments'].ajax.reload(null,true);
+            dTable['tblNonPayments'].ajax.reload(null,true);
         });
         cb(startDate, endDate);
 

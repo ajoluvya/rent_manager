@@ -7,7 +7,7 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-list-alt"></i> Details</a></li>
                             <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-home"></i> Apartments/Houses</a></li>
-                            <li><a data-toggle="tab" href="#tab-3"><i class="fa fa-hotel"></i> Tenants</a></li>
+                            <li><a data-toggle="tab" href="#tab-3"><i class="fa fa-hotel"></i> Tenancies</a></li>
                             <li><a data-toggle="tab" href="#tab-4"><i class="fa fa-credit-card"></i> Payments</a></li>
                         </ul>
                         <div class="tab-content">

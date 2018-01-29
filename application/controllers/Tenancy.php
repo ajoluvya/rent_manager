@@ -119,7 +119,7 @@ class Tenancy extends CI_Controller {
             $data['tenant'] = $this->tenant_model->get_tenant($tenant_id);
         }
         $data['title'] = "Tenancy";
-        $data['sub_title'] = "Assign apartment/house/room";
+        $data['sub_title'] = "New Tenancy";
         $data['houses'] = $this->house_model->get_house("`house_id` NOT IN (SELECT `house_id` FROM `tenancy` WHERE `status` = 1)");
         $data['estates'] = $this->estate_model->get_estate();
         $data['step_text'] = TRUE;

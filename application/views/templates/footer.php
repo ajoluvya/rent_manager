@@ -2,7 +2,7 @@
 </div><!-- /.content-wrapper -->
 
 <!-- Main Footer -->
-<footer class="main-footer">
+<footer class="main-footer hidden-print">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
         All Rights reserved

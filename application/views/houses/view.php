@@ -6,7 +6,7 @@
                     <div class="tabs-container" id="estates_page">
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-list-alt"></i> Details</a></li>
-                            <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-home"></i> Tenants</a></li>
+                            <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-home"></i> Tenancies</a></li>
                         </ul>
                         <div class="tab-content">
                             <!-- House Details -->

@@ -6,7 +6,7 @@
                     <div class="tabs-container" id="estates_page">
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Details</a></li>
-                            <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-home"></i> Apartments/Houses</a></li>
+                            <li><a data-toggle="tab" href="#tab-2" ><i class="fa fa-home"></i> Tenancies</a></li>
                             <li><a data-toggle="tab" href="#tab-3"><i class="fa fa-credit-card"></i> Payments</a></li>
                         </ul>
                         <div class="tab-content">
@@ -35,7 +35,7 @@
                                                 <?php if ($tenant['phone2'] != FALSE): ?>
                                                     <tr><th>Phone2</th><td><?php echo $tenant['phone2']; ?></td></tr>
                                                 <?php endif; ?>
-                                                <tr><th>Date added</th><td><?php echo mdate('%j%S %M, %Y', $tenant['date_created']); ?></td></tr>
+                                                <tr><th>Date added</th><td><?php echo mdate('%j%S-%M-%Y', $tenant['date_created']); ?></td></tr>
                                                 <tr><th>Home address</th><td><?php echo $tenant['home_address']; ?></td></tr>
                                                 <tr><th>District</th><td><?php echo $tenant['district']; ?></td></tr>
                                             </table>
@@ -56,7 +56,7 @@
                                 <div class="box box-solid">
                                     <div class="box-header with-border">
                                         <h3 class="box-title"><i class="fa fa-home"></i> Houses Occupied</h3>&nbsp;&nbsp;
-                                        <a class="btn btn-default" href="<?php echo site_url("tenancy/create/" . $tenant['tenant_id']); ?>" title="Assign <?php echo $tenant['names']; ?> a house">
+                                        <a class="btn btn-default" href="<?php echo site_url("tenancy/create/" . $tenant['tenant_id']); ?>" title="Assign <?php echo $tenant['names']; ?> a new house">
                                             <i class="fa fa-plus-square"></i> Add
                                         </a>
                                         <div id="tenancies_dp" class="pull-right daterangepicker_div reportrange">
