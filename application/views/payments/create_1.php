@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class="col-lg-10 col-lg-offset-1">
+                <div class="col-lg-8 col-lg-offset-2">
                     <!-- general form elements -->
                     <div class="box box-solid">
                         <div class="box-header with-border">
@@ -51,7 +51,7 @@
                             </div-->
                             <div class="col-lg-12">
                                 <div class="col-md-4"><label for="payment_date">Date of payment</label></div>
-                                <div class="form-group col-md-4"><div class="input-group date"><input type="text" class="form-control datepicker" id="payment_date" name="payment_date" value="<?php echo (set_value('payment_date') != NULL) ? set_value('payment_date') : (isset($payment['payment_date']) ? mdate("%d-%m-%Y", $payment['payment_date']) : mdate("%d-%m-%Y")); ?>" placeholder="Enter payment date" data-validation="date" data-validation-error-msg="Not a date/missing payment date" data-validation-format="dd-mm-yyyy" data-provide="datepicker" ><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></div>
+                                <div class="form-group col-md-8"><div class="input-group date"><input type="text" class="form-control datepicker" id="payment_date" name="payment_date" value="<?php echo (set_value('payment_date') != NULL) ? set_value('payment_date') : (isset($payment['payment_date']) ? mdate("%d-%m-%Y", $payment['payment_date']) : mdate("%d-%m-%Y")); ?>" placeholder="Enter payment date" data-validation="date" data-validation-error-msg="Not a date/missing payment date" data-validation-format="dd-mm-yyyy" data-provide="datepicker" ><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></div>
                             </div>
                             <!-- ko with:tenancy -->
                             <div class="col-lg-12">
@@ -66,51 +66,86 @@
                                     </div>
                                 </div>
                             </div>
-                                <!-- ko foreach:$parent.paid_for_periods() -->
-                                    <!-- ko if:$parent.billing_starts == 2 --><!--  //billing starts on the specified week/month/hour/day -->
+                                <!-- ko if:billing_starts == 2 --><!--  //billing starts on the specified week/month/hour/day -->
+                                <div class="col-lg-12">
+                                    <div class="col-md-4"><label for="start_date">Payment for</label></div>
+                                    <div class="form-group col-md-8">
+                                        <div class="input-group input-daterange">
+                                            <input type="text" placeholder="Start date" name="start_date1" id="start_date1" disabled class="form-control" data-bind="value: moment($parent.start_date(),'X').format('DD-MMM-YYYY'+((parseInt(time_interval_id)-1)<3?' hh:mm A':''))" />
+                                            <input type="hidden" name="start_date" data-bind="value: moment($root.start_date(),'X').format('X')" />
+                                            <div class="input-group-addon"><strong>to</strong></div>
+                                            <input type="text" placeholder="End date" name="end_date1" id="end_date1" disabled class="form-control" data-bind="value: $root.end_date().format('DD-MMM-YYYY'+((parseInt(time_interval_id)-1)<3?' hh:mm A':''))" />
+                                            <input type="hidden" name="end_date" data-bind="value: $root.end_date().format('X')" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="col-md-4"><label for="no_of_periods"><span data-bind="text: period_desc"> </span>/Total Amount</label></div>
+                                    <div class="form-group col-md-8">
+                                        <div class="input-group">
+                                            <input type="number" data-bind="textInput:$parent.no_of_periods, attr: {placeholder: 'No of '+(period_desc.toLocaleString()).toLocaleLowerCase()}" class="form-control" id="no_of_periods" name="no_of_periods" data-min="1" data-error-min="Not a number" />
+                                            <span class="input-group-addon"><strong>UGX:</strong> </span>
+                                            <div class="input-group-addon" data-bind="text:curr_format($parent.total_amount())"></div>
+                                            <input type="hidden" data-bind="value:$parent.total_amount()" id="amount" name="amount" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:billing_starts == 1 --> <!--  //billing starts on the first day/minute/hour of the week/month/hour/day -->
+                                    <!-- ko if: ( parseInt($parent.no_of_periods()) == 1 || parseInt($parent.no_of_periods()) == 0 )  -->
                                     <div class="col-lg-12">
-                                        <div class="col-md-4"><label for="start_date">Payment schedule <span data-bind="text: $index()+1"></span></label></div>
-                                        <div class="form-group col-md-5">
+                                        <div class="col-md-4"><label for="start_date">Payment for</label></div>
+                                        <div class="form-group col-md-8">
                                             <div class="input-group input-daterange">
-                                                <input type="text" placeholder="Start date" name="start_date1" disabled class="form-control" data-bind="value: moment($root.start_date(),'X').format('DD-MMM-YYYY'+((parseInt($parent.time_interval_id)-1)<3?' hh:mm A':''))" />
-                                                <input type="hidden" data-bind="value: moment($root.start_date(),'X').format('X'), attr: {name:'payment['+$index()+'][start_date]'}" />
-                                                <div class="input-group-addon"><strong>to</strong></div>
-                                                <input type="text" placeholder="End date" name="end_date1" disabled class="form-control" data-bind="value: $root.getEndDate($index()+1).format('DD-MMM-YYYY'+((parseInt($parent.time_interval_id)-1)<3?' hh:mm A':''))" />
-                                                <input type="hidden" data-bind="value: $root.getEndDate($index()+1).format('X'), attr: {name:'payment['+$index()+'][end_date]'}" />
+                                                <input type="text" placeholder="Start date" name="start_date1" id="start_date1" disabled class="form-control" data-bind="value: moment($root.start_date(),'X').format(parseInt(time_interval_id)===4?'MMMM-YYYY':('DD-MMM-YYYY'+(parseInt(time_interval_id)<3?' hh:mm A':'')))" />
+                                                <input type="hidden" name="start_date" data-bind="value: moment($root.start_date(),'X').format('X')" />
+                                                <input type="hidden" name="end_date" data-bind="value: $root.end_date().format('X')" />
                                             </div>
                                         </div>
-                                        <div class="col-md-2"><input type="number" class="form-control" data-bind="textInput: amount_paid, attr: {name:'payment['+$index()+'][amount]'}, visible: amount_paid(parseFloat($parent.rent_rate))" /></div>
-                                        <div class="col-md-1"><span class="text-danger" style="cursor: pointer" data-bind="click:$root.removePaidForPeriod, visible:$index()>0"><i class="fa fa-minus-circle"></i></span></div>
                                     </div>
                                     <!-- /ko -->
-                                    <!-- ko if:$parent.billing_starts == 1 --> <!--  //billing starts on the first day/minute/hour of the week/month/hour/day -->
+                                    <!-- ko if: ( parseInt($parent.no_of_periods()) != 1 && parseInt($parent.no_of_periods()) != 0 ) -->
                                     <div class="col-lg-12">
-                                        <div class="col-md-4"><label for="start_date1">Payment schedule <span data-bind="text: $index()+1"></span></label></div>
-                                        <div class="form-group col-md-4">
-                                            <input type="text" placeholder="Start date" name="start_date1" disabled class="form-control" data-bind="value: $root.getEndDate($index()).format(parseInt($parent.time_interval_id)===4?'MMMM-YYYY':('DD-MMM-YYYY'+(parseInt($parent.time_interval_id)<3?' hh:mm A':'')))" />
+                                        <div class="col-md-4"><label for="start_date">Payment for</label></div>
+                                        <div class="form-group col-md-8">
+                                            <div class="input-group input-daterange">
+                                                <input type="text" placeholder="Start date" name="start_date1" id="start_date1" disabled class="form-control" data-bind="value: moment($root.start_date(),'X').format('DD-MMM-YYYY'+((parseInt(time_interval_id)-1)<3?' hh:mm A':''))" />
+                                                <input type="hidden" name="start_date" data-bind="value: moment($root.start_date(),'X').format('X')" />
+                                                <div class="input-group-addon"><strong>to</strong></div>
+                                                <input type="text" placeholder="End date" name="end_date1" id="end_date1" disabled class="form-control" data-bind="value: $root.end_date().format('DD-MMM-YYYY'+((parseInt(time_interval_id)-1)<3?' hh:mm A':''))" />
+                                                <input type="hidden" name="end_date" data-bind="value: $root.end_date().format('X')" />
+                                            </div>
                                         </div>
-                                        <div class="form-group col-md-3">
-                                            <input type="number" class="form-control" data-bind="textInput: amount_paid, attr: {name:'payment['+$index()+'][amount]'}, visible: amount_paid(parseFloat($parent.rent_rate))" />
-                                            <input type="hidden" data-bind="value: moment($root.start_date(),'X').format('X'), attr: {name:'payment['+$index()+'][start_date]'}" />
-                                            <input type="hidden" data-bind="value: $root.getEndDate($index()+1).format('X'), attr: {name:'payment['+$index()+'][end_date]'}" />
+                                    </div>
+                                    <!-- /ko -->
+                                    <!-- ko if:(start_date != end_date) -->
+                                    <div class="col-lg-12">
+                                        <div class="col-md-4"><label for="no_of_periods"><span data-bind="text: period_desc"> </span>/Total Amount</label></div>
+                                        <div class="form-group col-md-8">
+                                            <div class="input-group">
+                                                <input type="number" data-bind="textInput:$parent.no_of_periods, attr: {placeholder: 'No of '+(period_desc.toLocaleString()).toLocaleLowerCase()}" class="form-control" id="no_of_periods" name="no_of_periods" step="1" min="1" data-error-min="Should be more than 0" />
+                                                <span class="input-group-addon"><strong>UGX:</strong> </span>
+                                                <div class="input-group-addon" data-bind="text:curr_format($parent.total_amount())"></div>
+                                                <input type="hidden" data-bind="value:$parent.total_amount()" id="amount" name="amount" />
+                                            </div>
                                         </div>
-                                        <div class="col-md-1"><span class="text-danger" style="cursor: pointer" data-bind="click:$root.removePaidForPeriod, visible:$index()>0"><i class="fa fa-minus-circle"></i></span></div>
+                                    </div>
+                                    <!-- /ko -->
+                                    <!-- ko if:(start_date == end_date) -->
+                                    <div class="col-lg-12">
+                                        <div class="col-md-4"><label for="amount">Amount paid</label></div>
+                                        <div class="form-group col-md-8">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><strong>UGX:</strong> </span>
+                                                <input type="number" class="form-control" data-bind="attr: {value:parseInt($parent.total_amount()/parseInt(billing_freq)), max: parseInt($parent.total_amount()/parseInt(billing_freq)), 'data-max-error':'Amount can not exceed '+ curr_format(parseInt($parent.total_amount()/parseInt(billing_freq)))}" id="amount" name="amount" min="0" data-min-error="Cannot be less than 0" />
+                                                <input type="hidden" data-bind="value:$parent.no_of_periods" id="no_of_periods" name="no_of_periods" />
+                                                <div class="input-group-addon"><strong><span data-bind="text: adjective"></span> rate</strong></div>
+                                                <div class="input-group-addon" data-bind="text:curr_format(parseInt($parent.total_amount()/parseInt(billing_freq)))"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <!-- /ko -->
                                 <!-- /ko -->
-                            <div class="col-lg-12">
-                                <div class="col-md-4"><label>Total <span data-bind="text: period_desc"> </span>/Amount</label></div>
-                                <div class="col-md-2">
-                                        <span><strong data-bind="text:$parent.paid_for_periods().length*billing_freq + ' '+ (period_desc).toLocaleString().toLocaleLowerCase()"></strong></span>
-                                </div>
-                                <div class="col-md-5">
-                                        <span><strong>UGX:</strong> <strong data-bind="text:curr_format($parent.total_amount_paid())"></strong></span>
-                                        <input type="hidden" data-bind="value:$parent.total_amount_paid()" id="amount" name="total_amount" />
-                                </div>
-                                <div class="col-md-1">
-                                    <span data-bind="click:$root.addPaidForPeriod, attr:{title:'Add more '+ (period_desc).toLocaleString().toLocaleLowerCase()}" class="text-primary" style="cursor: pointer"><i class="fa fa-plus-circle"></i></span>
-                                </div>
-                            </div>
                             <!-- /ko -->
                             <div class="col-lg-12">
                                 <div class="col-md-4"><label for="particulars">Notes <small><i>(optional)</i></small></label></div>
@@ -133,17 +168,12 @@
 <script type="text/javascript">
     var time_intervals = <?php echo json_encode($time_intervals); ?>;
     $(document).ready(function () {
-        var PaidForPeriod = function() {
-            var self = this;
-            self.amount_paid = ko.observable(0);
-        };
         var PaymentModel = function () {
             var self = this;
             self.tenancy = ko.observable(<?php echo isset($tenancy)?json_encode($tenancy):''; ?>);
             self.tenancies = ko.observableArray(<?php echo isset($tenancies)?json_encode($tenancies):''; ?>);
             
             self.no_of_periods = ko.observable(<?php echo ((isset($payment['no_of_periods']) && is_numeric($payment['no_of_periods'])) ? $payment['no_of_periods'] : 1); ?>);
-            self.paid_for_periods = ko.observableArray([new PaidForPeriod()]);
             
             self.start_date = ko.pureComputed(function () {
                 if(typeof self.tenancy()!= 'undefined' && (self.tenancy().start_date === self.tenancy().end_date && self.tenancy().billing_starts == 1) ){ //we can tell, at this point, that its the first payment to be made
@@ -217,35 +247,17 @@
                     return start_date.add(self.no_of_periods()*parseInt(self.tenancy().billing_freq), self.tenancy().label);
                 }
             });
-            self.total_amount_paid = ko.pureComputed(function () {
-                total_amount = 0;
-                ko.utils.arrayForEach(self.paid_for_periods(),function(paid_for_period){
-                    //console.log()
-                    total_amount += parseFloat(paid_for_period.amount_paid());
-                });
-                return total_amount;
-            });
             
-            //operations
-            self.addPaidForPeriod = function() { self.paid_for_periods.push(new PaidForPeriod()) };
-            self.removePaidForPeriod = function(paid_for_period) { self.paid_for_periods.remove(paid_for_period); };
-            self.getEndDate = function(no_of_periods) {
-                start_date = moment(self.start_date(),'X');
-                if(typeof self.tenancy()!= 'undefined' && (self.tenancy().start_date === self.tenancy().end_date ) ){ //we can tell, at this point, that its the first payment to be made
-                    //based on the time interval id, the start time, we are able to push the time to the start point of the next hour/day/week/month/quarter
-                    //console.log(start_date.format('DD-MM-YYYY'));
-                    if(self.tenancy().billing_starts == 1){
-                        return start_date.add(no_of_periods*parseInt(self.tenancy().billing_freq)-1, self.tenancy().label).endOf(self.tenancy().period_desc);
-                    }
-                    if(self.tenancy().billing_starts == 2){
-                        return start_date.add(no_of_periods*parseInt(self.tenancy().billing_freq), self.tenancy().label);
+            self.total_amount = ko.pureComputed(function () {
+                if( typeof self.tenancy()!= 'undefined'){
+                    if (self.no_of_periods()) {
+                        return self.no_of_periods() * parseFloat(self.tenancy().rent_rate);
+                    } else{
+                        return self.tenancy().rent_rate;
                     }
                 }
-                else if( typeof self.tenancy()!= 'undefined' && !(self.tenancy().start_date === self.tenancy().end_date) ) { 
-                    //console.log(start_date.format('DD-MM-YYYY'));
-                    return start_date.add(no_of_periods*parseInt(self.tenancy().billing_freq), self.tenancy().label);
-                }
-            };
+            });
+
             
         };
         paymentModel = new PaymentModel();

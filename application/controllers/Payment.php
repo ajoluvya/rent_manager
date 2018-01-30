@@ -119,7 +119,7 @@ class Payment extends CI_Controller {
 
             $data['step_text'] = TRUE;
 
-            $this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s missing.'));
+            //$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s missing.'));
             $this->form_validation->set_rules('rent_rate', 'Rent rate', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('amount', 'Amount paid', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('payment_date', 'Date of payment', 'required|datetime', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
@@ -159,7 +159,7 @@ class Payment extends CI_Controller {
             $data['tenancy'] = $this->tenancy_model->get_tenancy($data['payment']['tenancy_id']);
 
 
-            $this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s missing.'));
+            //$this->form_validation->set_rules('particulars', 'Particulars', 'required', array('required' => '%s missing.'));
             $this->form_validation->set_rules('rent_rate', 'Rent rate', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('amount', 'Amount paid', 'required', array('required' => '%s is missing.'));
             $this->form_validation->set_rules('payment_date', 'Date of payment', 'required|datetime', array('required' => '%s is missing.', 'datetime' => '%s is invalid, required date format is dd-mm-yyyy.'));
