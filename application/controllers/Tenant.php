@@ -97,8 +97,8 @@ class Tenant extends CI_Controller {
         } else {
             //upload the photos
             $this->load->library('upload');
-            $id_card_file_data = $this->process_upload('id_card_url', `tenants`, TRUE);
-            $passport_photo_data = $this->process_upload('passport_photo', 'tenants', TRUE);
+            $id_card_file_data = $this->process_upload('id_card_url', 'tenants');
+            $passport_photo_data = $this->process_upload('passport_photo', 'tenants');
             $photo_urls = array();
             if (isset($id_card_file_data['file_name'])) {
                 $photo_urls['id_card_url'] = $id_card_file_data['file_name'];
@@ -109,8 +109,8 @@ class Tenant extends CI_Controller {
                 $photo_urls['passport_photo'] = $passport_photo_data['file_name'];
             }
             $data['tenant_id'] = $this->tenant_model->set_tenant($photo_urls);
-            $data['tenant_names'] = $this->input->post('names');
-            $data['step_text'] = TRUE;
+            //$data['tenant_names'] = $this->input->post('names');
+            //$data['step_text'] = TRUE;
             redirect('tenancy/create/'.$data['tenant_id']);
             //$this->load->view('templates/header', $data);
             //$this->load->view('tenancy/create', $data);
@@ -173,7 +173,7 @@ class Tenant extends CI_Controller {
                 $this->load->library('upload');
                 $photo_urls = array();
                 if (!empty($_FILES['id_card_url']) && isset($_FILES['id_card_url']['name'])) {
-                    $id_card_file_data = $this->process_upload('id_card_url', `tenants`, $data['tenant']['id_card_url']);
+                    $id_card_file_data = $this->process_upload('id_card_url', 'tenants', $data['tenant']['id_card_url']);
                     if (isset($id_card_file_data['file_name'])) {
                         $photo_urls['id_card_url'] = $id_card_file_data['file_name'];
                     }
