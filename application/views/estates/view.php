@@ -281,7 +281,7 @@
                             "dataType": "JSON",
                             "type": "POST",
                             "data": function(d){
-                                d.estate_id = d.tenant_id = <?php echo $estate['estate_id']; ?>;;
+                                d.estate_id = <?php echo $estate['estate_id']; ?>;;
                                 d.start_date = startDate.format('X');
                                 d.end_date = endDate.format('X');
                             }
