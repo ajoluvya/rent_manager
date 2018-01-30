@@ -130,8 +130,11 @@ class Tenant extends CI_Controller {
         if (!is_dir($config["upload_path"])) {
             mkdir($config["upload_path"], 0777, true);
         } else {
-            if (file_exists($config["upload_path"] . "/" . $previous_file)) {
-                unlink($config["upload_path"] . "/" . $previous_file);
+            if (strlen($previous_file)>1 && file_exists($config["upload_path"] . "/" . $previous_file)) {
+                $old = getcwd(); // Save the current directory
+                chdir($config["upload_path"]);
+                unlink($previous_file);
+                chdir($old); // Restore the old working directory
             }
         }
         $this->upload->initialize($config);
