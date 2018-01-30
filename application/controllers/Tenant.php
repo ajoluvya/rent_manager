@@ -29,8 +29,7 @@ class Tenant extends CI_Controller {
         $this->load->helper('form');
         $where = "";
         if ($this->input->post('start_date') != "" && $this->input->post('end_date') != "") {
-
-            $where .= "(`start_date` BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
+            $where .= "(". (($this->input->post('tenant_id') == NULL)?"`tenant`.`date_created`":"start_date"). " BETWEEN " . $this->input->post('start_date') . " AND " . $this->input->post('end_date') . ")";
         }
         if ($this->input->post('tenant_id') != "") {
             $where .= (strlen($where) > 1 ? " AND " : "") . " tenant.`tenant_id` = " . $this->input->post('tenant_id');

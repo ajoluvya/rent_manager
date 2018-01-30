@@ -12,7 +12,7 @@
                                 <span></span> <b class="caret"></b>
                             </div>
                             <div class="pull-right daterangepicker_div">
-                                <strong>Entry date/time:</strong>
+                                <strong>Regn. date:</strong>
                             </div>
                         </div>
                         <table class="table table-striped table-condensed table-hover" id="tblTenants">
@@ -23,7 +23,7 @@
                                     <th>Estate</th>
                                     <th>House No.</th>
                                     <th>Rate (UGX)</th>
-                                    <th>Entry Date</th>
+                                    <th>Regn. Date</th>
                                     <th>Payments made upto</th>
                                     <th>Status</th>
                                     <th>&nbsp;</th>
@@ -88,7 +88,7 @@
                             { data: 'estate_name', render: function( data, type, full, meta ) {return data?('<a href="<?php echo site_url("estate/view"); ?>/'+full.estate_id+'" title="'+data+'\'s details">'+data+'</a>'):'';}},
                             { data: 'house_no', render: function( data, type, full, meta ) {return data?('<a href="<?php echo site_url("house/view"); ?>/'+full.house_id+'" title="'+data+'s details">'+data+'</a>'):'';}},
                             { data: 'rent_rate', render: function( data, type, full, meta ) {return data?curr_format(parseInt(data)):'';}},
-                            { data: 'start_date', render: function( data, type, full, meta ) {
+                            { data: 'date_created', render: function( data, type, full, meta ) {
                                     if(data){
                                         ret_val = moment(data,'X').format('D-MMM-YYYY');
                                         if(type == 'filter'){
@@ -153,6 +153,9 @@
                                     if (full.tenancy_id && (full.status == 1 || full.status == 2)){
                                         tenant_link = '<?php echo site_url("payment/create"); ?>/'+full.tenancy_id;
                                         return '<a href="'+tenant_link+'" title="Make payment for '+data+' (house no: '+full.house_no+')" ><span class="fa fa-money"></span></a>';
+                                    }
+                                    else{
+                                        return '<a href="<?php echo site_url("tenancy/create"); ?>/'+full.tenant_id+'" title="Assign '+data+' a house/room/apartment" ><span class="fa fa-home"></span></a>';
                                     }
                                     return '';
                                 }

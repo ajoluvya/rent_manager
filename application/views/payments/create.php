@@ -138,7 +138,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"><strong>UGX:</strong> </span>
                                                 <input type="number" class="form-control" data-bind="attr: {value:parseInt($parent.total_amount()/parseInt(billing_freq)), max: parseInt($parent.total_amount()/parseInt(billing_freq)), 'data-max-error':'Amount can not exceed '+ curr_format(parseInt($parent.total_amount()/parseInt(billing_freq)))}" id="amount" name="amount" min="0" data-min-error="Cannot be less than 0" />
-                                                <input type="hidden" data-bind="value:$parent.no_of_periods" id="amount" name="no_of_periods" />
+                                                <input type="hidden" data-bind="value:$parent.no_of_periods" id="no_of_periods" name="no_of_periods" />
                                                 <div class="input-group-addon"><strong><span data-bind="text: adjective"></span> rate</strong></div>
                                                 <div class="input-group-addon" data-bind="text:curr_format(parseInt($parent.total_amount()/parseInt(billing_freq)))"></div>
                                             </div>
