@@ -70,7 +70,7 @@ class Payment_model extends CI_Model {
 
         $data = array(
             'tenancy_id' => $this->input->post('tenancy_id'),
-            'payment_date' => mysql_to_unix($payment_date[2] . $payment_date[1] . $payment_date[0] . "235959"),
+            'payment_date' => mysql_to_unix($payment_date[2] . $payment_date[1] . $payment_date[0] . "000000"),
             'account_id' => $this->input->post('account_id'),
             'particulars' => $this->input->post('particulars'),
             'start_date' => $this->input->post('start_date'),
@@ -91,7 +91,7 @@ class Payment_model extends CI_Model {
 
         $data = array(
             'tenancy_id' => $this->input->post('tenancy_id'),
-            'payment_date' => mysql_to_unix($payment_date[2] . $payment_date[1] . $payment_date[0] . "235959"),
+            'payment_date' => mysql_to_unix($payment_date[2] . $payment_date[1] . $payment_date[0] . "000000"),
             'account_id' => $this->input->post('account_id'),
             'particulars' => $this->input->post('particulars'),
             'start_date' => $this->input->post('start_date'),

@@ -56,7 +56,7 @@ class Tenancy_model extends CI_Model {
         $end_date = ($this->input->post('end_date') != NULL) ? mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . "235959") : 0;*/
 
         $date_array = explode('-', $this->input->post('start_date'));
-        $start_date = ($this->input->post('start_date') != NULL) ? mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . "235959") : 0;
+        $start_date = ($this->input->post('start_date') != NULL) ? mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . "000000") : 0;
 
         $data = array(
             'tenant_id' => $this->input->post('tenant_id'),
@@ -78,7 +78,7 @@ class Tenancy_model extends CI_Model {
 
     public function update_tenancy($tenancy_id) {
         $date_array = explode('-', $this->input->post('start_date'));
-        $start_date = ($this->input->post('start_date') != NULL) ? mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . "235959") : 0;
+        $start_date = ($this->input->post('start_date') != NULL) ? mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . "000000") : 0;
 
         $data = array(
             'tenant_id' => $this->input->post('tenant_id'),

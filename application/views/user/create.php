@@ -23,6 +23,10 @@
                                 <span class="glyphicon glyphicon-user form-control-feedback"></span>
                             </div>
                             <div class="form-group has-feedback">
+                                <input type="text" name="phone" id="phone" class="form-control" value="<?php echo (set_value('phone') != NULL) ? set_value('phone') : (isset($user['phone']) ? $user['phone'] : ""); ?>" placeholder="Phone number" title="Phone number" pattern="^(0|\+256)[2347]([0-9]{8})" data-pattern-error="Invalid phone number" required="">
+                                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            </div>
+                            <div class="form-group has-feedback">
                                 <input type="text" name="uname" id="uname" class="form-control" value="<?php echo (set_value('uname') != NULL) ? set_value('uname') : (isset($user['username']) ? $user['username'] : ""); ?>" placeholder="Username" title="Username" required="">
                                 <span class="glyphicon glyphicon-user form-control-feedback"></span>
                             </div>

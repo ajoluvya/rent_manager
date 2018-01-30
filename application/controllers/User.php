@@ -126,6 +126,7 @@ class User extends CI_Controller {
         $this->form_validation->set_rules('fname', 'Firstname', array('required', 'min_length[5]', 'max_length[30]', 'alpha'));
         $this->form_validation->set_rules('lname', 'Lastname', array('required', 'min_length[5]', 'max_length[30]', 'alpha'));
         $this->form_validation->set_rules('uname', 'Username', array('required', 'min_length[5]', 'max_length[30]', 'is_unique[users.username]'));
+        $this->form_validation->set_rules('phone', 'Phone number', array('required'));
         $this->form_validation->set_rules('role_code', 'Role', array('required', 'numeric'));
         /* $this->form_validation->set_rules('pwd', 'Password', array('required', 'min_length[5]', 'max_length[30]'));
           $this->form_validation->set_rules('retype_pwd', 'Confirm password', array('required', 'matches[pwd]')); */
