@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 19, 2018 at 03:53 PM
+-- Generation Time: Feb 02, 2018 at 04:12 PM
 -- Server version: 5.7.9
 -- PHP Version: 5.6.16
 
@@ -325,10 +325,10 @@ CREATE TABLE IF NOT EXISTS `payment` (
   `payment_date` int(10) UNSIGNED NOT NULL COMMENT 'Unix timestamp when payment was received',
   `account_id` int(11) UNSIGNED DEFAULT NULL COMMENT 'ID of the  Bank account through which payment was made',
   `particulars` varchar(200) NOT NULL COMMENT 'Details of payment',
-  `start_date` int(11) NOT NULL,
-  `end_date` int(11) NOT NULL,
+  `start_date` int(11) DEFAULT NULL,
+  `end_date` int(11) DEFAULT NULL,
   `rent_rate` decimal(12,2) NOT NULL,
-  `no_of_periods` smallint(6) NOT NULL,
+  `no_of_periods` smallint(6) DEFAULT NULL,
   `amount` decimal(12,2) UNSIGNED NOT NULL,
   `created_by` int(10) UNSIGNED NOT NULL COMMENT 'Staff entering payment',
   `date_created` int(11) NOT NULL COMMENT 'Date this entry was entered into the database',
@@ -338,22 +338,42 @@ CREATE TABLE IF NOT EXISTS `payment` (
   KEY `fk_modified_by` (`modified_by`),
   KEY `tenancy_id` (`tenancy_id`) USING BTREE,
   KEY `fk_created_by` (`created_by`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `payment`
 --
 
 INSERT INTO `payment` (`payment_id`, `tenancy_id`, `payment_date`, `account_id`, `particulars`, `start_date`, `end_date`, `rent_rate`, `no_of_periods`, `amount`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
-(2, 4, 1457999999, NULL, 'Accommodation for April - June', 1456866000, 1459544400, '650000.00', 0, '650000.00', 1, 0, 2, '2018-01-18 08:44:50'),
-(4, 1, 1458863999, 2, 'Rent for March to April 2015', 0, 0, '0.00', 0, '1200000.00', 1, 0, 0, '2017-11-22 06:01:30'),
-(6, 3, 1513814399, 2, 'Rent payment for June 2018 to January 2018', 0, 0, '0.00', 0, '300000.00', 1, 0, 0, '2017-11-22 06:01:30'),
-(7, 4, 1511481599, NULL, 'The client has paid up all the accumulated balances as well as the forward balances', 1456866000, 1509570000, '650000.00', 0, '13000000.00', 2, 1511472379, 2, '2018-01-18 08:44:50'),
-(8, 7, 1511567999, NULL, 'Thanks, well received', 1510779600, 1518728400, '350000.00', 0, '1050000.00', 2, 1511524817, 2, '2018-01-18 08:44:50'),
-(9, 9, 1512777599, NULL, 'He has paid for this month', 1512075600, 1514754000, '1500000.00', 0, '1500000.00', 2, 1512718422, 2, '2018-01-18 08:44:50'),
-(10, 4, 1512777599, NULL, 'htrtdfg', 1467406800, 1478034000, '650000.00', 0, '2600000.00', 6, 1512746825, 6, '2018-01-18 08:44:50'),
-(11, 4, 1512777599, NULL, 'Fully cleared all the balances', 1478034000, 1512162000, '650000.00', 0, '8450000.00', 6, 1512747250, 6, '2018-01-18 08:44:50'),
-(12, 10, 1516147199, NULL, 'Payment for first semester', 1515445200, 1525813200, '800000.00', 1, '800000.00', 2, 1516108670, 2, '2018-01-18 08:44:50');
+(1, 6, 1517432400, NULL, 'Derogatory', NULL, NULL, '400000.00', NULL, '1600000.00', 2, 1517491416, 2, '2018-02-02 13:10:11');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment_line`
+--
+
+DROP TABLE IF EXISTS `payment_line`;
+CREATE TABLE IF NOT EXISTS `payment_line` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `payment_id` int(11) NOT NULL COMMENT 'Reference to the overall payment receipt',
+  `start_date` int(11) NOT NULL,
+  `end_date` int(11) NOT NULL,
+  `amount` decimal(12,2) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tenancy_id` (`payment_id`) USING BTREE,
+  KEY `payment_id` (`payment_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `payment_line`
+--
+
+INSERT INTO `payment_line` (`id`, `payment_id`, `start_date`, `end_date`, `amount`) VALUES
+(1, 1, 1517011199, 1519689599, '400000.00'),
+(2, 1, 1519689599, 1522108799, '400000.00'),
+(3, 1, 1522108799, 1524787199, '400000.00'),
+(4, 1, 1524787199, 1527379199, '400000.00');
 
 -- --------------------------------------------------------
 
@@ -422,6 +442,8 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   `billing_starts` tinyint(1) DEFAULT NULL,
   `start_date` int(12) UNSIGNED NOT NULL,
   `end_date` int(12) UNSIGNED DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1- active, 2- exited normally, 3 - exited with arrears',
+  `exit_date` int(11) DEFAULT NULL,
   `date_created` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -435,21 +457,22 @@ CREATE TABLE IF NOT EXISTS `tenancy` (
   KEY `time_interval_id` (`time_interval_id`),
   KEY `modified_by` (`modified_by`),
   KEY `created_by` (`created_by`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenancy`
 --
 
-INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `rent_rate`, `time_interval_id`, `billing_freq`, `full_payment`, `billing_starts`, `start_date`, `end_date`, `date_created`, `created_by`, `date_modified`, `modified_by`) VALUES
-(4, 5, 4, '650000.00', 4, 1, NULL, NULL, 1456876799, 1512259199, 0, 0, '2017-12-08 15:34:10', 0),
-(5, 6, 4, '800000.00', 4, 1, NULL, NULL, 1472947199, 1480550399, 0, 0, '2017-11-29 18:05:43', 0),
-(6, 3, 8, '400000.00', 4, 1, NULL, NULL, 1510790399, 1517011199, 0, 0, '2017-11-29 18:05:43', 0),
-(7, 7, 9, '250000.00', 4, 1, NULL, NULL, 1510790399, 1518728400, 0, 0, '2017-12-08 09:01:06', 0),
-(8, 2, 1, '2000000.00', 4, 1, NULL, 2, 1511740799, 1511740799, 0, 0, '2018-01-19 13:01:42', 2),
-(9, 5, 2, '1500000.00', 4, 1, NULL, NULL, 1512086399, 1514840399, 0, 0, '2017-12-08 08:22:56', 0),
-(10, 8, 2, '800000.00', 4, 4, NULL, NULL, 1515542399, 1525910399, 1515635121, 2, '2018-01-16 13:17:50', 2),
-(11, 1, 4, '800000.00', 4, 1, NULL, NULL, 1516147199, 1516147199, 1516214797, 2, '2018-01-17 18:46:37', 2);
+INSERT INTO `tenancy` (`tenancy_id`, `tenant_id`, `house_id`, `rent_rate`, `time_interval_id`, `billing_freq`, `full_payment`, `billing_starts`, `start_date`, `end_date`, `status`, `exit_date`, `date_created`, `created_by`, `date_modified`, `modified_by`) VALUES
+(4, 5, 4, '650000.00', 4, 1, NULL, 2, 1456876799, 1512259199, 1, NULL, 0, 0, '2018-01-27 14:40:55', 0),
+(5, 6, 4, '800000.00', 4, 1, NULL, 2, 1472947199, 1480550399, 1, NULL, 0, 0, '2018-01-27 14:40:55', 0),
+(6, 3, 8, '400000.00', 4, 1, NULL, 2, 1510790399, 1527379199, 1, 1527379199, 0, 0, '2018-02-01 13:23:36', 2),
+(7, 7, 9, '250000.00', 4, 1, NULL, 2, 1510790399, 1518728400, 1, NULL, 0, 0, '2018-01-27 14:40:55', 0),
+(8, 2, 1, '2000000.00', 4, 1, NULL, 2, 1511740799, 1511740799, 1, NULL, 0, 0, '2018-01-24 14:20:27', 2),
+(9, 5, 2, '1500000.00', 4, 1, NULL, 2, 1512086399, 1514840399, 1, NULL, 0, 0, '2018-01-27 14:40:55', 0),
+(10, 8, 2, '800000.00', 4, 4, NULL, 2, 1515542399, 1525910399, 1, NULL, 1515635121, 2, '2018-01-27 14:40:55', 2),
+(11, 1, 4, '800000.00', 4, 1, NULL, 1, 1516147199, 1519851600, 1, 1519851600, 1516214797, 2, '2018-01-24 18:09:22', 2),
+(13, 9, 10, '300000.00', 4, 1, NULL, 2, 1517259600, 1519765200, 1, 1519765200, 1517301920, 2, '2018-01-30 08:45:52', 2);
 
 -- --------------------------------------------------------
 
@@ -467,7 +490,6 @@ CREATE TABLE IF NOT EXISTS `tenant` (
   `phone1` varchar(10) NOT NULL,
   `phone2` varchar(10) NOT NULL,
   `home_address` varchar(100) NOT NULL,
-  `status` tinyint(1) DEFAULT '1' COMMENT 'Status of the tenant, active=1 or inactive = 0',
   `district_id` int(11) NOT NULL COMMENT 'Home district id',
   `created_by` int(11) NOT NULL COMMENT 'Reference to staff who entered this record',
   `date_created` int(11) NOT NULL,
@@ -477,21 +499,22 @@ CREATE TABLE IF NOT EXISTS `tenant` (
   KEY `district_id` (`district_id`),
   KEY `fk_staff_id` (`created_by`),
   KEY `fk_modified_by` (`modified_by`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tenant`
 --
 
-INSERT INTO `tenant` (`tenant_id`, `names`, `passport_photo`, `id_card_no`, `id_card_url`, `phone1`, `phone2`, `home_address`, `status`, `district_id`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
-(1, 'Mukiibi Arthur', NULL, NULL, NULL, '0793287383', '0776812341', 'Brooks corner,\r\nRakai town', 1, 102, 0, 0, 0, '2017-11-23 22:04:56'),
-(2, 'James Batte', NULL, NULL, NULL, '0782299893', '', 'Kiswa, Bugolobi', 1, 18, 0, 0, 0, '2017-11-23 22:04:56'),
-(3, 'Gitau Anthony', NULL, NULL, NULL, '0713459802', '0773716980', 'Bungoma, Kenya', 1, 1, 0, 0, 0, '2017-11-23 22:04:56'),
-(4, 'NWSC', NULL, NULL, NULL, '0414562318', '', 'Jinja Road', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
-(5, 'Bank of Baroda', NULL, NULL, NULL, '0414879302', '', 'Jinja Road, Kampala', 1, 44, 0, 0, 0, '2017-11-23 22:04:56'),
-(6, 'Joshua Odongo', NULL, NULL, NULL, '0777879301', '', 'Kawempe', 1, 5, 0, 0, 2, '2017-11-24 11:14:47'),
-(7, 'Odeke Allan', NULL, NULL, NULL, '0778393803', '0756084422', 'Mukono Municipality', 1, 81, 0, 0, 2, '2017-11-28 08:27:15'),
-(8, 'Andrew Ojok', '39afcd134e2ebe4c4c95c05a95fe470f.jpg', 'CNUE3903KD8', 'e8a294bd3a355a1f3b983969acf5528a.jpg', '0774837928', '', 'Plot 35, Bombo Road, Kawempe', 1, 44, 2, 1511868211, 2, '2017-11-28 12:39:37');
+INSERT INTO `tenant` (`tenant_id`, `names`, `passport_photo`, `id_card_no`, `id_card_url`, `phone1`, `phone2`, `home_address`, `district_id`, `created_by`, `date_created`, `modified_by`, `date_modified`) VALUES
+(1, 'Mukiibi Arthur', NULL, NULL, NULL, '0793287383', '0776812341', 'Brooks corner,\r\nRakai town', 102, 0, 1510568211, 0, '2018-01-30 06:06:26'),
+(2, 'James Batte', NULL, NULL, NULL, '0782299893', '', 'Kiswa, Bugolobi', 18, 0, 1510568211, 0, '2018-01-30 06:06:26'),
+(3, 'Gitau Anthony', NULL, NULL, NULL, '0713459802', '0773716980', 'Bungoma, Kenya', 1, 0, 1510568211, 0, '2018-01-30 06:06:26'),
+(4, 'NWSC', NULL, NULL, NULL, '0414562318', '', 'Jinja Road', 44, 0, 1510568211, 0, '2018-01-30 06:06:26'),
+(5, 'Bank of Baroda', NULL, NULL, NULL, '0414879302', '', 'Jinja Road, Kampala', 44, 0, 1510568211, 0, '2018-01-30 06:06:26'),
+(6, 'Joshua Odongo', NULL, NULL, NULL, '0777879301', '', 'Kawempe', 5, 0, 1510568211, 2, '2018-01-30 06:06:26'),
+(7, 'Odeke Allan', NULL, NULL, NULL, '0778393803', '0756084422', 'Mukono Municipality', 81, 0, 1510568211, 2, '2018-01-30 06:06:26'),
+(8, 'Andrew Ojok', '39afcd134e2ebe4c4c95c05a95fe470f.jpg', 'CNUE3903KD8', 'e8a294bd3a355a1f3b983969acf5528a.jpg', '0774837928', '', 'Plot 35, Bombo Road, Kawempe', 44, 2, 1511868211, 2, '2017-11-28 12:39:37'),
+(9, 'Andy Mwesigwa', NULL, '1517291401', '73e8d05c5c5cabba76b993360c35aa50.png', '0776839390', '', 'Bukyanadi, Katuna', 85, 2, 1517291401, 2, '2018-01-30 10:20:26');
 
 -- --------------------------------------------------------
 
@@ -520,6 +543,16 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`userId`, `fname`, `lname`, `email`, `phone`, `username`, `password`, `role_code`, `reg_date`) VALUES
 (1, 'Allan', 'Odeke', NULL, '', 'ajoluvya', '4d22cd83d39ff90b5417572cc4fd417d', 2, 1456429250),
 (2, 'Admin', 'Atiku', NULL, '', 'admin', '4d22cd83d39ff90b5417572cc4fd417d', 4, 1457155910);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `payment_line`
+--
+ALTER TABLE `payment_line`
+  ADD CONSTRAINT `fk_payment_id` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`payment_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

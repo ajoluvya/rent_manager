@@ -170,7 +170,7 @@
             };
             var viewModel = new ViewModel();
             ko.applyBindings(viewModel);
-            $('#tenancyForm').on('submit', function () {
+            $('#tenancyForm').validator().on('submit', function () {
                 enableDisableButton(this, true);
             });
 

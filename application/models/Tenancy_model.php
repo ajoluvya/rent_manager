@@ -78,7 +78,8 @@ class Tenancy_model extends CI_Model {
 
     public function update_tenancy($tenancy_id) {
         $date_array = explode('-', $this->input->post('start_date'));
-        $start_date = ($this->input->post('start_date') != NULL) ? mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . "000000") : 0;
+        $hour_min = $this->input->post('hour_select') . $this->input->post('min_select');
+        $start_date = ($this->input->post('start_date') != NULL) ? mysql_to_unix($date_array[2] . $date_array[1] . $date_array[0] . (($hour_min?$hour_min:"0000")."00")) : 0;
 
         $data = array(
             'tenant_id' => $this->input->post('tenant_id'),
@@ -97,14 +98,11 @@ class Tenancy_model extends CI_Model {
         return $this->db->update('tenancy', $data);
     }
 
-    public function update_tenancy_end_date() {
-        $date_array = explode('-', $this->input->post('end_date'));
-        $hour_min = $this->input->post('hour_select') . $this->input->post('min_select');
-        $start_date = count($date_array)==3?mysql_to_unix($date_array[0] . $date_array[1] . $date_array[2] . (($hour_min?$hour_min:"0000")."00")):$this->input->post('end_date');
+    public function update_tenancy_end_date($end_date_time) {
         
         $data = array(
-            'end_date' => $start_date,
-            'exit_date' => $start_date
+            'end_date' => $end_date_time,
+            'exit_date' => $end_date_time
         );
         $this->db->where('tenancy_id', $this->input->post('tenancy_id'));
         return $this->db->update('tenancy', $data);
