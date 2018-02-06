@@ -30,6 +30,40 @@ class House_model extends CI_Model {
         }
     }
 
+    public function get_house_count($filter = FALSE) {
+        $this->db->select('COUNT(`house_id`) `count` ');
+        $this->db->from('house');
+
+        if ($filter === FALSE) {
+            
+        } else {
+            if (is_numeric($filter)) {
+                $this->db->where('`house_id`', $filter);
+            } else {
+                !empty($filter) ? $this->db->where($filter) : "";
+            }
+        }
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    public function get_possible_tenancy_count($filter = FALSE) {
+        $this->db->select('SUM(`max_tenants`) `count` ');
+        $this->db->from('house');
+
+        if ($filter === FALSE) {
+            
+        } else {
+            if (is_numeric($filter)) {
+                $this->db->where('`house_id`', $filter);
+            } else {
+                !empty($filter) ? $this->db->where($filter) : "";
+            }
+        }
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
     public function get_house_tenants($house_id) {
         $this->db->select('`tenant`.`tenant_id`, `names`, `phone1`, `phone2`, `home_address`, `district`, `tenant`.`district_id`, `tenancy_id`, `house_id`, `rent_rate`,, `start_date`,`end_date`');
         $this->db->from('tenant');

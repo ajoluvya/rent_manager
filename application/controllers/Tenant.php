@@ -73,8 +73,8 @@ class Tenant extends CI_Controller {
         $this->load->helper('form');
         $this->load->library('form_validation');
 
-        $data['title'] = "Tenant";
-        $data['sub_title'] = "Capture tenant data";
+        $data['title'] = "Tenants";
+        $data['sub_title'] = "New tenant";
         $data['districts'] = $this->district_model->get_district();
         $data['houses'] = $this->house_model->get_house();
         $data['estates'] = $this->estate_model->get_estate();
@@ -154,10 +154,10 @@ class Tenant extends CI_Controller {
             $this->load->library('form_validation');
 
             $data['title'] = 'Tenant';
-            $data['sub_title'] = 'Update tenant details';
             $data['btn_text'] = 'Update';
 
             $data['tenant'] = $this->tenant_model->get_tenant($tenant_id);
+            $data['sub_title'] = "{$data['tenant']['names']} details";
             $data['districts'] = $this->district_model->get_district();
 
             $this->form_validation->set_rules('names', 'Tenant names', 'required', array('required' => '%s is missing.'));

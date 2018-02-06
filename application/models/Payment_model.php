@@ -73,17 +73,22 @@ class Payment_model extends CI_Model {
         }
     }
 
-    public function get_sum($tenant_id = FALSE) {
+    public function get_sum($filter = FALSE) {
         $this->db->select_sum('amount', 'amt_paid');
         $this->db->from('payment');
-        $this->db->join('account', 'account.acc_id = payment.account_id', 'left');
 
-        if ($tenant_id === FALSE) {
+        if ($filter === FALSE) {
+            
+        } else {
+            if (is_numeric($filter)) {
+                $this->db->where('payment_id', $filter);
+            } else {
+                !empty($filter) ? $this->db->where($filter) : "";
+            }
             $query = $this->db->get();
             return $query->row_array();
         }
 
-        $this->db->where("`tenancy_id` IN (SELECT `tenancy`.`tenancy_id` FROM `tenancy` WHERE `tenant_id` = $tenant_id)");
         $query = $this->db->get();
         return $query->row_array();
     }
@@ -147,8 +152,9 @@ class Payment_model extends CI_Model {
         $this->db->where('payment_id', $payment_id);
         return $this->db->update('payment', $data);
     }
+
     public function update_payment_line($payment_line_data) {
-        
+
         return $this->db->replace('payment', $payment_line_data);
     }
 

@@ -90,7 +90,7 @@ class User extends CI_Controller {
                 // Add user data in session
                 $this->session->set_userdata($user_data);
 
-                redirect('/tenant');
+                redirect('/dashboard');
             }
         }
     }

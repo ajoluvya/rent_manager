@@ -189,12 +189,12 @@
                         <li class="header">Menu</li>
                         <!-- Optionally, you can add icons to the links -->
                         <!-- If ordinary staff have logged in -->
-                        <!-- ?php if($_SESSION['role']==2){?>
+                        <!-- ?php if($_SESSION['role']==2){?-->
                         <li>
-                            <a href="#">
+                            <a href="<?php echo site_url("dashboard"); ?>">
                                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                             </a>
-                        </li-->
+                        </li>
                         <li class="treeview">
                             <a href="<?php echo site_url("tenant"); ?>">
                                 <i class="fa fa-hotel"></i> <span>Tenants</span> <i class="fa fa-angle-left pull-right"></i>

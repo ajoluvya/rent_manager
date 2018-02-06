@@ -34,6 +34,9 @@
 <script type="text/javascript" src="<?php echo base_url("assets/js/daterangepicker.js"); ?>"></script>
 <!-- Datetimepicker
 <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-datetimepicker.js"); ?>"></script> -->
+<!-- Highcharts -->
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 <!-- PNotify -->
 <script src="<?php echo base_url("assets/plugins/pnotify/dist/pnotify.js"); ?>"></script>
 <script src="<?php echo base_url("assets/plugins/pnotify/dist/pnotify.buttons.js"); ?>"></script>
@@ -56,7 +59,7 @@
 <script type="text/javascript" src="<?php echo base_url("assets/DataTables/Scroller-1.4.3/js/dataTables.scroller.min.js"); ?>"></script>
 
 <script type="text/javascript" src="<?php echo base_url("assets/js/form-validator/jquery.form-validator.min.js"); ?>"></script>
-<script type="text/javascript" src="<?php echo base_url("assets/js/helpers.js"); ?>"></script>
+<script type="text/javascript" src="<?php echo base_url("assets/js/helpers.js?"). rand(1, 200); ?>"></script>
 <script>
     //$.validate();
     $('.datepicker').datepicker({

@@ -103,8 +103,7 @@ function printPageSection(sectionId, cssLinkTag) {
     WinPrint.print();
     WinPrint.close();
 }
-function zeroFill(number, width)
-{
+function zeroFill(number, width) {
     width -= number.toString().length;
     if (width > 0)
     {
@@ -160,77 +159,13 @@ function sumUpAmount(items, transactionType) {
     return total;
 }
 //Bar chart
-function draw_bar_chart(url_data) {
-    $("#barChart").replaceWith('<canvas id="barChart"></canvas>');
-    var ctx = $("#barChart").get(0).getContext("2d");
-
-    var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: url_data.labels,
-            datasets: url_data.datasets
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-            }
-        }
-    });
-}
-// Line chart
-function draw_line_chart(url_data) {
-    $("#lineChart").replaceWith('<canvas id="lineChart"></canvas>');
-    var ctx = $("#lineChart").get(0).getContext("2d");
-
-    var lineOptions = {
-        scaleShowGridLines: true,
-        scaleGridLineColor: "rgba(0,0,0,.05)",
-        scaleGridLineWidth: 1,
-        bezierCurve: true,
-        bezierCurveTension: 0.4,
-        pointDot: true,
-        pointDotRadius: 4,
-        pointDotStrokeWidth: 1,
-        pointHitDetectionRadius: 20,
-        datasetStroke: true,
-        datasetStrokeWidth: 2,
-        datasetFill: true,
-        responsive: true,
-    };
-    var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: url_data,
-        options: lineOptions
-    });
-}
-function draw_line_highchart(url_data) {
-    Highcharts.chart('lineChart', {
-
-        title: url_data.title,
-
-        yAxis: url_data.yAxis,
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle'
-        },
-        xAxis: {categories: url_data.xAxis.categories},
-        plotOptions: {
-            line: {
-                dataLabels: {enabled: true}
-            }
-        },
-        series: url_data.datasets
-    });
+function draw_line_highchart(div_element, url_data) {
+    Highcharts.chart(div_element, url_data);
 }
 // Pie chart
-function draw_pie_chart(url_data) {
+function draw_pie_highchart(url_data) {
     // Build the chart
-    Highcharts.chart('pieChart', {
+    Highcharts.chart(url_data.element, {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,

@@ -51,6 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['user'] = 'user';
 $route['tenant'] = 'tenant';
+$route['dashboard'] = 'dashboard';
 $route['tenant'] = 'tenant';
 $route['account'] = 'account';
 $route['estate'] = 'estate';
