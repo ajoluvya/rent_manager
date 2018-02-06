@@ -39,21 +39,44 @@
                             </div> <!-- .col-md-12 -->
                             <div class="col-md-12">
                                 <div class="col-sm-6" data-bind="with:summaries">
-                                        <h4><i class="fa fa-money"></i> Total Payments</h4>
-                                            <div id="payments_chart_div" style="min-width: 310px; height: 250px; margin: 0 auto"></div>
-                                            <label class="col-sm-4">Total (UGX) <span data-bind="text: curr_format(parseFloat(payments.total.amt_paid)*1)"></span></label>
-                                            <label class="col-sm-4">Default amount (UGX) <span data-bind="text: curr_format(parseFloat(payments.total.amt_paid)*1)"></span></label>
-                                            <label class="col-sm-4">Terminated arrears (UGX) <span data-bind="text: curr_format(parseFloat(payments.total.amt_paid)*1)"></span></label>
+                                    <h4><i class="fa fa-money"></i> Total Payments</h4>
+                                    <div id="payments_chart_div" style="min-width: 310px; height: 250px; margin: 0 auto"></div>
+                                    <div class="table-responsive">
+                                        <table class="table table-condensed table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <th>Current</th>
+                                                    <th><span data-bind="text: payments.current.total.amt_paid?curr_format(parseFloat(payments.current.total.amt_paid)*1):0"></span></th>
+                                                    <th><span data-bind="text: curr_format(sumUpArrears(payments.current.defaults))"></span></th>
+                                                    <th><span data-bind="text: curr_format(sumUpArrears(payments.current.arrears))"></span></th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last week</th>
+                                                    <th><span data-bind="text: payments.lweek.total.amt_paid?curr_format(parseFloat(payments.lweek.total.amt_paid)*1):0"></span></th>
+                                                    <th><span data-bind="text: curr_format(sumUpArrears(payments.lweek.defaults))"></span></th>
+                                                    <th><span data-bind="text: curr_format(sumUpArrears(payments.lweek.arrears))"></span></th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Month</th>
+                                                    <th><span data-bind="text: payments.lmonth.total.amt_paid?curr_format(parseFloat(payments.lmonth.total.amt_paid)*1):0"></span></th>
+                                                    <th><span data-bind="text: curr_format(sumUpArrears(payments.lmonth.defaults))"></span></th>
+                                                    <th><span data-bind="text: curr_format(sumUpArrears(payments.lmonth.arrears))"></span></th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div><!-- /.col-sm-6 -->
                                 <div class="col-sm-6" data-bind="with:summaries">
                                         <h4 class="box-title"><i class="fa fa-hotel"></i> Room Occupancy</h4>
                                         <div class="col-md-6">
                                             <div id="tenancies_chart_div" style="min-width: 250px; height: 250px; max-width: 300px; margin: 0 auto"></div>
-                                            <label>Current/Max. Possible tenancies: <span data-bind="text: tenancy.current.count"></span>/<span data-bind="text: tenancy.max_tenancies.count"></span></label>
+                                            <div class="col-sm-offset-2 col-sm-4"><label><span data-bind="text: tenancy.current.count"></span></label></div>
+                                            <div class="col-sm-offset-1 col-sm-5"><label><span data-bind="text: tenancy.max_tenancies.count"></span></label></div>
                                         </div> <!-- /.col-md-6 -->
                                         <div class="col-md-6">
                                             <div id="room_occupancy_chart_div" style="min-width: 250px; height: 250px; max-width: 300px; margin: 0 auto"></div>
-                                            <label>Vacant/Total rooms: <span data-bind="text: tenancy.un_occupied_rooms.count"></span>/<span data-bind="text: tenancy.total.count"></span></label>
+                                            <div class="col-sm-offset-3 col-sm-3"><label><span data-bind="text: tenancy.un_occupied_rooms.count"></span></label></div>
+                                            <div class="col-sm-offset-2 col-sm-4"><label><span data-bind="text: tenancy.total.count"></span></label></div>
                                         </div> <!-- /.col-md-6 -->
                                </div><!-- /.col-sm-6 -->
                             </div> <!-- .col-md-8 -->
@@ -74,18 +97,6 @@
         ko.applyBindings(dashboardModel);
 
         /*var tenancies_data = {
-         element: "tenancies_pie",
-         title: {text: "Tenancies"},
-         series: {name: "Current/Maximum possible",
-         data: [
-         {name: "Current", y: parseInt(dashboardModel.summaries().tenancy.current.count) * 1},
-         {name: "Max. Possible", y: parseInt(dashboardModel.summaries().tenancy.max_tenancies.count) * 1}
-         ]
-         }
-         };
-         draw_pie_highchart(tenancies_data);
-         
-         var room_occupancy_data = {
          element: "room_occupancy_pie",
          title: {text: "Room occupancy"},
          series: {name: "Vacant/Total rooms",
@@ -95,15 +106,15 @@
          ]
          }
          };
-         draw_pie_highchart(room_occupancy_data);*/
+         draw_pie_highchart(tenancies_data);*/
 
         var column_chart_data = {
             chart: {type: "column"},
-            title: {text: "Payments/Defaults"},
+            title: {text: "Payments/Defaults/Arrears"},
             xAxis: {
-                categories: ['Payments/Defaults/Arrears'],
+                categories: ['Current', '1 week ago', '1 month ago'],
                 crosshair: true,
-                title: {text: "Category"}
+                title: {text: "Period"}
             },
             yAxis: {
                 min: 0,
@@ -115,29 +126,35 @@
                     pointPadding: 0.2,
                     borderWidth: 0
                 }
-            },
+            }/*,
             legend: {
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'middle'
-            },
+            }*/,
             series: [
                 {
                     name: "Paid",
                     data: [
-                        parseFloat(dashboardModel.summaries().payments.total.amt_paid) * 1
+                        parseFloat(dashboardModel.summaries().payments.current.total.amt_paid) * 1,
+                        parseFloat(dashboardModel.summaries().payments.lweek.total.amt_paid) * 1,
+                        parseFloat(dashboardModel.summaries().payments.lmonth.total.amt_paid) * 1
                     ]
                 },
                 {
                     name: "Default",
                     data: [
-                        parseFloat(dashboardModel.summaries().payments.total.amt_paid) * 1
+                        sumUpArrears(dashboardModel.summaries().payments.current.defaults),
+                        sumUpArrears(dashboardModel.summaries().payments.lweek.defaults),
+                        sumUpArrears(dashboardModel.summaries().payments.lmonth.defaults)
                     ]
                 },
                 {
                     name: "Arrears",
                     data: [
-                        parseFloat(dashboardModel.summaries().payments.total.amt_paid) * 1
+                        sumUpArrears(dashboardModel.summaries().payments.current.arrears),
+                        sumUpArrears(dashboardModel.summaries().payments.lweek.arrears),
+                        sumUpArrears(dashboardModel.summaries().payments.lmonth.arrears)
                     ]
                 }
             ]

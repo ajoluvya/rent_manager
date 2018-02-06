@@ -147,16 +147,17 @@ function array_total(arr, idx) {
     });
     return total;
 }
-//given array, get the total for the transaction type
-function sumUpAmount(items, transactionType) {
-    var total = 0;
-    if (items) {
-        $.map(items, function (item) {
-            total += (parseInt(item['transactionType']) == transactionType) ? (item['amount'] ? parseInt(item['amount']) : 0) : 0;
+//given array of tenancies, sum up the total arrears cancelled out
+function sumUpArrears(terminated_tenancy_arrears) {
+    var total_arrears = 0;
+    if (Array.isArray(terminated_tenancy_arrears) && terminated_tenancy_arrears.length > 0 ) {
+        $.map(terminated_tenancy_arrears, function (terminated_tenancy) {
+            date_diff = get_date_diff(terminated_tenancy);
+            total_arrears += parseInt(terminated_tenancy.billing_freq)*date_diff*parseFloat(terminated_tenancy.rent_rate);
         });
     }
 
-    return total;
+    return total_arrears;
 }
 //Bar chart
 function draw_line_highchart(div_element, url_data) {

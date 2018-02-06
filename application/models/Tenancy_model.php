@@ -45,9 +45,29 @@ class Tenancy_model extends CI_Model {
             } else {
                 !empty($filter) ? $this->db->where($filter) : "";
             }
-            $query = $this->db->get();
-            return $query->row_array();
         }
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    public function get_tenancy_default($filter = FALSE) {
+        $this->db->select('`rent_rate`, `end_date`, `exit_date`, `billing_freq`, `status`,`tbl_time_interval`.`label`');
+        $this->db->from('tenancy');
+        $this->db->join('tbl_time_interval', 'time_interval_id = tbl_time_interval.id');
+
+        if ($filter === FALSE) {
+            
+        } else {
+            if (is_numeric($filter)) {
+                $this->db->where('`tenancy_id`', $filter);
+                $query = $this->db->get();
+                return $query->row_array();
+            } else {
+                !empty($filter) ? $this->db->where($filter) : "";
+            }
+        }
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     public function get_by_tenant_id($tenant_id = FALSE) {
